@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="lemon-pu" transaction-type="RESOURCE_LOCAL">
+  <class>com.nrg.lemon.shared.Client</class>
+  <class>com.nrg.lemon.shared.Person</class>
+  <class>com.nrg.lemon.shared.Product</class>
+  <class>com.nrg.lemon.shared.Subproduct</class>
+  <class>com.nrg.lemon.shared.User</class>
+  <class>com.nrg.lemon.shared.UserProduct</class>
+  <class>com.nrg.lemon.shared.Branch</class>
+  <class>com.nrg.lemon.shared.Announcement</class>
+  <class>com.nrg.lemon.shared.Attendance</class>
+  <class>com.nrg.lemon.shared.Employee</class>
+  <class>com.nrg.lemon.shared.Category</class>
+  <class>com.nrg.lemon.shared.Model</class>
+  <class>com.nrg.lemon.shared.Supplier</class>
+  <class>com.nrg.lemon.shared.Vendor</class>
+  <class>com.nrg.lemon.shared.Fabric</class>
+  <class>com.nrg.lemon.shared.FabricDetail</class>
+  <class>com.nrg.lemon.shared.ItemTable</class>
+  <class>com.nrg.lemon.shared.PursalesItem</class>
+  <class>com.nrg.lemon.shared.PursalesdetailItem</class>
+   <class>com.nrg.lemon.shared.Printerpurchaseorder</class>
+     <class>com.nrg.lemon.shared.Stock</class>
+     <class>com.nrg.lemon.shared.Warehouse</class>
+     <class>com.nrg.lemon.shared.ManualStock</class>
+     <class>com.nrg.lemon.shared.ManualStockOut</class>
+     <class>com.nrg.lemon.shared.Debt</class>
+     <class>com.nrg.lemon.shared.Penalty</class>
+     <class>com.nrg.lemon.shared.Month</class>
+     <class>com.nrg.lemon.shared.Year</class>
+     <class>com.nrg.lemon.shared.EmployeePayroll</class>
+     <class>com.nrg.lemon.shared.SupplyReturn</class>
+     <class>com.nrg.lemon.shared.Transaction</class>
+     <class>com.nrg.lemon.shared.TransactionCategory</class>
+     <class>com.nrg.lemon.shared.Cmtorder</class>
+     <class>com.nrg.lemon.shared.Cmtpurchaseorder</class>
+     <class>com.nrg.lemon.shared.Cmtreceiveorder</class>
+     <class>com.nrg.lemon.shared.Cutterpurchase</class>
+     <class>com.nrg.lemon.shared.Cutterpurchaseorder</class>
+     <class>com.nrg.lemon.shared.Payment</class>
+     <class>com.nrg.lemon.shared.Printerorder</class>
+     <class>com.nrg.lemon.shared.Printerreceiveorder</class>
+     <class>com.nrg.lemon.shared.CmtReturn</class>
+     <class>com.nrg.lemon.shared.Cmtstock</class>
+     <class>com.nrg.lemon.shared.OpeningStock</class>
+     <class>com.nrg.lemon.shared.Customer</class>
+     <class>com.nrg.lemon.shared.Printerready</class>
+     <class>com.nrg.lemon.shared.Cmtready</class>
+     <class>com.nrg.lemon.shared.PrinterReturn</class>
+     <class>com.nrg.lemon.shared.CmtStockin</class>
+     <class>com.nrg.lemon.shared.Newtable</class>
+     <class>com.nrg.lemon.shared.TableDetail</class>
+  <exclude-unlisted-classes>true</exclude-unlisted-classes>
+ </persistence-unit>
+</persistence>

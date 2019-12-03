@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="Supply Report" id="fabricpanel">
+		<br></br><center>
+				<p:selectOneMenu id="divisionid" styleClass="pselectonmenu" value="#{supplyMB.supplyDataBean.division}" valueChangeListener="#{supplyMB.divisionValueChnage}">
+      				 <f:selectItem itemLabel="select division" noSelectionOption="true" itemValue="select"></f:selectItem>
+      				 <f:selectItem itemLabel="fabric" itemValue="fabric"></f:selectItem>
+      				 <f:selectItem itemLabel="chemistry" itemValue="chemistry"></f:selectItem>
+      				 <f:selectItem itemLabel="hangtag" itemValue="hangtag"></f:selectItem>
+      				 <f:selectItem itemLabel="label" itemValue="label"></f:selectItem>
+      				 <f:selectItem itemLabel="accessoris" itemValue="accessoris"></f:selectItem>
+      				 <f:selectItem itemLabel="plastic" itemValue="plastic"></f:selectItem>
+      				 <p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+     			</p:selectOneMenu></center>
+     			<br></br>
+		<br></br>
+			<p:dataTable 
+				widgetVar="fabricTable" var="fabric" rendered="#{supplyMB.fabricDataTableFlag}"
+				 id="datatable" value="#{supplyMB.purchaseFabricList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria"
+					>
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('fabricTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.fabricPurchaseDate}" filterStyle="display:none"  filterBy="#{fabric.fabricPurchaseDate}">
+					<h:outputText value="#{fabric.fabricPurchaseDate}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.fabricInvoiceNumber}" filterBy="#{fabric.fabricInvoiceNumber}">
+					<h:outputText value="#{fabric.fabricInvoiceNumber}"></h:outputText>
+				</p:column>
+				<p:column headerText="supplier" filterStyle="display:none" sortBy="#{fabric.supplierName}" filterBy="#{fabric.supplierName}">
+					<h:outputText value="#{fabric.supplierName}"></h:outputText>
+				</p:column>
+				<p:column headerText="fabric" filterStyle="display:none" sortBy="#{fabric.fabricName}" filterBy="#{fabric.fabricName}">
+					<h:outputText value="#{fabric.fabricName}"></h:outputText>
+				</p:column>
+				<p:column headerText="weight" filterStyle="display:none" sortBy="#{fabric.weightTotal}" filterBy="#{fabric.weightTotal}">
+					<h:outputText value="#{fabric.weightTotal}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="roll" filterStyle="display:none" sortBy="#{fabric.quantityTotal}" filterBy="#{fabric.quantityTotal}">
+					<h:outputText value="#{fabric.quantityTotal}"></h:outputText>
+				</p:column>
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.totalAmount}" filterBy="#{fabric.totalAmount}">
+					<h:outputText value="#{fabric.totalAmount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{fabric.invoiceStatus}" filterStyle="display:none" filterBy="#{fabric.invoiceStatus}">
+					<h:outputText value="#{fabric.invoiceStatus}"></h:outputText>
+				</p:column>
+			</p:dataTable>
+			
+			<p:dataTable 
+				widgetVar="supplyTable" var="supply" rendered="#{supplyMB.supplyDataTableFlag}"
+				 id="supplydatatable" value="#{supplyMB.supplierList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('supplyTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column headerText="no" filterBy="#{supply.serialNo}" filterStyle="display:none" sortBy="#{supply.serialNo}">
+					<h:outputText value="#{supply.serialNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="date" width="10%" filterBy="#{supply.todayDate}" sortBy="#{supply.todayDate}" filterStyle="display:none">
+					<h:outputText value="#{supply.todayDate}">
+					<f:convertDateTime pattern="dd-MMM-YYYY"></f:convertDateTime></h:outputText>
+				</p:column>
+				<p:column headerText="invoice" width="13%" filterBy="#{supply.fabricInvoiceNumber}" sortBy="#{supply.fabricInvoiceNumber}" filterStyle="display:none">
+					<h:outputText value="#{supply.fabricInvoiceNumber}"></h:outputText>
+				</p:column>
+				<p:column headerText="supplier" filterBy="#{supply.supplierName}" sortBy="#{supply.supplierName}" filterStyle="display:none"> 
+					<h:outputText value="#{supply.supplierName}"></h:outputText>
+				</p:column>
+				<p:column headerText="purchase" filterBy="#{supply.totalPrice}" sortBy="#{supply.totalPrice}" filterStyle="display:none">
+					<h:outputText value="#{supply.totalPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="user" filterBy="#{supply.vendorName}" sortBy="#{supply.vendorName}" filterStyle="display:none">
+					<h:outputText value="#{supply.vendorName}"></h:outputText>
+				</p:column>
+				<p:column headerText="sales" filterBy="#{supply.totalAmount}" sortBy="#{supply.totalAmount}" filterStyle="display:none">
+					<h:outputText value="#{supply.totalAmount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{supply.invoiceStatus}">
+					<h:outputLabel value="#{supply.invoiceStatus}"></h:outputLabel>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+</ui:composition>

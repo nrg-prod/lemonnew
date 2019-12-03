@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="Adjustment Stock" >
+		<br></br>
+				<br></br>
+			<table width="60%" align="center">
+			<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="Type" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<p:selectOneMenu value="#{stockMB.stockDataBean.type}" id="type" style="width:174px;" 
+					valueChangeListener="#{stockMB.typeChange}" styleClass="pselectonmenu">
+				<f:selectItem itemLabel="Select Type" noSelectionOption="true"></f:selectItem>
+				<f:selectItem itemLabel="Raw Material" itemValue="raw"></f:selectItem>
+				<f:selectItem itemLabel="Ready Stock" itemValue="ready"></f:selectItem>
+				<p:ajax update=":center_content" process="@this" immediate="true"></p:ajax>
+				</p:selectOneMenu><br/>
+				<h:message for="type" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="Category" styleClass="labelTxt"  rendered="#{stockMB.stockDataBean.type=='raw'}"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"  rendered="#{stockMB.stockDataBean.type=='raw'}"></h:outputLabel></td>
+				<td width="35%">
+				<p:selectOneMenu id="catgry" styleClass="pselectonmenu" value="#{stockMB.stockDataBean.category}" style="width:174px;"  
+							valueChangeListener="#{stockMB.categoryChange}"	rendered="#{stockMB.stockDataBean.type=='raw'}">
+      				 <f:selectItem itemLabel="select division" noSelectionOption="true" itemValue="select"></f:selectItem>
+      				 <f:selectItem itemLabel="chemistry" itemValue="CHEMISTRY"></f:selectItem>
+      				 <f:selectItem itemLabel="hangtag" itemValue="HANGTAG"></f:selectItem>
+      				 <f:selectItem itemLabel="label" itemValue="LABEL"></f:selectItem>
+      				 <f:selectItem itemLabel="accessoris" itemValue="ACCESSORIS"></f:selectItem>
+      				 <f:selectItem itemLabel="plastic" itemValue="PLASTIC"></f:selectItem>
+      				 <p:ajax update="@form" process="@this" immediate="true" event="valueChange"></p:ajax>
+     			</p:selectOneMenu><br/>
+				<h:message for="catgry" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="Item NAme" styleClass="labelTxt" rendered="#{stockMB.stockDataBean.type=='raw'}"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":" styleClass="labelTxt" rendered="#{stockMB.stockDataBean.type=='raw'}"></h:outputLabel>
+				</td>
+				<td width="35%">
+				<p:selectOneMenu value="#{stockMB.stockDataBean.itemName}" id="item" style="width:174px;" 
+					rendered="#{stockMB.stockDataBean.type=='raw'}" styleClass="pselectonmenu">
+					<f:selectItem itemLabel="Select ItemNAme" noSelectionOption="true"></f:selectItem>
+					<f:selectItems value="#{stockMB.stockDataBean.seris}"></f:selectItems>
+					<p:ajax update=":center_content" process="@this" immediate="true"></p:ajax>
+				</p:selectOneMenu><br/>
+				<h:message for="item" style="color:red;font-size:10px"></h:message>
+				
+				</td>
+				</tr>
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="Model" styleClass="labelTxt" rendered="#{stockMB.stockDataBean.type=='ready'}"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":" styleClass="labelTxt" rendered="#{stockMB.stockDataBean.type=='ready'}"></h:outputLabel>
+				</td>
+				<td width="35%">
+				
+				<p:selectOneMenu value="#{stockMB.stockDataBean.modelNo}" id="model" style="width:174px;" 
+					rendered="#{stockMB.stockDataBean.type=='ready'}" styleClass="pselectonmenu">
+					<f:selectItem itemLabel="Select Model" noSelectionOption="true"></f:selectItem>
+					<f:selectItems value="#{stockMB.stockDataBean.cmtProducts}"></f:selectItems>
+					<p:ajax update=":center_content" process="@this" immediate="true"></p:ajax>
+				</p:selectOneMenu><br/>
+				<h:message for="model" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=""></h:outputLabel></td>
+				<td width="35%">
+				<p:commandButton value="Search" action="#{stockMB.stockEdit}" update=":center_content" process="@this"></p:commandButton>
+				</td>
+				</tr>
+				</table>
+				<br/>
+				<center>
+				<h:message for="msgs" style="color:red;font-size:10px"></h:message></center><br/>
+			<p:dataTable 
+				widgetVar="stockTable" var="stk"
+				 id="msgs" value="#{stockMB.warelists}" rendered="#{stockMB.stockDataBean.flag}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('stockTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column width="12%" headerText="no" filterBy="#{stk.serialNo}" filterStyle="display:none" sortBy="#{stk.serialNo}">
+					<h:outputText value="#{stk.serialNo}"></h:outputText>
+					<h:outputText value="#{stk.mnaualStockID}" style="display:none;"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="Warehouse" width="40%" filterBy="#{stk.warehouseName}" sortBy="#{stk.warehouseName}" filterStyle="display:none">
+					<h:outputText value="#{stk.warehouseName}"></h:outputText>
+				</p:column>
+				<p:column headerText="Model" width="30%" filterBy="#{stk.modelNo}" rendered="#{stockMB.stockDataBean.type=='ready'}"
+					 sortBy="#{stk.modelNo}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.modelNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Seri" width="30%" filterBy="#{stk.seri}" sortBy="#{stk.seri}" rendered="#{stockMB.stockDataBean.type=='ready'}"
+					 filterStyle="display:none"> 
+					<h:outputText value="#{stk.seri}"></h:outputText>
+				</p:column>
+				<p:column headerText="Motive" width="30%" filterBy="#{stk.motive}" sortBy="#{stk.motive}" rendered="#{stockMB.stockDataBean.type=='ready'}"
+					 filterStyle="display:none"> 
+					<p:inputText value="#{stk.motive}" style="width:80%;">
+					<p:ajax update=":center_content" process="@this"></p:ajax>
+					</p:inputText>
+				</p:column>
+				<p:column headerText="Item Name" width="30%" filterBy="#{stk.itemName}" rendered="#{stockMB.stockDataBean.type=='raw'}"
+					 sortBy="#{stk.itemName}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.itemName}"></h:outputText>
+				</p:column>
+				<p:column headerText="Stock In" width="30%" filterBy="#{stk.quantity}" sortBy="#{stk.quantity}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.quantity}"></h:outputText>
+				</p:column>
+				<p:column headerText="Price" width="30%" filterBy="#{stk.sellingPrice}" sortBy="#{stk.sellingPrice}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.sellingPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity" width="30%"  filterStyle="display:none"> 
+					<p:inputText value="#{stk.quantity1}" style="width:80%;" valueChangeListener="#{stockMB.quantityEditChange}">
+					<f:attribute value="#{stk.serialNo}" name="serial"></f:attribute>
+					<p:ajax event="valueChange" update=":center_content" process="@this"></p:ajax>
+					</p:inputText>
+				</p:column>
+			</p:dataTable>
+			<br></br><table width="100%"><tr>
+			<td>
+			<center>
+			<p:commandButton value="Submit" icon="fa fa-database" update="@form" 
+				rendered="#{stockMB.stockDataBean.flag1}" process="@this" action="#{stockMB.updateStock}"></p:commandButton>
+				</center></td></tr></table>
+			<p:dialog widgetVar="editStkDialog" 
+			header="Confirmation Box" appendTo="@(body)"
+			closable="false" modal="true"
+			width="25%" height="40%" resizable="false"
+			dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText
+						value="Successfully Edited"></h:outputText>
+					<br></br>	<br></br>
+					<p:commandButton immediate="true"
+						action="#{stockMB.stkAdjustmentPage}" process="@this" value="OK" update="center_content"
+						oncomplete="PF('editStkDialog').hide()"></p:commandButton>
+				</center>
+
+			</h:form>
+			</p:dialog>
+		</p:panel>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:panel header="attendance" style="min-height:100%" id="attendancepanel">
+	<p:tabView style="border-width: 1px">
+	<p:tab title="take attendance">
+	<h:panelGrid columns="3" cellpadding="3" cellspacing="4">
+						<h:outputLabel value="branch " for="branch" styleClass="labelTxt"></h:outputLabel>
+						<h:outputLabel value=": " styleClass="labelTxt"></h:outputLabel>
+						<p:selectOneMenu id="branch" value="#{employeeMB.employeeDataBean.branchName}">
+							<f:selectItem itemLabel="please select one" noSelectionOption="true"></f:selectItem>
+							<f:selectItem itemLabel="all" itemValue="ALL"></f:selectItem>
+							<f:selectItems value="#{employeeMB.branchlist}" />
+							<p:ajax event="valueChange" update=":center_content" process="@this" listener="#{employeeMB.attendanceSearch}" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()"></p:ajax>
+						</p:selectOneMenu>
+						<h:outputLabel /><h:outputLabel />
+						<h:message for="branch" style="color:red;font-size:10px"></h:message>
+						<h:outputLabel value="date " for="date" styleClass="labelTxt"></h:outputLabel>
+						<h:outputLabel value=": " styleClass="labelTxt"></h:outputLabel>
+						<p:calendar id="date" value="#{employeeMB.employeeDataBean.attendanceDate}" maxdate="#{currentDate}"  pattern="dd-MM-yyyy"></p:calendar>
+						<h:outputLabel /><h:outputLabel />
+						<h:message for="date" style="color:red;font-size:10px"></h:message>
+					</h:panelGrid>
+					<br></br>
+				<p:dataTable rows="5" paginator="true" paginatorPosition="bottom" value="#{employeeMB.attendanceList}"
+					pageLinks="5" paginatorAlwaysVisible="false" var="attendance" id="attendancedata">
+					<p:column headerText="branch" filterBy="#{attendance.employeeBranch}" sortBy="#{attendance.employeeBranch}"  filterStyle="display:none">
+						<h:outputText value="#{attendance.employeeBranch}"></h:outputText>
+					</p:column>
+					<p:column headerText="name" filterBy="#{attendance.employeeName}" sortBy="#{attendance.employeeName}" filterStyle="display:none">
+						<h:outputText value="#{attendance.employeeName}"></h:outputText>
+					</p:column>
+					<p:column headerText="attend" filterBy="#{attendance.attend}" sortBy="#{attendance.attend}" filterStyle="display:none">
+						<p:inputText value="#{attendance.attend}" style="width:50px;text-align:center" >
+						<p:ajax update="@all" process="@this"></p:ajax>
+						</p:inputText>
+					</p:column>
+					<p:column headerText="overtime" filterBy="#{attendance.overtime}" sortBy="#{attendance.overtime}" filterStyle="display:none">
+						<p:inputText value="#{attendance.overtime}" style="width:50px;text-align:center">
+						<p:ajax update="@all" process="@this"></p:ajax>
+						</p:inputText>
+					</p:column>
+					<p:column headerText="late" filterBy="#{attendance.late}" sortBy="#{attendance.late}"  filterStyle="display:none">
+						<p:inputText value="#{attendance.late}" style="width:50px;text-align:center">
+						<p:ajax update="@all" process="@this"></p:ajax>
+						</p:inputText>
+					</p:column>
+					<!-- <p:column headerText="forfeit" filterBy="#{attendance.forfeit}" sortBy="#{attendance.forfeit}" filterStyle="display:none">
+						<p:inputText value="#{attendance.forfeit}" style="width:50px;text-align:center">
+						<p:ajax update="@all" process="@this"></p:ajax>
+						</p:inputText>
+					</p:column> -->
+					<p:column headerText="reward" filterBy="#{attendance.reward}" sortBy="#{attendance.reward}" filterStyle="display:none">
+						<p:inputNumber value="#{attendance.reward}" style="width:50px;text-align:center">
+						<p:ajax update="@all" process="@this"></p:ajax>
+						</p:inputNumber>
+					</p:column>
+				</p:dataTable>	
+				<br></br>
+				<center>
+				<p:commandButton icon="fa fa-check" value="save" action="#{employeeMB.saveAttendance}" update="@form" process="@this" onstart="PF('blockUI').show();" onsuccess="PF('blockUI').hide();"></p:commandButton>
+				</center>
+	</p:tab>
+	<p:tab title="attendance view">
+	
+	<h:panelGrid columns="3" cellpadding="3" cellspacing="4">
+		<h:outputLabel value="date " for="date1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=": " styleClass="labelTxt"></h:outputLabel>
+		<p:calendar id="date1" value="#{employeeMB.employeeDataBean.attendanceDate}" maxdate="#{currentDate}"  pattern="dd-MM-yyyy">
+		<p:ajax event="dateSelect" update="attendanceview" process="@this" listener="#{employeeMB.attendanceView}"></p:ajax>
+		</p:calendar>
+		<h:outputLabel /><h:outputLabel />
+		<h:message for="date1" style="color:red;font-size:10px"></h:message>
+		<h:outputLabel value="branch " for="branch1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=": " styleClass="labelTxt"></h:outputLabel>
+		<p:selectOneMenu id="branch1" value="#{employeeMB.employeeDataBean.branchName}">
+			<f:selectItem itemLabel="please select one" noSelectionOption="true"></f:selectItem>
+			<f:selectItem itemLabel="all" itemValue="ALL"></f:selectItem>
+			<f:selectItems value="#{employeeMB.branchlist}" />
+		<p:ajax event="valueChange" update="attendanceview" process="@this" listener="#{employeeMB.attendanceView}" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()"></p:ajax>
+		</p:selectOneMenu>
+		<h:outputLabel /><h:outputLabel />
+		<h:message for="branch1" style="color:red;font-size:10px"></h:message>
+	</h:panelGrid>
+	<br></br>
+	<p:dataTable rows="10" paginator="true" paginatorPosition="bottom" editable="true" value="#{employeeMB.attendanceInfolist}"
+	pageLinks="5" paginatorAlwaysVisible="false" var="attendance" id="attendanceview" >
+			<p:ajax event="rowEdit" listener="#{employeeMB.attendanceEdit}" update="attendanceview" onstart="PF('blockUI').show();" onsuccess="PF('blockUI').hide();"/>
+			<p:ajax event="rowEditCancel" />
+					<p:column headerText="branch" filterBy="#{attendance.employeeBranch}" sortBy="#{attendance.employeeBranch}" filterStyle="display:none">
+						<p:inputText value="#{attendance.hiddenValue}" type="hidden"/>
+						<h:outputText value="#{attendance.employeeBranch}"></h:outputText>
+					</p:column>
+					<p:column headerText="name" filterBy="#{attendance.employeeName}" sortBy="#{attendance.employeeName}" filterStyle="display:none">
+						<h:outputText value="#{attendance.employeeName}"></h:outputText>
+					</p:column>
+					<p:column headerText="attend" filterBy="#{attendance.attend}" sortBy="#{attendance.attend}" filterStyle="display:none">
+					<p:cellEditor>
+					<f:facet name="output">
+					<h:outputText value="#{attendance.attend}"></h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{attendance.attend}" style="width:50px;text-align:center" ></p:inputText>
+					</f:facet>	
+					</p:cellEditor>
+					</p:column>
+					<p:column headerText="overtime" filterBy="#{attendance.overtime}" sortBy="#{attendance.overtime}" filterStyle="display:none">
+					<p:cellEditor>
+					<f:facet name="output">
+					<h:outputText value="#{attendance.overtime}"></h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{attendance.overtime}" style="width:50px;text-align:center"></p:inputText>
+					</f:facet>
+					</p:cellEditor>	
+					</p:column>
+					<p:column headerText="late" filterBy="#{attendance.late}" sortBy="#{attendance.late}" filterStyle="display:none">
+					<p:cellEditor>
+					<f:facet name="output">
+					<h:outputText value="#{attendance.late}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{attendance.late}" style="width:50px;text-align:center"></p:inputText>
+					</f:facet>
+					</p:cellEditor>	
+					</p:column>
+					<!-- <p:column headerText="forfeit" filterBy="#{attendance.forfeit}" sortBy="#{attendance.forfeit}" filterStyle="display:none">
+					<p:cellEditor>
+					<f:facet name="output">
+					<h:outputText value="#{attendance.forfeit}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{attendance.forfeit}" style="width:50px;text-align:center"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></p:inputText>
+					</f:facet>
+					</p:cellEditor>	
+					</p:column> -->
+					<p:column headerText="reward" filterBy="#{attendance.reward}" sortBy="#{attendance.reward}" filterStyle="display:none">
+					<p:cellEditor>
+					<f:facet name="output">
+					<h:outputText value="#{attendance.reward}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{attendance.reward}" style="width:50px;text-align:center">	</p:inputText>
+					</f:facet>
+					</p:cellEditor>	
+					</p:column>
+					<p:column headerText="edit" >
+						<p:rowEditor id="edit"></p:rowEditor>
+						<p:tooltip for="edit" value="EDIT" />
+					</p:column>
+				</p:dataTable>	
+	</p:tab>
+	</p:tabView>
+	</p:panel>
+	<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag">
+				<p align="center" style="font-size: 16px">SUCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{employeeMB.attendancePage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="edit" header="CONFORMATION BOX" position="center"
+			modal="true" resizable="false" appendTo="@(body)" width="30%"
+			height="100px">
+			<h:form>
+				<p align="center" style="font-size: 16px">EDITED SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('edit').hide()" ></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="delete" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag1">
+				<p align="center" style="font-size: 16px">DELETE SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('delete').hide()" action="#{employeeMB.attendancePage}"  update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+	<p:blockUI widgetVar="blockUI" block="attendancepanel" >
+		<h:panelGrid id="blockUIContent" columns="2"
+				style="table-layout:auto;">
+				<p:graphicImage value="../../images/spinners.gif" style="width:60px"/>
+				<h:outputText value="Please wait, data is being processed..."
+					style="white-space: nowrap;font-size:14px" />
+			</h:panelGrid>
+		</p:blockUI>
+	</ui:define>
+	</ui:composition>

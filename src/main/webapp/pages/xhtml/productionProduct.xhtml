@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:panel header="product" style="min-height:100%" id="productpanel">
+	<div class="ui-g">
+    <div class="ui-g-4">
+     <!-- <h:panelGrid columns="3" cellpadding="2" cellspacing="3">
+    <h:outputText value="show" styleClass="labelTxt"></h:outputText>
+    <h:outputText value=":" styleClass="labelTxt"></h:outputText>
+    <p:selectOneMenu>
+    <f:selectItem itemLabel="please select one" noSelectionOption="true"></f:selectItem>
+    <f:selectItem itemLabel="all" itemValue="ALL"></f:selectItem>
+    <f:selectItems value=""></f:selectItems>
+    </p:selectOneMenu>
+    </h:panelGrid> -->
+    </div>
+    <div class="ui-g-4">
+    </div>
+    <div class="ui-g-4">
+    <center>
+    <p:commandButton value="history" action="#{productionMB.productHistory}" update=":center_content:producthistory" process="@this" oncomplete="PF('prohistory').show()"></p:commandButton></center>
+    </div>
+    </div>
+   
+    <p:dataTable rows="10" paginator="true" paginatorPosition="bottom" pageLinks="5" id="productdata1" value="#{productionMB.productList}"
+	   paginatorAlwaysVisible="false" widgetVar="productinfo"  var="product" resizableColumns="true">
+	   <f:facet name="header">
+			<p:outputPanel style="text-align:right">
+				<p:inputText id="globalFilter" onkeyup="PF('productinfo').filter()"
+					style="width:150px" placeholder="Enter keyword" />
+			</p:outputPanel>
+    	</f:facet>
+    	<p:column headerText="cutter" filterBy="#{product.cutter}" filterStyle="display:none">
+    	<h:outputText value="#{product.cutter}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="printer" filterBy="#{product.printer}" filterStyle="display:none">
+    	<h:outputText value="#{product.printer}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="cmt" filterBy="#{product.cmt}" filterStyle="display:none">
+    	<h:outputText value="#{product.cmt}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="model"  filterBy="#{product.modelName}" filterStyle="display:none">
+    	<h:outputText value="#{product.modelName}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="seri " filterBy="#{product.seri}" filterStyle="display:none">
+    	<h:outputText value="#{product.seri}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="qty " filterBy="#{product.quantity}" filterStyle="display:none">
+    	<h:outputText value="#{product.quantity}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="status"  filterBy="#{product.invoiceStatus}" filterStyle="display:none">
+    	<h:outputText value="#{product.invoiceStatus}" ></h:outputText>
+    	</p:column>
+	 </p:dataTable>
+	 <p:dialog modal="true" widgetVar="prohistory" width="65%" height="400px" header="product history" appendTo="@(body)">
+	  <p:outputPanel id="producthistory">
+	 <p:dataTable  widgetVar="historyinfo" id="historydata" rows="10" paginator="true" pageLinks="5"
+	 paginatorAlwaysVisible="false" var="history" paginatorPosition="bottom" value="#{productionMB.producthistoryList}">
+	 	<f:facet name="header">
+			<p:outputPanel style="text-align:right">
+				<p:inputText id="globalFilter" onkeyup="PF('historyinfo').filter()"
+					style="width:150px" placeholder="Enter keyword" />
+			</p:outputPanel>
+			</f:facet>
+    	<p:column headerText="cutter" filterBy="#{history.cutter}" sortBy="#{history.cutter}" filterStyle="display:none">
+    	<h:outputText value="#{history.cutter}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="printer" filterBy="#{history.printer}" sortBy="#{history.printer}" filterStyle="display:none">
+    	<h:outputText value="#{history.printer}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="cmt" filterBy="#{history.cmt}" sortBy="#{history.cmt}" filterStyle="display:none">
+    	<h:outputText value="#{history.cmt}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="model" filterBy="#{history.modelName}" sortBy="#{history.modelName}" filterStyle="display:none">
+    	<h:outputText value="#{history.modelName}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="seri" filterBy="#{history.seri}" sortBy="#{history.seri}" filterStyle="display:none">
+    	<h:outputText value="#{history.seri}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="qty " filterBy="#{history.quantity}" sortBy="#{history.quantity}" filterStyle="display:none">
+    	<h:outputText value="#{history.quantity}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="status" filterBy="#{history.invoiceStatus}" sortBy="#{history.invoiceStatus}" filterStyle="display:none">
+    	<h:outputText value="#{history.invoiceStatus}" ></h:outputText>
+    	</p:column>
+	 </p:dataTable>
+	 </p:outputPanel>
+	 </p:dialog>
+	 
+	 <p:dialog widgetVar="purchaseview" header="cutter order view"  position="center" modal="true" 
+		 resizable="false" appendTo="@(body)"  width="50%" height="350px">
+		 <p:outputPanel id="orderdata">
+		 <center>
+		 <p:panelGrid columns="4" style="width:600px;height:60px">
+		 <h:outputLabel value="name" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.cmt}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="model" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.modelName}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="total quantity" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.totalQuantity}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="total value" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.totalValue}" styleClass="labelTxt">
+		 <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+		 </h:outputLabel>
+		 </p:panelGrid>
+		 <br></br>
+		 <p:dataTable var="viewdata" rows="5" paginator="true" paginatorPosition="bottom" pageLinks="5" id="cutterdata1" 
+	   paginatorAlwaysVisible="false" widgetVar="cutterinfo" value="#{productionMB.productionDataBean.orderQuantitylist}" style="width:600px">
+	   <p:column headerText="no" width="40">
+	   <h:outputText value="#{viewdata.serialNo}"></h:outputText>
+	   </p:column>
+	   <p:column headerText="seri">
+	   <h:outputText value="#{viewdata.seri}"></h:outputText>
+	   </p:column>
+	   <p:column headerText="motive">
+	    <h:outputText value="#{viewdata.motive}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="quantity">
+	    <h:outputText value="#{viewdata.quantity}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="value">
+	    <h:outputText value="#{viewdata.value}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+	    </p:column>
+	   </p:dataTable>
+		 </center>
+		 </p:outputPanel>
+		</p:dialog>	
+	 </p:panel>
+	 </ui:define>
+	 </ui:composition>

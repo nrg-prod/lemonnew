@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:growl id="msg"></p:growl>
+		<p:panel header="Penalty" style="min-height:100%"  id="warepanel" >
+			<p:commandButton value="add Penalty" action="#{payrollMB.addPenalty}"  oncomplete="PF('penaltyreg').show()" update=":center_content:dialogpanel"></p:commandButton>
+			<br></br>
+			<center><h:inputHidden id="errmsgs"></h:inputHidden>
+			<h:message for="errmsgs" style="color:red;font-size:10px"></h:message></center>
+			<br/>
+			<p:dataTable rows="5" paginator="true" paginatorPosition="bottom" value="#{payrollMB.payrollDataBean.payrollList}"
+					pageLinks="5" paginatorAlwaysVisible="false"
+					widgetVar="peanltyInfo"  var="pelty"  editable="true">
+					<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<p:inputText id="globalFilter" onkeyup="PF('peanltyInfo').filter()" 
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+    					</f:facet>
+					<p:column headerText="No" width="8%" filterBy="#{pelty.serialNo}" sortBy="#{pelty.serialNo}" filterStyle="display:none">
+						<h:outputText value="#{pelty.penaltID}" style="display:none;"></h:outputText>
+						<h:outputText value="#{pelty.serialNo}"></h:outputText>
+							
+					</p:column>
+					
+					<p:column width="12%" headerText="Date" filterBy="#{pelty.date}" sortBy="#{pelty.date}" filterStyle="display:none">
+						<h:outputText value="#{pelty.date}"></h:outputText>
+					</p:column>
+				<p:column width="12%"  headerText="Type" filterBy="#{pelty.type}" sortBy="#{pelty.type}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.type}"></h:outputText>
+				
+					</p:column>
+					<p:column width="12%"  headerText="Staff" filterBy="#{pelty.staffName}" sortBy="#{pelty.staffName}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.staffName}"></h:outputText>
+				
+					</p:column>
+					<p:column width="12%"  headerText="Amount" filterBy="#{pelty.amount}" sortBy="#{pelty.amount}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.amount}" rendered="#{pelty.aflag}">
+				<f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				<p:inputText value="#{pelty.amount}" rendered="#{pelty.aflag1}" style="width:100%;">
+				<p:ajax update="@form" process="@this"></p:ajax>
+				</p:inputText>
+					</p:column>
+					<p:column width="20%"  headerText="Reason" filterBy="#{pelty.reason}" sortBy="#{pelty.reason}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.reason}" rendered="#{pelty.rflag}"></h:outputText>
+				<p:inputTextarea value="#{pelty.reason}" rendered="#{pelty.rflag1}" style="width:100%;">
+				<p:ajax update="@form" process="@this"></p:ajax>
+				</p:inputTextarea>
+					</p:column>
+					<p:column headerText="Edit" width="60" exportable="false" >
+					<center>
+					<p:commandButton icon="fa fa-edit" rendered="#{pelty.rflag}" title="Edit" action="#{payrollMB.penaltyEdit}" update=":center_content" process="@this">
+					<f:setPropertyActionListener value="#{pelty.penaltID}" target="#{payrollMB.payrollDataBean.penaltID}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{pelty.serialNo}" target="#{payrollMB.payrollDataBean.serialNo}"></f:setPropertyActionListener>
+					</p:commandButton>
+					<p:commandButton icon="fa fa-save" rendered="#{pelty.rflag1}" title="Save" action="#{payrollMB.penaltyUpdate}" update=":center_content" process="@this">
+					<f:setPropertyActionListener value="#{pelty.penaltID}" target="#{payrollMB.payrollDataBean.penaltID}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{pelty.reason}" target="#{payrollMB.payrollDataBean.reason}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{pelty.amount}" target="#{payrollMB.payrollDataBean.amount}"></f:setPropertyActionListener>
+					</p:commandButton>
+						</center>
+					</p:column>
+					<p:column headerText="delete" width="60" exportable="false" >
+						<center>
+							<p:commandButton icon="fa fa-remove" title="DELETE" action="#{payrollMB.penaltyDelete}">
+							<f:setPropertyActionListener value="#{pelty.penaltID}" target="#{payrollMB.payrollDataBean.penaltID}"></f:setPropertyActionListener>
+								<p:confirm header="delete Penalty" message="ARE YOU SURE?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+							<p:confirmDialog global="true" width="15%">
+								<center>
+									<p:commandButton value="YES" type="button"
+										styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+									<p:commandButton value="NO" type="button"
+										styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+								</center>
+							</p:confirmDialog>
+						</center>
+					</p:column>
+				</p:dataTable>
+		</p:panel>
+
+		<!-- dialogbox -->
+	<p:dialog widgetVar="penaltyreg" header="Penalty Form " width="40%" height="50%" position="center" modal="true"
+			resizable="false" appendTo="@(body)">
+	<p:outputPanel id="dialogpanel">
+	<h:form id="wareform">
+	<center><h:inputHidden id="errmsg"></h:inputHidden>
+			<h:message for="errmsg" style="color:red;font-size:10px"></h:message>
+			<br/>
+		<p:panelGrid columns="3" style="height:100px" styleClass="ui-panelgrid-blank" >
+				<h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:inputText id="date" value="#{payrollMB.payrollDataBean.date}" readonly="true">	
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+						<p:ajax update="@form" process="@this" immediate="true"></p:ajax>
+				</p:inputText><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:outputLabel value="Reason" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:inputTextarea id="reason" value="#{payrollMB.payrollDataBean.reason}">	
+						<p:ajax update="@form" process="@this" immediate="true"></p:ajax>
+				</p:inputTextarea><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:message for="reason" style="color:red;font-size:10px"></h:message>
+				<h:outputLabel value="Amount" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:inputNumber id="amount" value="#{payrollMB.payrollDataBean.amount}">	
+				<p:ajax update="@form" process="@this" immediate="true"></p:ajax>
+				</p:inputNumber><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:message for="amount" style="color:red;font-size:10px"></h:message>
+				<h:outputLabel value="Category" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:selectOneMenu styleClass="pselectonmenu" style="width:174px;" value="#{payrollMB.payrollDataBean.type}" 
+					id="type" valueChangeListener="#{payrollMB.staffChange}">
+      				 <f:selectItem itemLabel="select category" noSelectionOption="true" itemValue="select"></f:selectItem>
+      				  <f:selectItem itemLabel="Staff" itemValue="staff"></f:selectItem>
+      				  <f:selectItem itemLabel="Cutter" itemValue="cutter"></f:selectItem>
+      				  <f:selectItem itemLabel="Printer" itemValue="printer"></f:selectItem>
+      				  <f:selectItem itemLabel="Cmt" itemValue="cmt"></f:selectItem>
+      				 <p:ajax update="@form" process="@this" immediate="true" ></p:ajax>
+     			</p:selectOneMenu><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel><h:message for="type" style="color:red;font-size:10px"></h:message>
+				<h:outputLabel value="Name" styleClass="labelTxt" rendered="#{payrollMB.payrollDataBean.flag}"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold" rendered="#{payrollMB.payrollDataBean.flag}"></h:outputLabel>
+				<p:selectOneMenu styleClass="pselectonmenu" style="width:174px;" value="#{payrollMB.payrollDataBean.staffName}" 
+					id="staff" rendered="#{payrollMB.payrollDataBean.flag}">
+      				 <f:selectItem itemLabel="select Name" noSelectionOption="true"></f:selectItem>      				  
+      				  <f:selectItems value="#{payrollMB.payrollDataBean.staffNames}"></f:selectItems>
+      				 <p:ajax update="@form" process="@this" immediate="true" ></p:ajax>
+     			</p:selectOneMenu><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+     			<h:message for="staff" style="color:red;font-size:10px"></h:message>
+				</p:panelGrid></center><br/>
+			<table width="100%" align="center"><tr>
+			<td>
+			<center>			
+			<p:commandButton value="save" icon="fa fa-check" update="@form" process="@this" action="#{payrollMB.penaltySave}"></p:commandButton>
+			<p:commandButton value="Close" update="@form" process="@this" onclick="PF('penaltyreg').hide()"></p:commandButton>
+		</center>	
+			</td></tr></table>
+			</h:form>
+			</p:outputPanel>
+			</p:dialog>
+
+<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag">
+				<p align="center" style="font-size: 16px">SUCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{payrollMB.panaltyPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="edit" header="CONFORMATION BOX" position="center"
+			modal="true" resizable="false" appendTo="@(body)" width="30%"
+			height="100px">
+			<h:form>
+				<p align="center" style="font-size: 16px">EDITED SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('edit').hide()" action="#{payrollMB.panaltyPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="delete" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag1">
+				<p align="center" style="font-size: 16px">DELETED SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('delete').hide()" action="#{payrollMB.panaltyPage}"  update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

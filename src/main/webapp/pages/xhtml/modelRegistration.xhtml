@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="model" id="modelpanel">
+		<br></br>
+				<table align="left">
+					<tr>
+						<td><p:commandButton  oncomplete="PF('addmodelDialog').show();"
+							value="add model" action="#{productionMB.addModel}" update=":center_content:addmodelpanelid"
+								process="@this"></p:commandButton></td>
+								<td width="30%"></td><td>
+								<h:outputLabel value="category" styleClass="labelTxt"></h:outputLabel>&nbsp;&nbsp;<h:outputLabel value=":"></h:outputLabel>&nbsp;&nbsp;</td>
+						<td><p:selectOneMenu id="categoryid" styleClass="pselectonmenu" value="#{productionMB.productionDataBean.categoryName}" valueChangeListener="#{productionMB.categoryChange}">
+      				 			<f:selectItem itemLabel="all" itemValue="all"></f:selectItem>
+      				 			<f:selectItems value="#{productionMB.categoryList}"></f:selectItems>
+      							<p:ajax event="valueChange" update="@form" process="@this" immediate="true"></p:ajax>
+     						</p:selectOneMenu>
+						</td>
+					</tr>
+				</table>
+				<br></br>
+			<br></br><br></br>
+		
+			<p:dataTable 
+				widgetVar="modelTable" var="model" reflow="true"
+				 id="modeldatatable" value="#{productionMB.productionList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('modelTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+
+				<p:column headerText="category" filterBy="#{model.categoryName}" sortBy="#{model.categoryName}" filterStyle="display:none">
+					<h:outputText value="#{model.categoryName}"></h:outputText>
+				</p:column>
+				<p:column headerText="model" filterBy="#{model.modelName}" sortBy="#{model.modelName}" filterStyle="display:none">
+					<h:outputText value="#{model.modelName}"></h:outputText>
+				</p:column>
+				<p:column headerText="fab price" filterBy="#{model.categoryFabprice}" sortBy="#{model.categoryFabprice}" filterStyle="display:none">
+					<h:outputText value="#{model.categoryFabprice}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+					</h:outputText>
+				</p:column>
+				<!-- <p:column headerText="Seri">
+					<h:outputText value="#{model.modelSeri}"></h:outputText>
+				</p:column> --> 
+				<p:column headerText="pole" filterBy="#{model.modelPole}" sortBy="#{model.modelPole}" filterStyle="display:none">
+					<h:outputText value="#{model.modelPole}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="cutter" filterBy="#{model.modelCutter}" sortBy="#{model.modelCutter}" filterStyle="display:none">
+					<h:outputText value="#{model.modelCutter}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+				</p:column>
+				<p:column headerText="printer" filterBy="#{model.modelPrinter}" sortBy="#{model.modelPrinter}" filterStyle="display:none">
+					<h:outputText value="#{model.modelPrinter}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+				</p:column>
+				<p:column headerText="cmt" filterBy="#{model.modelCmt}" sortBy="#{model.modelCmt}" filterStyle="display:none">
+					<h:outputText value="#{model.modelCmt}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="etc" filterBy="#{model.modelEtc}" sortBy="#{model.modelEtc}" filterStyle="display:none">
+					<h:outputText value="#{model.modelEtc}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="capital" filterBy="#{model.modelCapital}" sortBy="#{model.modelCapital}" filterStyle="display:none">
+					<h:outputText value="#{model.modelCapital}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="sell price" filterBy="#{model.modelSellprice}" sortBy="#{model.modelSellprice}" filterStyle="display:none">
+					<h:outputText value="#{model.modelSellprice}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="profit dz">
+					<h:outputText value="#{model.profit}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="profit %">
+					<h:outputText value="#{model.profit_percentage}">
+					<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="edit" width="60">
+					<p:commandButton icon="fa fa-pencil" action="#{productionMB.editModel}" oncomplete="PF('editmodelDialog').show()" update=":center_content" process="@this">
+					<f:setPropertyActionListener value="#{model.modelName}" target="#{productionMB.productionDataBean.modelName}"></f:setPropertyActionListener>
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="delete" width="60">
+				   <p:commandButton icon="fa fa-trash" onclick="PF('deleteConfirmDlg').show()">
+				   <f:setPropertyActionListener value="#{model.modelName}" target="#{productionMB.productionDataBean.modelName}"></f:setPropertyActionListener>
+				   </p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<br></br>
+			<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="25%" height="100px">
+				<h:form id="supp">
+					<p align="center" style="font-size: 14px">SUCCESSFULLY SAVED</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('confirm').hide()"
+							update=":center_content" process="@this" action="#{productionMB.modelRegPage}"></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+			<p:dialog widgetVar="confirm1" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="25%" height="100px">
+				<h:form id="supp1">
+					<p align="center" style="font-size: 14px">SUCCESSFULLY UPDATED</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('confirm1').hide()"
+							update="center_content" process="@this" action="#{productionMB.modelRegPage}"></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+			<p:confirmDialog id="deleteConfirmDialog" closable="false"
+			message="Are You Sure you want to Delete the information"
+			header="Delete Model" global="true"
+			widgetVar="deleteConfirmDlg">
+			<center>
+				<p:commandButton id="confirmDelete" value="Yes"
+					oncomplete="PF('deleteConfirmDlg').hide();PF('modelDeleteDialog').show();"
+					immediate="true" process="@this" action="#{productionMB.deleteModel}" />
+				<p:commandButton id="declineDelete" value="No"
+					onclick="PF('deleteConfirmDlg').hide()" type="button" />
+			</center>
+		</p:confirmDialog>
+		<p:dialog header="Confirmation Box" appendTo="@(body)"
+			closable="false" widgetVar="modelDeleteDialog" modal="true"
+			width="25%" height="40%" resizable="false"
+			dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText
+						value="#{productionMB.productionDataBean.modelName} is Deleted Successfully"></h:outputText>
+					<br></br>	<br></br>
+					<p:commandButton immediate="true"
+						action="#{productionMB.modelRegPage}" process="@this" value="OK" update="center_content"
+						oncomplete="PF('modelDeleteDialog').hide()"></p:commandButton>
+				</center>
+
+			</h:form>
+		</p:dialog>
+			<p:dialog header="add model" widgetVar="addmodelDialog"
+				height="420px" width="25%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+			<p:outputPanel id="addmodelpanelid">
+			<h:form>
+			<table width="100%">
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="category" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%" height="30%">
+				<p:selectOneMenu id="category" styleClass="pselectonmenu" value="#{productionMB.productionDataBean.categoryName}">
+      				 <f:selectItem itemLabel="select category" noSelectionOption="true" ></f:selectItem>
+      				 <f:selectItems value="#{productionMB.categoryList}"></f:selectItems>
+      				 <p:ajax update="@all" process="@this" immediate="true"></p:ajax>
+     			</p:selectOneMenu>
+     			<h:message for="category" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="model" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputText id="modelid" value="#{productionMB.productionDataBean.modelName}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputText>
+				<h:message for="modelid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<!-- <tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="seri" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputText id="seriid" value="#{productionMB.productionDataBean.modelSeri}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputText>
+				<h:message for="seriid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>  -->
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="pole" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="poleid" value="#{productionMB.productionDataBean.modelPole}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="poleid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="cutter" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="cutterid" value="#{productionMB.productionDataBean.modelCutter}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="cutterid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="printer" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="printerid" value="#{productionMB.productionDataBean.modelPrinter}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="printerid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="cmt" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="cmtid" value="#{productionMB.productionDataBean.modelCmt}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="cmtid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="etc" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="etcid" value="#{productionMB.productionDataBean.modelEtc}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="etcid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="sell price" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="sellpriceid" value="#{productionMB.productionDataBean.modelSellprice}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="sellpriceid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr><td colspan="3" align="center"><br/>
+				<p:commandButton value="save" icon="fa fa-database" action="#{productionMB.saveModelReg}" update="@form" process="@this"></p:commandButton></td>
+				</tr>
+				</table>
+				</h:form>
+				</p:outputPanel>
+			</p:dialog>
+			<p:dialog header="edit model" widgetVar="editmodelDialog"
+				height="420px" width="25%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+			<p:outputPanel id="editmodelpanelid">
+			<h:form>
+			<table width="100%">
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="category" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%" height="30%">
+				<p:selectOneMenu id="ecategoryid" styleClass="pselectonmenu" value="#{productionMB.productionDataBean.categoryName}">
+      				 <f:selectItem itemLabel="select category" noSelectionOption="true" itemValue="select"></f:selectItem>
+      				 <f:selectItems value="#{productionMB.categoryList}"></f:selectItems>
+      				 <p:ajax update="@all" process="@this" immediate="true"></p:ajax>
+     			</p:selectOneMenu>
+     			<h:message for="ecategoryid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="model" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputText id="emodelid" value="#{productionMB.productionDataBean.modelName}" readonly="true">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputText>
+				<h:message for="emodelid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<!-- <tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="seri" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputText id="eseriid" value="#{productionMB.productionDataBean.modelSeri}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputText>
+				<h:message for="eseriid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr> -->
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="pole" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="epoleid" value="#{productionMB.productionDataBean.modelPole}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="epoleid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="cutter" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="ecutterid" value="#{productionMB.productionDataBean.modelCutter}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="ecutterid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="printer" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="eprinterid" value="#{productionMB.productionDataBean.modelPrinter}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="eprinterid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="cmt" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="ecmtid" value="#{productionMB.productionDataBean.modelCmt}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="ecmtid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="etc" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="eetcid" value="#{productionMB.productionDataBean.modelEtc}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="eetcid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="35%" height="35px">
+				<h:outputLabel value="sell price" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="60%">
+				<p:inputNumber id="esellpriceid" value="#{productionMB.productionDataBean.modelSellprice}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputNumber>
+				<h:message for="esellpriceid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr><td colspan="3" align="center"><br/>
+				<p:commandButton value="update" icon="fa fa-database" action="#{productionMB.updateModel}" update="@form" process="@this"></p:commandButton>
+				<p:commandButton value="cancel" onclick="PF('editmodelDialog').hide()"></p:commandButton></td>
+				</tr>
+				</table>
+				</h:form>
+				</p:outputPanel>
+			</p:dialog>
+		</p:panel>
+	</ui:define>
+</ui:composition>

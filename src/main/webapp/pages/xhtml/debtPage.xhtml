@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:panel header="debt" style="min-height:100%" id="attendancepanel">
+	<p:tabView style="border-width: 1px;min-height:100%">
+	<p:ajax event="tabChange" listener="#{financeMB.onTabChange}" update="@form"/>
+	<p:tab id="tab1" title="debt taken">
+	<table width="100%">
+	<tr>
+	<td width="10%"><h:outputLabel for="cate" value="category" styleClass="labelTxt"/></td>
+	<td width="2%" height="25px"><h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel></td>
+	<td> <p:selectOneRadio id="cate" value="#{financeMB.financeDataBean.debtCategory}" valueChangeListener="#{financeMB.categoryValueChange}">
+            <f:selectItem itemLabel="staff &nbsp;" itemValue="staff" />
+            <f:selectItem itemLabel="vendor" itemValue="subcon" />
+            <p:ajax update="@form" process="@this" event="valueChange" immediate="true"></p:ajax>
+        </p:selectOneRadio>
+        </td>
+    <td width="11%"><h:outputLabel value="staff name" styleClass="labelTxt" rendered="#{financeMB.staffFlag}"></h:outputLabel>
+    <h:outputLabel value="vendor name " styleClass="labelTxt" rendered="#{financeMB.subconFlag}"></h:outputLabel></td>
+	<td width="2%"><h:outputLabel value=":" style="font-size:14px;font-weight:bold" rendered="#{financeMB.staffFlag}"></h:outputLabel>
+	<h:outputLabel value=":" style="font-size:14px;font-weight:bold" rendered="#{financeMB.subconFlag}"></h:outputLabel></td>
+	<td><p:selectOneMenu id="staffname" styleClass="pselectonmenu" value="#{financeMB.financeDataBean.debtName}" rendered="#{financeMB.staffFlag}">
+        	<f:selectItem itemLabel="select staff"></f:selectItem>
+       	 	<f:selectItems value="#{financeMB.nameList}"></f:selectItems>
+       	 	<p:ajax update="@all" process="@this"></p:ajax>
+        </p:selectOneMenu>
+         <p:selectOneMenu id="subconname" styleClass="pselectonmenu" value="#{financeMB.financeDataBean.debtName}" rendered="#{financeMB.subconFlag}">
+        	<f:selectItem itemLabel="select vendor"></f:selectItem>
+       	 	<f:selectItems value="#{financeMB.nameList}"></f:selectItems>
+       	 	<p:ajax update="@all" process="@this"></p:ajax>
+        </p:selectOneMenu></td></tr>
+        <tr><td></td><td></td><td><h:message for="cate" style="font-size:10px;color:red"></h:message></td>
+        <td></td><td></td><td><h:message for="staffname" style="font-size:10px;color:red"></h:message><h:message for="subconname" style="font-size:10px;color:red"></h:message></td></tr>
+        <tr><td style="height:25px;"><h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel></td>
+	<td><h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel></td><td>
+	<p:calendar id="date" pattern="dd-MM-yyyy" value="#{financeMB.financeDataBean.debtDate}">
+	<p:ajax event="dateSelect" update="@all" process="@this"></p:ajax>
+	</p:calendar>
+	</td><td><h:outputLabel value="amount" styleClass="labelTxt"></h:outputLabel></td>
+    <td><h:outputLabel value=": " style="font-size:14px;font-weight:bold"></h:outputLabel></td>
+    <td><p:inputText id="amount" value="#{financeMB.financeDataBean.debtAmount}">
+    <p:ajax update="@all" process="@this"></p:ajax></p:inputText></td>
+	</tr>
+	 <tr><td></td><td></td><td><h:message for="date" style="font-size:10px;color:red"></h:message></td>
+        <td></td><td></td><td><h:message for="amount" style="font-size:10px;color:red"></h:message></td></tr>
+	<tr><td> <h:outputLabel value="reason" styleClass="labelTxt"></h:outputLabel></td>
+	<td><h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel></td><td>
+	<p:inputTextarea id="reason" value="#{financeMB.financeDataBean.debtReason}"><p:ajax update="@all" process="@this"></p:ajax></p:inputTextarea>
+	</td>
+	</tr>
+	<tr><td></td><td></td><td><h:message for="reason" style="font-size:10px;color:red"></h:message></td></tr>
+    </table><center><p:commandButton value="save" icon="fa fa-database" action="#{financeMB.savetakenDebt}" update="@form" process="@this"></p:commandButton></center>
+    <br/>
+    <p:dataTable rows="5" paginator="true" paginatorPosition="bottom" editable="true" value="#{financeMB.domainList}"
+					pageLinks="5" paginatorAlwaysVisible="false" var="taken" id="takendata">	
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('takendata').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+					<p:column headerText="category" filterBy="#{taken.debtCategory}" sortBy="#{taken.debtCategory}"  filterStyle="display:none">
+						<h:inputHidden value="#{taken.debtId}"></h:inputHidden>
+						<h:outputText value="#{taken.debtCategory}"></h:outputText>
+					</p:column>
+					<p:column headerText="name" filterBy="#{taken.debtName}" sortBy="#{taken.debtName}" filterStyle="display:none">
+						<h:outputText value="#{taken.debtName}"></h:outputText>
+					</p:column>
+					<p:column headerText="date" filterBy="#{taken.debtDate}" sortBy="#{taken.debtDate}" filterStyle="display:none">
+						<h:outputText value="#{taken.debtDate}"><f:convertDateTime pattern="dd-MM-yyyy"></f:convertDateTime></h:outputText>
+					</p:column>
+					<p:column headerText="amount" filterBy="#{taken.debtAmount}" sortBy="#{taken.debtAmount}" filterStyle="display:none">
+							<h:outputText value="#{taken.debtAmount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+					</p:column>
+					<p:column headerText="reason" filterBy="#{taken.debtReason}" sortBy="#{taken.debtReason}"  filterStyle="display:none">
+						<h:outputText value="#{taken.debtReason}"></h:outputText>
+					</p:column>	
+					<p:column headerText="view">
+						<p:commandButton icon="fa fa-search" oncomplete="PF('viewDialog').show()" action="#{financeMB.debtView}" update=":center_content" process="@this">
+							<f:setPropertyActionListener value="#{taken.debtId}" target="#{financeMB.financeDataBean.debtId}"></f:setPropertyActionListener>
+							<f:setPropertyActionListener value="#{taken.debtStatus}" target="#{financeMB.financeDataBean.debtStatus}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>			
+					<p:column headerText="edit">
+						<p:commandButton icon="fa fa-pencil" oncomplete="PF('editDialog').show()" action="#{financeMB.debtView}" update=":center_content" process="@this">
+							<f:setPropertyActionListener value="#{taken.debtId}" target="#{financeMB.financeDataBean.debtId}"></f:setPropertyActionListener>
+							<f:setPropertyActionListener value="#{taken.debtStatus}" target="#{financeMB.financeDataBean.debtStatus}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+	</p:tab>
+	<p:tab title="debt receive">
+	<table width="100%">
+	<tr>
+	<td width="10%"><h:outputLabel for="cate1" value="category" styleClass="labelTxt"/></td>
+	<td width="2%" height="25px"><h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel></td>
+	<td> <p:selectOneRadio id="cate1" value="#{financeMB.financeDataBean.debtCategory}" valueChangeListener="#{financeMB.categoryValueChange1}">
+            <f:selectItem itemLabel="staff &nbsp;" itemValue="staff" />
+            <f:selectItem itemLabel="vendor" itemValue="subcon" />
+            <p:ajax update="@form" process="@this" event="valueChange" immediate="true"></p:ajax>
+        </p:selectOneRadio></td>
+    <td width="11%"><h:outputLabel value="staff name" styleClass="labelTxt" rendered="#{financeMB.staffFlag}"></h:outputLabel>
+    <h:outputLabel value="vendor name " styleClass="labelTxt" rendered="#{financeMB.subconFlag}"></h:outputLabel></td>
+	<td width="2%"><h:outputLabel value=":" style="font-size:14px;font-weight:bold" rendered="#{financeMB.staffFlag}"></h:outputLabel>
+	<h:outputLabel value=":" style="font-size:14px;font-weight:bold" rendered="#{financeMB.subconFlag}"></h:outputLabel></td>
+	<td><p:selectOneMenu id="staffname1" styleClass="pselectonmenu" value="#{financeMB.financeDataBean.debtName}" valueChangeListener="#{financeMB.nameValueChange}" rendered="#{financeMB.staffFlag}">
+        	<f:selectItem itemLabel="select staff"></f:selectItem>
+       	 	<f:selectItems value="#{financeMB.nameList}"></f:selectItems>
+       	 	<p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+        </p:selectOneMenu>
+         <p:selectOneMenu id="subconname1" styleClass="pselectonmenu" value="#{financeMB.financeDataBean.debtName}" rendered="#{financeMB.subconFlag}" valueChangeListener="#{financeMB.nameValueChange}">
+        	<f:selectItem itemLabel="select vendor"></f:selectItem>
+       	 	<f:selectItems value="#{financeMB.nameList}"></f:selectItems>
+       	 	<p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+        </p:selectOneMenu></td></tr>
+         <tr><td></td><td></td><td><h:message for="cate1" style="font-size:10px;color:red"></h:message></td>
+        <td></td><td></td><td><h:message for="staffname1" style="font-size:10px;color:red"></h:message><h:message for="subconname1" style="font-size:10px;color:red"></h:message></td></tr>
+        <tr><td style="height:25px;"><h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel></td>
+	<td><h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel></td><td>
+	<p:calendar id="date1" value="#{financeMB.financeDataBean.debtDate}" pattern="dd-MM-yyyy">
+	<p:ajax event="dateSelect" update="@form" process="@this"></p:ajax></p:calendar></td>
+	<td><h:outputLabel value="amount" styleClass="labelTxt"></h:outputLabel></td>
+    <td><h:outputLabel value=": " style="font-size:14px;font-weight:bold"></h:outputLabel></td>
+    <td><p:inputText id="amount1" value="#{financeMB.financeDataBean.debtAmount}" valueChangeListener="#{financeMB.amountChange}">
+    <p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+    </p:inputText>
+    </td>
+	</tr>
+	<tr><td></td><td></td><td><h:message for="date1" style="font-size:10px;color:red"></h:message></td>
+        <td></td><td></td><td><h:message for="amount1" style="font-size:10px;color:red"></h:message></td></tr>
+	<tr><td><h:outputLabel value="balance" styleClass="labelTxt"></h:outputLabel></td>
+    <td><h:outputLabel value=": " style="font-size:14px;font-weight:bold"></h:outputLabel></td>
+    <td><h:outputLabel value="#{financeMB.financeDataBean.debtBalance}" styleClass="labelTxt">
+    <f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputLabel></td>
+    <td> <h:outputLabel value="reason" styleClass="labelTxt"></h:outputLabel></td>
+	<td><h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel></td><td>
+	<p:inputTextarea id="reason1" value="#{financeMB.financeDataBean.debtReason}"></p:inputTextarea></td>
+	</tr><tr><td></td><td></td><td></td><td></td><td></td><td><h:message for="reason1" style="font-size:10px;color:red"></h:message></td></tr>
+    </table>
+    <center><p:commandButton value="save" icon="fa fa-database" action="#{financeMB.savereceiveDebt}" update="@form"></p:commandButton></center>
+	<br/>
+    <p:dataTable rows="5" paginator="true" paginatorPosition="bottom" value="#{financeMB.domainList}"
+					editable="true" pageLinks="5" paginatorAlwaysVisible="false" var="receive" id="receivedata">
+			<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('receivedata').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+					<p:column headerText="category" filterBy="#{receive.debtCategory}" sortBy="#{receive.debtCategory}"  filterStyle="display:none">
+						<h:inputHidden value="#{receive.debtId}"></h:inputHidden>
+						<h:outputText value="#{receive.debtCategory}"></h:outputText>
+					</p:column>
+					<p:column headerText="name" filterBy="#{receive.debtName}" sortBy="#{receive.debtName}" filterStyle="display:none">
+						<h:outputText value="#{receive.debtName}"></h:outputText>
+					</p:column>
+					<p:column headerText="date" filterBy="#{receive.debtDate}" sortBy="#{receive.debtDate}" filterStyle="display:none">
+						<h:outputText value="#{receive.debtDate}"><f:convertDateTime pattern="dd-MM-yyyy"></f:convertDateTime></h:outputText>
+					</p:column>
+					<p:column headerText="amount" filterBy="#{receive.debtAmount}" sortBy="#{receive.debtAmount}" filterStyle="display:none">
+						<h:outputText value="#{receive.debtAmount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+					</p:column>
+					<p:column headerText="balance" filterBy="#{receive.debtBalance}" sortBy="#{receive.debtBalance}" filterStyle="display:none">
+						<h:outputText value="#{receive.debtBalance}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+					</p:column>
+					<p:column headerText="reason" filterBy="#{receive.debtReason}" sortBy="#{receive.debtReason}"  filterStyle="display:none">
+						<h:outputText value="#{receive.debtReason}"></h:outputText>
+					</p:column>
+					<p:column headerText="view">
+						<p:commandButton icon="fa fa-search" oncomplete="PF('viewDialog').show()" action="#{financeMB.debtView}" update=":center_content" process="@this">
+							<f:setPropertyActionListener value="#{receive.debtId}" target="#{financeMB.financeDataBean.debtId}"></f:setPropertyActionListener>
+							<f:setPropertyActionListener value="#{receive.debtStatus}" target="#{financeMB.financeDataBean.debtStatus}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>			
+					<p:column headerText="edit">
+						<p:commandButton icon="fa fa-pencil" oncomplete="PF('editDialog').show()" action="#{financeMB.debtView}" update=":center_content" process="@this">
+							<f:setPropertyActionListener value="#{receive.debtId}" target="#{financeMB.financeDataBean.debtId}"></f:setPropertyActionListener>
+							<f:setPropertyActionListener value="#{receive.debtStatus}" target="#{financeMB.financeDataBean.debtStatus}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+	</p:tab>
+	</p:tabView>
+	<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="taken">
+				<p align="center" style="font-size: 14px">SUCCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{financeMB.debtPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="confirm1" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="receive">
+				<p align="center" style="font-size: 14px">SUCCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{financeMB.debtPage1}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog header="debt view" widgetVar="viewDialog"
+				height="100%" width="50%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+				<p:outputPanel id="viewdebtid">
+				<h:form id="vform">
+				<center>
+				<p:panelGrid columns="6" styleClass="ui-panelgrid-blank" style="width:70%;height:100px;">
+				<h:outputLabel value="category" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtCategory}" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value="name" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtName}" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtDate}" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value="amount" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtAmount}" styleClass="labelTxt"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputLabel>
+				<h:outputLabel value="reason" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtReason}" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value="balance" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.debtStatus == 'receive'}"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;" rendered="#{financeMB.financeDataBean.debtStatus == 'receive'}"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtBalance}" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.debtStatus == 'receive'}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputLabel>
+				</p:panelGrid></center></h:form>
+				</p:outputPanel><center>
+      <p:commandButton icon="ui-icon-print" value="Print">
+      <p:printer target="center_content:viewdebtid"></p:printer>
+     </p:commandButton> &nbsp;<p:commandButton immediate="true"
+      process="@this" value="close" oncomplete="PF('viewDialog').hide()"></p:commandButton>
+				</center>
+				<br/></p:dialog>
+				<p:dialog header="debt edit" widgetVar="editDialog"
+				height="100%" width="50%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+				<p:outputPanel id="editdebtid">
+				<h:form id="eform">
+				<center>
+				<p:panelGrid columns="6" styleClass="ui-panelgrid-blank" style="width:70%;height:140px;">
+				<h:outputLabel value="category" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtCategory}" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value="name" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtName}" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtDate}" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value="amount" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<p:inputNumber id="eamount" value="#{financeMB.financeDataBean.debtAmount}" styleClass="labelTxt">
+				<p:ajax update="@all" process="@this"></p:ajax>
+				</p:inputNumber><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:message for="eamount" style="font-size:10px;color:red"></h:message>
+				<h:outputLabel value="reason" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;"></h:outputLabel>
+				<p:inputTextarea id="ereason" value="#{financeMB.financeDataBean.debtReason}">
+				<p:ajax update="@all" process="@this"></p:ajax></p:inputTextarea>
+				<h:outputLabel value="balance" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.debtStatus == 'receive'}"></h:outputLabel>
+				<h:outputLabel value=":" style="font-weight:bold;font-size:14px;" rendered="#{financeMB.financeDataBean.debtStatus == 'receive'}"></h:outputLabel>
+				<h:outputLabel value="#{financeMB.financeDataBean.debtBalance}" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.debtStatus == 'receive'}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputLabel>
+				<h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel><h:message for="ereason" style="font-size:10px;color:red"></h:message>
+				</p:panelGrid></center></h:form>
+				</p:outputPanel><center>
+				<p:commandButton immediate="true"
+      		process="@this" value="update" action="#{financeMB.debtUpdate}" update=":center_content:editdebtid"></p:commandButton>
+     		<p:commandButton immediate="true"
+      		process="@this" value="close" oncomplete="PF('editDialog').hide()"></p:commandButton>
+				</center>
+				<br/></p:dialog>
+				<p:dialog widgetVar="edit" header="CONFORMATION BOX" position="center"
+			modal="true" resizable="false" appendTo="@(body)" width="30%"
+			height="100px">
+			<h:form>
+				<p align="center" style="font-size: 14px">UPDATED SUCCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('edit').hide()" action="#{financeMB.debtPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="edit1" header="CONFORMATION BOX" position="center"
+			modal="true" resizable="false" appendTo="@(body)" width="30%"
+			height="100px">
+			<h:form>
+				<p align="center" style="font-size: 14px">UPDATED SUCCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('edit1').hide()" action="#{financeMB.debtPage1}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+	</p:panel>
+	</ui:define>
+	</ui:composition>

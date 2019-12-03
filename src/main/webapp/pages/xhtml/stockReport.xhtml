@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="stock report" id="fabricpanel">
+		<br/>
+		<center>
+		<p:panelGrid columns="3" styleClass="ui-panelgrid-blank" style="height:70px;">
+		<h:outputLabel value="category"></h:outputLabel>
+		<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+		<p:selectOneMenu id="cate" styleClass="pselectonmenu" value="#{stockMB.stockDataBean.type}" valueChangeListener="#{stockMB.categoryValueChange}">
+      		<f:selectItem itemLabel="select category" noSelectionOption="true" itemValue="select"></f:selectItem>
+      		<f:selectItem itemLabel="raw material" itemValue="raw"></f:selectItem>
+      		<f:selectItem itemLabel="ready stock" itemValue="ready"></f:selectItem>
+      		<p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+     	</p:selectOneMenu>
+     	<h:outputLabel value="Model" styleClass="labelTxt" rendered="#{stockMB.stockDataBean.type=='ready'}"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt" rendered="#{stockMB.stockDataBean.type=='ready'}" style="font-size:14px;font-weight:bold"></h:outputLabel>
+		<p:selectOneMenu value="#{stockMB.stockDataBean.modelNo}" id="model" valueChangeListener="#{stockMB.modelValueChange}" 
+				rendered="#{stockMB.stockDataBean.type=='ready'}" styleClass="pselectonmenu">
+			<f:selectItem itemLabel="Select Model" noSelectionOption="true"></f:selectItem>
+			<f:selectItems value="#{stockMB.stockDataBean.cmtProducts}"></f:selectItems>
+			<p:ajax update=":center_content" process="@this" immediate="true"></p:ajax>
+		</p:selectOneMenu>
+		</p:panelGrid></center>
+		<br/><br/>
+		<p:dataTable 
+				widgetVar="stockTable" var="stk" rendered="#{stockMB.stockDataBean.flag}"
+				 id="stockdatatable" value="#{stockMB.warelists}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('stockTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column headerText="no" width="50" filterBy="#{stk.serialNo}" filterStyle="display:none" sortBy="#{stk.serialNo}">
+					<h:outputText value="#{stk.serialNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Warehouse" width="20%" filterBy="#{stk.warehouseName}" sortBy="#{stk.warehouseName}" filterStyle="display:none">
+					<h:outputText value="#{stk.warehouseName}"></h:outputText>
+				</p:column>
+				<p:column headerText="model" filterBy="#{stk.itemName}" rendered="#{stockMB.stockDataBean.type == 'ready'}" sortBy="#{stk.itemName}" filterStyle="display:none">
+					<h:outputText value="#{stk.itemName}"></h:outputText>
+				</p:column>
+				<p:column headerText="seri" rendered="#{stockMB.stockDataBean.type == 'ready'}" filterBy="#{stk.seri}" sortBy="#{stk.seri}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.seri}"></h:outputText>
+				</p:column>
+				<p:column headerText="item name" filterBy="#{stk.itemName}" rendered="#{stockMB.stockDataBean.type == 'raw'}" sortBy="#{stk.itemName}" filterStyle="display:none">
+					<h:outputText value="#{stk.itemName}"></h:outputText>
+				</p:column>
+				<p:column headerText="stock in" filterBy="#{stk.stockIn}" sortBy="#{stk.stockIn}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.stockIn}"></h:outputText>
+				</p:column>
+				<p:column headerText="stock out" filterBy="#{stk.stockOut}" sortBy="#{stk.stockOut}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.stockOut}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="Price" width="20%" filterBy="#{stk.sellingPrice}" sortBy="#{stk.sellingPrice}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.sellingPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+			</p:dataTable>
+		</p:panel></ui:define></ui:composition>

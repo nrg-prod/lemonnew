@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="employee report" id="employeepanel">
+		<br/>
+		<div class="ui-g">
+    <div class="ui-g-4">
+    </div>
+    <div class="ui-g-2">
+   		<h:outputText value="branch :" styleClass="labelTxt"></h:outputText>
+    </div>
+    <div class="ui-g-4">
+    <p:selectOneMenu value="#{employeeMB.employeeDataBean.branchName}">
+    <f:selectItem itemLabel="please select one" noSelectionOption="true" itemValue=""></f:selectItem>
+    <f:selectItems value="#{employeeMB.branchList}"></f:selectItems>
+    <p:ajax event="valueChange" listener="#{employeeMB.getemployeename}" update="center_content" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax>
+    </p:selectOneMenu>
+   
+    
+    </div>
+    <div class="ui-g-2">
+     
+    </div>
+</div>
+		<div class="ui-g">
+    <div class="ui-g-4">
+    </div>
+    <div class="ui-g-2">
+   		<h:outputText value="Employee :" styleClass="labelTxt"></h:outputText>
+    </div>
+    <div class="ui-g-4">
+    <p:selectOneMenu value="#{employeeMB.employeeDataBean.employeeName}">
+    <f:selectItem itemLabel="please select one" noSelectionOption="true" itemValue=""></f:selectItem>
+    <f:selectItems value="#{employeeMB.employeenameList}"></f:selectItems>
+    <p:ajax event="valueChange" listener="#{employeeMB.getemployeename}" update="center_content" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax>
+    </p:selectOneMenu>
+   
+    
+    </div>
+    <div class="ui-g-2">
+     
+    </div>
+</div>
+		
+ <div class="ui-g">
+    <div class="ui-g-4">
+    </div>
+    <div class="ui-g-2">
+     <h:outputText value="from date :" styleClass="labelTxt"></h:outputText>
+    </div>
+     <div class="ui-g-4">
+     <p:calendar value="#{employeeMB.employeeDataBean.fromDate}"  pattern="dd-MM-yyyy" id="fromdate" >
+     <p:ajax event="dateSelect" listener="#{employeeMB.getemploydetail}" update="center_content" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax></p:calendar>
+    </div>
+     <div class="ui-g-2">
+    </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-4">
+    </div>
+     <div class="ui-g-2">
+    <h:outputText value="to date :" styleClass="labelTxt"></h:outputText>
+    </div>
+     <div class="ui-g-4">
+  <p:calendar value="#{employeeMB.employeeDataBean.toDate}"  pattern="dd-MM-yyyy" id="todate" >
+  <p:ajax event="dateSelect" listener="#{employeeMB.getemploydetail}" update="center_content" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax></p:calendar>
+   </div>
+    
+     <div class="ui-g-2">
+    </div>
+  </div>
+		<p:dataTable 
+				widgetVar="employeeTable" var="emp"
+				 id="employeedatatable" value="#{employeeMB.employeeList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('employeeTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column headerText="no" width="7%" filterBy="#{emp.serialNo}" filterStyle="display:none" sortBy="#{emp.serialNo}">
+					<h:outputText value="#{emp.serialNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="branch name" filterBy="#{emp.branchName}" filterStyle="display:none" sortBy="#{emp.branchName}">
+					<h:outputText value="#{emp.branchName}"></h:outputText>
+				</p:column>
+				<p:column headerText="employee name" filterBy="#{emp.employeeName}" filterStyle="display:none" sortBy="#{emp.employeeName}">
+					<h:outputText value="#{emp.employeeName}"></h:outputText>
+				</p:column>
+				<p:column headerText="dob" width="12%" filterBy="#{emp.dateofBirth}" filterStyle="display:none" sortBy="#{emp.dateofBirth}">
+					<h:outputText value="#{emp.dateofBirth}"><f:convertDateTime pattern="dd-MM-yyyy"></f:convertDateTime></h:outputText>
+				</p:column>
+				<p:column headerText="entry date" width="12%" filterBy="#{emp.entryDate}" filterStyle="display:none" sortBy="#{emp.entryDate}">
+					<h:outputText value="#{emp.entryDate}"><f:convertDateTime pattern="dd-MM-yyyy"></f:convertDateTime></h:outputText>
+				</p:column>
+				<p:column headerText="phone no" filterBy="#{emp.phoneNo1}" filterStyle="display:none" sortBy="#{emp.phoneNo1}">
+					<h:outputText value="#{emp.phoneNo1}"></h:outputText>
+				</p:column>
+				<p:column headerText="address" filterBy="#{emp.address}" filterStyle="display:none" sortBy="#{emp.address}">
+					<h:outputText value="#{emp.address}"></h:outputText>
+				</p:column>
+				<p:column headerText="daily" filterBy="#{emp.daily}" filterStyle="display:none" sortBy="#{emp.daily}">
+					<h:outputText value="#{emp.daily}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+				</p:column>
+				<p:column headerText="commission" filterBy="#{emp.commission}" filterStyle="display:none" sortBy="#{emp.commission}">
+					<h:outputText value="#{emp.commission}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+				</p:column>
+				<p:column headerText="Overtime" filterBy="#{emp.overtime}" filterStyle="display:none" sortBy="#{emp.overtime}">
+					<h:outputText value="#{emp.overtime}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+				</p:column>
+				<p:column headerText="penality" filterBy="#{emp.late}" filterStyle="display:none" sortBy="#{emp.late}">
+					<h:outputText value="#{emp.late}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+</ui:composition>

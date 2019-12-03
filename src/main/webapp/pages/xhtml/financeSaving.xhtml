@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:nrg="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<nrg:panel header="saving" style="min-height:100%;" id="transactionpanel">
+		<br></br>
+		<nrg:dataTable id="savingdata" widgetVar="savinginfo" var="saving" rows="10" pageLinks="5" paginator="true" 
+		paginatorAlwaysVisible="false" paginatorPosition="bottom" value="#{financeMB.domainList}">
+		<f:facet name="header">
+			<nrg:outputPanel style="text-align:right">
+				<nrg:inputText id="globalFilter" onkeyup="PF('savinginfo').filter()"
+					style="width:150px" placeholder="Enter keyword" />
+			</nrg:outputPanel>
+    	</f:facet>
+		<nrg:column headerText="no" filterBy="#{saving.serialNo}" filterStyle="display:none">
+		<h:outputText value="#{saving.serialNo}"></h:outputText>
+		</nrg:column>
+		<nrg:column headerText="date" filterBy="#{saving.date}" filterStyle="display:none">
+		<h:outputText value="#{saving.date}"><f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime></h:outputText>
+		</nrg:column>
+		<nrg:column headerText="category" filterBy="#{saving.debtCategory}" filterStyle="display:none">
+		<h:outputText value="#{saving.debtCategory}"></h:outputText>
+		</nrg:column>
+		<nrg:column headerText="cutter" filterBy="#{saving.debtName}" filterStyle="display:none">
+		<h:outputText value="#{saving.debtName}"></h:outputText>
+		</nrg:column>
+		<nrg:column headerText="model" filterBy="#{saving.name}" filterStyle="display:none">
+		<h:outputText value="#{saving.name}"></h:outputText>
+		</nrg:column>
+		<nrg:column headerText="quantity" filterBy="#{saving.wasteQuantity}" filterStyle="display:none">
+		<h:outputText value="#{saving.wasteQuantity}"></h:outputText>
+		</nrg:column>
+		<nrg:column headerText="saving" filterBy="#{saving.amount}" filterStyle="display:none">
+		<h:outputText value="#{saving.amount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+		</nrg:column>
+		</nrg:dataTable>
+		</nrg:panel>
+	</ui:define>
+	</ui:composition>	

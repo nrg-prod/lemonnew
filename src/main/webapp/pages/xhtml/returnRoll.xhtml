@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="Return report" id="fabricpanel">
+		<br/>
+		<center>
+		<p:panelGrid columns="3" styleClass="ui-panelgrid-blank" style="height:70px;">
+		<h:outputLabel value="category"></h:outputLabel>
+		<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+		<p:selectOneMenu id="cate" styleClass="pselectonmenu" value="#{returnMB.returnDataBean.serialno}" valueChangeListener="#{returnMB.categoryValueChange}">
+      		<f:selectItem itemLabel="select category" noSelectionOption="true" itemValue="select"></f:selectItem>
+      		<f:selectItem itemLabel="supply" itemValue="supply"></f:selectItem>
+      		<f:selectItem itemLabel="cmt" itemValue="cmt"></f:selectItem>
+      		<p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+     	</p:selectOneMenu></p:panelGrid>
+     	<p:dataTable 
+				widgetVar="stockTable" var="stk" rendered="#{returnMB.returnDataBean.flag}"
+				 id="stockdatatables" value="#{returnMB.returnDataBean.returnDataBeanList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('stockTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column headerText="no" width="50" filterBy="#{stk.serialno}" filterStyle="display:none" sortBy="#{stk.serialno}">
+					<h:outputText value="#{stk.serialno}"></h:outputText>
+				</p:column>
+				<p:column headerText="item name" width="20%" filterBy="#{stk.itemname}" sortBy="#{stk.itemname}" filterStyle="display:none">
+					<h:outputText value="#{stk.itemname}"></h:outputText>
+				</p:column>
+				<p:column headerText="quantity" filterBy="#{stk.quantity}" sortBy="#{stk.quantity}" filterStyle="display:none">
+					<h:outputText value="#{stk.quantity}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="price" filterBy="#{stk.price}" sortBy="#{stk.price}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.price}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+				</p:column>
+				<p:column headerText="netamount" filterBy="#{stk.netprice}" sortBy="#{stk.netprice}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.netprice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+				</p:column>
+				
+				
+			</p:dataTable>
+			
+			
+			<p:dataTable 
+				widgetVar="stockTable" var="stk" rendered="#{returnMB.returnDataBean.flag1}"
+				 id="stockdatatable" value="#{returnMB.returnDataBean.returnDataBeanList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('stockTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column headerText="no" filterBy="#{stk.serialno}" filterStyle="display:none" sortBy="#{stk.serialno}">
+					<h:outputText value="#{stk.serialno}"></h:outputText>
+				</p:column>
+				
+				
+				
+				
+				<p:column headerText="shop" filterBy="#{stk.shoppname}" filterStyle="display:none" sortBy="#{stk.shoppname}">
+					<h:outputText value="#{stk.shoppname}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="model" filterBy="#{stk.itemname}" sortBy="#{stk.itemname}" filterStyle="display:none">
+					<h:outputText value="#{stk.itemname}"></h:outputText>
+				</p:column>
+				<p:column headerText="seri" filterBy="#{stk.quantity}" sortBy="#{stk.quantity}" filterStyle="display:none">
+					<h:outputText value="#{stk.quantity}"></h:outputText>
+				</p:column>
+				
+
+				<p:column headerText="quantity" filterBy="#{stk.quantity1}" sortBy="#{stk.quantity1}" filterStyle="display:none">
+					<h:outputText value="#{stk.quantity1}" ></h:outputText>
+				</p:column>
+				
+								<p:column headerText="price" filterBy="#{stk.price}" sortBy="#{stk.price}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.price}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter> </h:outputText>
+				</p:column>
+			
+				
+				<p:column headerText="net price" filterBy="#{stk.netprice}" sortBy="#{stk.netprice}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.netprice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+				</p:column>
+				
+			</p:dataTable>
+			
+			</center>
+		</p:panel></ui:define></ui:composition>

@@ -1,0 +1,499 @@
+
+ .ui-inputfield, .ui-widget-content .ui-inputfield, .ui-widget-header .ui-inputfield {
+    background: #ffffff;
+  	color: #222222;
+   /* height:25px;
+	width:200px; */ 
+	height:15px;
+	width:185px;    
+    font-size:12px;
+    text-transform: uppercase;
+    box-shadow: none !important;
+    border-radius: 0px !important; 
+}
+
+.tabledatepicker{
+	width:80px !important;
+}
+.ui-inputfield ,.ui-widget .ui-state-default .ui-corner-all .hasDatepicker{
+ width:80px;
+}
+   .ui-datepicker{
+	    width: 16.8em !important;
+    padding: .2em .2em 0;
+}
+.ui-menu .ui-menuitem-text 
+	{
+    font-size: 16px;
+    color: black;
+   
+  
+}
+.ui-layout-north 
+	  {
+          overflow-y: hidden ! important;
+          overflow-x: hidden ! important; 
+          background:#fee205 !important ;
+          
+      }
+      
+   .ui-layout-south {
+     overflow-y: hidden ! important;
+          overflow-x: hidden ! important; 
+   }
+       .ui-layout-west{
+       overflow-y: hidden ! important;
+       overflow-x: hidden ! important; 
+	background:white !important ;
+	}
+      
+     .ui-layout-center{
+	background:#ebedf0 !important ;
+	}
+    
+   .ui-widget-header {
+      font-size:14px;
+      
+}
+.ui-button .ui-button-text {
+  
+    font-size: 12px;
+    color:white !important;
+    text-transform: uppercase;
+    background: #efcc12 !important;
+    border: 1px solid #efcc12; 
+    
+}
+.ui-selectonemenu label.ui-selectonemenu-label
+{
+ font-size:12px;
+  height: 16px;
+  width: 158px;
+  
+}
+
+.ui-widget-content {
+      font-size:12px;
+      text-transform: uppercase;
+}
+.ui-widget-overlay {
+    background: #1f2226;
+    opacity: .30;
+}
+
+.ui-selectonemenu .ui-selectonemenu-trigger {
+    width: 16px;
+    height: 97%;
+    position: absolute;
+    padding: 0 7px;
+}
+
+.ui-panelmenu .ui-panelmenu-header a {
+    display: block;
+    padding: .5em .5em .5em 2.2em;
+    font-size: 12px;
+}
+th{
+	 border: 0.5px solid #35414f;
+	font-size:12px;
+	font-weight:normal;	 
+}
+
+.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td, .ui-datatable tfoot th {
+    padding: 4px 10px;
+    overflow: hidden;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+    text-transform: uppercase;
+    color: black!important;
+}
+.ui-selectonemenu-panel .ui-selectonemenu-list-item {
+    border: 0 none;
+    margin: 1px 0;
+    padding: 3px 5px;
+    text-align: left;
+    white-space: nowrap;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+
+.ui-panelmenu .ui-panelmenu-header a {
+    display: block;
+    padding: .4em .4em .4em 2.2em;
+    font-size: 14px;
+    background: #fee205  ! important;
+    color: black ! important;
+    font-family: sans-serif;
+}
+
+.ui-panelmenu .ui-menuitem-link {
+    display: block;
+    outline: 0;
+    text-decoration: none;
+    font-weight: 400;
+    border: solid 1px transparent;
+    line-height: 16px;
+    cursor: pointer;
+    position: relative;
+    padding: .3em .3em .3em 2em;
+    font-size: 12px;
+}
+.ui-selectonemenu-panel .ui-selectonemenu-list {
+    padding: 0.1em;
+    border: 0 none;
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+     text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.labelTxt{
+	font-size:12px;
+}
+
+.ui-selectoneradio label {
+    font-size: 12px;
+}
+
+.outText{
+	font-family:sans-serif;
+	font-size: 12px;
+}
+
+.foottxt{
+	font-size: 12px;
+	text-align: center;
+}
+a, a:hover, a:active, a:focus {
+    color: #fff;
+    text-decoration: none;
+    outline: none;
+    outline-offset: 0;
+}
+
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: 'Segoe UI', 'Open Sans', sans-serif;    
+}
+
+h4 {
+    font-size: 16px;
+}
+
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+    padding-right: 1px;
+    padding-left: 1px;
+}
+
+
+
+/* Wrapper ------------------------------------------------- */
+
+.wrap-content {
+    background-position: center 330px;
+    padding-bottom: 80px;
+}
+
+/* Boxes styling ------------------------------------------------- */
+
+.box {
+    background-color: #333;
+    width: 100%;
+    height: 200px;
+    margin-top: 4px;
+    overflow: hidden;
+    opacity: .9;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow:    inset 0px 0px 10px 0px rgba(255, 255, 255, 0.1);
+    box-shadow:         inset 0px 0px 10px 0px rgba(255, 255, 255, 0.1);
+}
+
+.big-box {
+    background-color: #333;
+    width: 100%;
+    height: 405px;
+    margin-top: 4px;
+    overflow: hidden;
+    opacity: .9;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.big-box .title {
+    font-size: 14px;
+    text-transform: uppercase;
+    padding-top: 10px;
+}
+
+.box .title {
+    position: relative;
+    font-size: 13px;
+    text-transform: uppercase;
+    top: 145px;
+    left: 25px;
+    color: #fff;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+/* Home ------------------------------------------------- */
+
+.home .box {
+    background-color: #5F89BB;
+    padding-right: 1px;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.home .box:hover {
+    background-color: #1578C9;
+    -webkit-box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.5);
+    -moz-box-shadow:    0px 0px 20px 0px rgba(255, 255, 255, 0.5);
+    box-shadow:         0px 0px 20px 0px rgba(255, 255, 255, 0.5);
+}
+
+.home .box .glyphicon {
+    float: right;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.75);
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.home .box-twitter .title {
+    top: 25px;
+}
+
+.home .box {
+    cursor: pointer;
+}
+
+.home .box-twitter {
+    background-color: #5F89BB !important;
+    height: 402px;
+    padding-right: 0;
+}
+
+/* Profile ------------------------------------------------- */
+
+.profile .big-box-img {
+    width: 100%;
+    height: 405px;
+    margin-top: 4px;
+    overflow: hidden;
+    opacity: .9;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.profile .big-box-img img {
+    height: 100%;
+}
+
+.portfolio img {
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.portfolio img:hover {
+    -webkit-box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.5);
+    -moz-box-shadow:    0px 0px 20px 0px rgba(255, 255, 255, 0.5);
+    box-shadow:         0px 0px 20px 0px rgba(255, 255, 255, 0.5);
+}
+
+.box-text {
+    padding: 15px 20px 15px 25px;
+    color: #fff;
+}
+
+.contact .dl-horizontal {
+    margin-bottom: 25px;
+}
+
+.contact .dl-horizontal dt {
+    text-align: left;
+    font-weight: 300;
+    width: 35px;
+}
+
+.contact .dl-horizontal dd {
+    margin-left: 35px;
+}
+
+.map {
+    width: 100%;
+    height: 410px;
+    border: 0;
+}
+
+/* General styling ------------------------------------------------ */
+
+.raise .box {
+    margin-top: -202px;
+}
+
+.display-none {
+    display: none;
+}
+
+.on {
+    display: block !important;
+    -webkit-animation: activate .5s ease;
+    -moz-animation: activate .5s ease;
+    -ms-animation: activate .5s ease;
+    -o-animation: activate .5s ease;
+    animation: activate .5s ease;
+}
+
+.off {
+    -webkit-animation: remove .5s ease;
+    -moz-animation: remove .5s ease;
+    -ms-animation: remove .5s ease;
+    -o-animation: remove .5s ease;
+    animation: remove .5s ease;
+    opacity: 0;
+}
+
+.dl-horizontal {
+    margin-bottom: 25px;
+}
+
+.dl-horizontal dt {
+    text-align: left;
+    font-weight: 300;
+    width: 125px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 7px 10px;
+    border-radius: 3px 0 0 3px;
+}
+
+.dl-horizontal dd {
+    margin-left: 125px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 7px 10px;
+    border-radius: 0 3px 3px 0;
+    margin-bottom: 1px;
+}
+
+.dl-horizontal dd:nth-of-type(1) {
+    padding-bottom: 0 !important;
+}
+
+
+.icon-title {
+    float: right;
+}
+
+.z-index {
+    z-index: 999;
+}
+
+.modal-box {
+    width: 100%;
+    margin-top: 4px;
+    overflow: hidden;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    position: relative;
+    background: #fee205!important;
+    padding: -1px 0 8px 0;
+    margin: 0px 0px 12px 0px;
+    border: solid #e5e5e5;
+    border-width: 0 0 1px 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    padding: 6px 7px 10px 11px;
+}
+.ui-dialog .ui-dialog-title {
+    float: left;
+    margin: .3em 16px .1em 0;
+    color: black;
+}
+.ui-dialog .ui-dialog-title {
+    float: left;
+    margin: -6px -13px 0px 0;
+    color: black;
+    padding: 17px 0px 0px 0px;
+}
+.ui-dialog .ui-dialog-title {
+    float: left;
+    margin: -15px 2px -2px 0;
+    color: black;
+    font-size: 14px!important;
+}
+
+.ui-tabs .ui-tabs-panel {
+    border-width: 1px;
+    padding: 1em 1.4em;
+    background: 0;
+}
+
+.ui-tabs .ui-tabs-nav li a {
+    float: left;
+    padding: .5em 1em;
+    text-decoration: none;
+    background: #fee205;
+    color: black;
+    font-family: sans-serif;
+}
+
+.ui-tabs.ui-tabs-top>.ui-tabs-nav {
+    padding: 0;
+}
+
+.ui-panelgrid .ui-panelgrid-cell {
+    border-width: 1px;
+    border-style: solid;
+    border-color: inherit;
+    padding: 1px 12px;
+}
+.pselectonmenu {
+    border-radius: 1px;
+}
+
+.ui-button, button.ui-button.ui-state-default, .ui-button.ui-state-default {
+    border: 1px solid #efcc12;
+    color: white;
+    background: #efcc12;
+}
+
+.ui-panelmenu .ui-panelmenu-header.ui-state-active, .ui-panelmenu .ui-panelmenu-header.ui-state-active a {
+    background: white;
+    color: #fff;
+    border-color: #fff;
+}
+
+.ui-paginator .ui-paginator-page.ui-state-active {
+    background: #efcc12;
+    color: #fff;
+    border-color: #efcc12;
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+    border: 1px solid #fee205;
+    background: #fee205;
+    color:black;
+}
+
+.ui-datepicker-current-day a {
+    background: #efcc12!important;
+    filter: none!important;
+    color: #fff!important;
+}

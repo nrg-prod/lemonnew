@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<script src="../../js/validation.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="Invoice" id="fabricpanel">
+		<br></br>
+				
+				
+				<table align="center">
+				<tr><td><h:outputText value="Category" styleClass="labelTxt"></h:outputText></td>
+				<td width="2%"><h:outputText value=":"></h:outputText> </td>
+				<td ><p:selectOneMenu id="catgry" styleClass="pselectonmenu" value="#{supplyMB.supplyDataBean.category}"  
+							valueChangeListener="#{supplyMB.categoryChange}"	>
+      				 <f:selectItem itemLabel="select division" noSelectionOption="true"></f:selectItem>
+      				 <f:selectItem itemLabel="chemistry" itemValue="CHEMISTRY"></f:selectItem>
+      				 <f:selectItem itemLabel="hangtag" itemValue="HANGTAG"></f:selectItem>
+      				 <f:selectItem itemLabel="label" itemValue="LABEL"></f:selectItem>
+      				 <f:selectItem itemLabel="accessoris" itemValue="ACCESSORIS"></f:selectItem>
+      				 <f:selectItem itemLabel="plastic" itemValue="PLASTIC"></f:selectItem>
+      				 <p:ajax update="@form" process="@this" immediate="true" event="valueChange"></p:ajax>
+     			</p:selectOneMenu>
+     			<br/><h:message for="catgry" style="color:red;font-size:10px"></h:message>
+     			</td>
+				</tr>
+				<tr>
+				<td><h:outputText value="Supplier " styleClass="labelTxt"></h:outputText> </td>
+				<td width="10%"><h:outputText value=":"></h:outputText> </td>
+				<td ><p:selectOneMenu styleClass="pselectonmenu" value="#{supplyMB.supplyDataBean.supplierName}" >
+      				 		<f:selectItem itemLabel="select" noSelectionOption="true"></f:selectItem>
+      				 		<f:selectItems value="#{supplyMB.supplierNameList}"></f:selectItems>
+      				 		<p:ajax update="@form" process="@this" immediate="true" ></p:ajax>
+     			</p:selectOneMenu></td></tr>
+     			<tr><td ><h:outputText value="From Date " styleClass="labelTxt"></h:outputText></td>
+     			<td width="2%"><h:outputText value=":"></h:outputText> </td>
+     			<td ><p:calendar value="#{supplyMB.supplyDataBean.fromDate}" pattern="dd-MMM-yyyy" id="fdate">
+				<p:ajax event="dateSelect" update="@form" process="@this" immediate="true"></p:ajax>
+				</p:calendar>
+				<br/><h:message for="fdate" style="color:red;font-size:10px"></h:message>
+				</td></tr>
+				<tr><td><h:outputText value="To Date " styleClass="labelTxt"></h:outputText></td>
+				<td width="2%"><h:outputText value=":"></h:outputText> </td>
+				<td ><p:calendar value="#{supplyMB.supplyDataBean.toDate}" pattern="dd-MMM-yyyy" id="tdate" >
+				<p:ajax event="dateSelect" update="@form" process="@this" immediate="true"></p:ajax>
+				</p:calendar></td>
+				</tr>
+				</table>
+				<br/>
+				<center><p:commandButton value="Search" action="#{supplyMB.getInvoice}" update=":center_content" immediate="true"></p:commandButton></center>
+				<br></br>
+			<br></br>
+		
+			<p:dataTable 
+				widgetVar="fabricTable" var="fabric"
+				 id="datatable" value="#{supplyMB.purchaseFabricList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" rendered="#{supplyMB.invoiceDataTableFlag}"
+					emptyMessage="No information found with given criteria"
+					>
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('fabricTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+
+				<p:column headerText="no" width="40" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:inputHidden value="#{fabric.fabricId}"></h:inputHidden>
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" width="80" sortBy="#{fabric.todayDate}" filterStyle="display:none"  filterBy="#{fabric.todayDate}">
+					<h:outputText value="#{fabric.todayDate}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="invoice" width="100" filterStyle="display:none" sortBy="#{fabric.fabricInvoiceNumber}" filterBy="#{fabric.fabricInvoiceNumber}">
+					<h:outputText value="#{fabric.fabricInvoiceNumber}"></h:outputText>
+				</p:column>
+				<p:column headerText="supplier" filterStyle="display:none" sortBy="#{fabric.supplierName}" filterBy="#{fabric.supplierName}">
+					<h:outputText value="#{fabric.supplierName}"></h:outputText>
+				</p:column>
+				<p:column headerText="User" filterStyle="display:none" sortBy="#{fabric.vendorName}" filterBy="#{fabric.vendorName}">
+					<h:outputText value="#{fabric.vendorName}"></h:outputText>
+				</p:column>
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.totalAmount}" filterBy="#{fabric.totalAmount}">
+					<h:outputText value="#{fabric.totalAmount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" width="60" sortBy="#{fabric.Status2}">
+					<h:outputText value="#{fabric.status2}"></h:outputText>
+				</p:column>
+				<p:column headerText="payment status" width="60" sortBy="#{fabric.paymentStatus}">
+					<h:outputText value="#{fabric.paymentStatus}"></h:outputText>
+				</p:column>
+				<p:column headerText="view" width="30">
+					<p:commandButton icon="fa fa-search" action="#{supplyMB.invoiceGenerate}" oncomplete="PF('invoiceDialog').show()" update=":center_content" process="@this" >
+					<f:setPropertyActionListener value="#{fabric.fabricId}" target="#{supplyMB.supplyDataBean.fabricId}"></f:setPropertyActionListener>
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<br></br>
+		
+		
+			
+			<p:dialog header="purchase fabric invoice form"  widgetVar="invoiceDialog"
+				height="350px" width="65%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+				<p:outputPanel id="invoice">
+				<h:form id="inform">
+				<table width="50%" align="center">
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<h:outputLabel styleClass="labelTxt" id="date1" value="#{supplyMB.supplyDataBean.todayDate}" readonly="true">	
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+				</h:outputLabel>
+				</td>
+				</tr>
+				<tr>
+				<td width="15%" height="35px">
+				<h:outputLabel value="invoice Number" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<h:outputLabel styleClass="labelTxt" value="#{supplyMB.supplyDataBean.fabricInvoiceNumber}"></h:outputLabel>
+				</td>
+				</tr>
+				<tr>
+				<td width="15%" height="35px">
+				<h:outputLabel value="Supplier" styleClass="labelTxt" rendered="#{supplyMB.supplyDataBean.status2=='PURCHASE'}"></h:outputLabel>
+				<h:outputLabel value="User" styleClass="labelTxt" rendered="#{supplyMB.supplyDataBean.status2=='SALES'}"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<h:outputLabel styleClass="labelTxt" value="#{supplyMB.supplyDataBean.supplierName}"  rendered="#{supplyMB.supplyDataBean.status2=='PURCHASE'}"></h:outputLabel>
+				<h:outputLabel styleClass="labelTxt" value="#{supplyMB.supplyDataBean.vendorName}"  rendered="#{supplyMB.supplyDataBean.status2=='SALES'}"></h:outputLabel>
+				</td>
+				</tr>
+				
+				</table>
+				<br/>
+				<p:dataTable var="info" value="#{supplyMB.supplyDataBean.fabricList}"
+    widgetVar="InvoiceInfo"  reflow="false">
+    
+    <p:column filterBy="#{info.serialNo}" headerText="Serial No"
+     filterMatchMode="contains" filterStyle="display:none">
+     <h:outputText value="#{info.serialNo}" />
+    </p:column>
+    <p:column filterBy="#{info.itemName}" headerText="Item Name"
+     filterMatchMode="contains" filterStyle="display:none">
+     <h:outputText value="#{info.itemName}" />
+    </p:column>
+    <p:column filterBy="#{info.itemQuantity}" headerText="Quantity"
+     filterMatchMode="contains" filterStyle="display:none">
+     <h:outputText value="#{info.itemQuantity}">
+     </h:outputText>
+    </p:column>
+    <p:column filterBy="#{info.itemBuyPrice}"
+     headerText="Buying Price" filterMatchMode="contains"
+     filterStyle="display:none">
+     <h:outputText value="#{info.itemBuyPrice}" >
+     <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+     </h:outputText>
+    </p:column>
+    <p:column filterBy="#{info.totalPrice}" headerText="Net Amount"
+     filterMatchMode="contains" filterStyle="display:none">
+     <h:outputText value="#{info.totalPrice}" >
+      <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+     </h:outputText>
+    </p:column>
+
+   </p:dataTable>
+			<br></br>
+   <div align="right">
+   <h:outputText value="Total Price :" styleClass="labelTxt" style="font-size:14px;"></h:outputText> 
+   <h:outputText value="#{supplyMB.supplyDataBean.totalPrice}" styleClass="labelTxt" style="font-size:14px;">
+    <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+   </h:outputText>
+   </div></h:form></p:outputPanel>
+   <br></br>
+   <center>
+     <p:commandButton immediate="true"
+      process="@this" value="OK" update=":center_content"
+      oncomplete="PF('invoiceForm').hide()" action="#{supplyMB.invoicePage}"></p:commandButton>&nbsp;
+      <p:commandButton icon="ui-icon-print" value="Print">
+      <p:printer target="center_content:invoice"></p:printer>
+     </p:commandButton></center>
+     <br/><br></br>
+			</p:dialog>
+			
+			
+			
+			<p:dialog header="Confirmation Box" appendTo="@(body)"
+			closable="false" widgetVar="fabricinvoiceDialog" modal="true"
+			width="25%" height="40%" resizable="false"
+			dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText
+						value="Invoice Generated Successfully"></h:outputText>
+					<br></br>	<br></br>
+					<p:commandButton immediate="true"
+						action="#{supplyMB.fabricPage}" process="@this" value="OK" update="center_content"
+						oncomplete="PF('fabricinvoiceDialog').hide()"></p:commandButton>
+				</center>
+
+			</h:form>
+		</p:dialog>
+		
+		
+ 
+		</p:panel>
+	</ui:define>
+</ui:composition>

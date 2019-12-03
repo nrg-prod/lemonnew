@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:growl id="msg"></p:growl>
+		<p:panel header="Employee Payroll" style="min-height:100%"  id="warepanel" >
+			<p:commandButton value="Employee Salary" action="#{payrollMB.payroll}"  oncomplete="PF('empPayreg').show()" update=":center_content:dialogpanel"></p:commandButton>
+			<br></br>
+			<center><h:inputHidden id="errmsgs"></h:inputHidden>
+			<h:message for="errmsgs" style="color:red;font-size:10px"></h:message></center>
+			<br/>
+			<p:dataTable rows="5" paginator="true" paginatorPosition="bottom" value="#{payrollMB.payrollDataBean.payrollList}"
+					pageLinks="5" paginatorAlwaysVisible="false"
+					widgetVar="peanltyInfo"  var="pelty"  editable="true">
+					<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<p:inputText id="globalFilter" onkeyup="PF('peanltyInfo').filter()" 
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+    					</f:facet>
+					<p:column headerText="No" width="8%" filterBy="#{pelty.serialNo}" sortBy="#{pelty.serialNo}" filterStyle="display:none">
+						<h:outputText value="#{pelty.penaltID}" style="display:none;"></h:outputText>
+						<h:outputText value="#{pelty.serialNo}"></h:outputText>
+							
+					</p:column>
+					
+					<p:column width="12%" headerText="Employee" filterBy="#{pelty.employee}" sortBy="#{pelty.employee}" filterStyle="display:none">
+						<h:outputText value="#{pelty.employee}"></h:outputText>
+					</p:column>
+				<p:column width="12%"  headerText="Branch" filterBy="#{pelty.branch}" sortBy="#{pelty.branch}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.branch}"></h:outputText>
+				
+					</p:column>
+					<p:column width="12%"  headerText="Month" filterBy="#{pelty.month}" sortBy="#{pelty.month}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.month}"></h:outputText>
+				
+					</p:column>
+					<p:column width="12%"  headerText="Year" filterBy="#{pelty.year}" sortBy="#{pelty.year}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.year}"></h:outputText>
+				
+					</p:column>
+					<p:column width="12%"  headerText="Salary" filterBy="#{pelty.monthSalary}" sortBy="#{pelty.monthSalary}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.monthSalary}">
+				<f:converter converterId="com.nrg.lemon.util.UrlConverter"/>
+				</h:outputText>
+				
+					</p:column>
+					<p:column headerText="View" width="60" exportable="false" >
+					<center>
+					<p:commandButton icon="fa fa-search" title="View" oncomplete="PF('viewDialog').show();" action="#{payrollMB.payrollView}" update=":center_content" process="@this">
+					<f:setPropertyActionListener value="#{pelty.employee}" target="#{payrollMB.payrollDataBean.employee}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{pelty.month}" target="#{payrollMB.payrollDataBean.month}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{pelty.year}" target="#{payrollMB.payrollDataBean.year}"></f:setPropertyActionListener>
+					</p:commandButton>
+					
+						</center>
+					</p:column>
+					<p:column headerText="Edit" width="60" exportable="false" >
+					<center>
+					<p:commandButton icon="fa fa-edit" title="Edit" oncomplete="PF('editDialog').show();" action="#{payrollMB.payrollView}" update=":center_content" process="@this">
+					<f:setPropertyActionListener value="#{pelty.penaltID}" target="#{payrollMB.payrollDataBean.penaltID}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{pelty.employee}" target="#{payrollMB.payrollDataBean.employee}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{pelty.month}" target="#{payrollMB.payrollDataBean.month}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{pelty.year}" target="#{payrollMB.payrollDataBean.year}"></f:setPropertyActionListener>
+					</p:commandButton>
+					
+						</center>
+					</p:column>
+					<p:column headerText="delete" width="60" exportable="false" >
+						<center>
+							<p:commandButton icon="fa fa-remove" title="DELETE" action="#{payrollMB.payrollDelete}">
+							<f:setPropertyActionListener value="#{pelty.penaltID}" target="#{payrollMB.payrollDataBean.penaltID}"></f:setPropertyActionListener>
+								<p:confirm header="delete Penalty" message="ARE YOU SURE?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+							<p:confirmDialog global="true" width="15%">
+								<center>
+									<p:commandButton value="YES" type="button"
+										styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+									<p:commandButton value="NO" type="button"
+										styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+								</center>
+							</p:confirmDialog>
+						</center>
+					</p:column>
+				</p:dataTable>
+		</p:panel>
+
+		<!-- dialogbox -->
+	<p:dialog widgetVar="empPayreg" header="Employee Payroll " width="40%" height="100%" position="center" modal="true"
+			resizable="false" appendTo="@(body)">
+	<p:outputPanel id="dialogpanel">
+	<h:form >
+	<center><h:inputHidden id="errmsg"></h:inputHidden>
+			<h:message for="errmsg" style="color:red;font-size:10px"></h:message>
+			<br/>
+		<p:panelGrid columns="3" style="height:100px" styleClass="ui-panelgrid-blank" >
+				<h:outputLabel value="Month" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:selectOneMenu styleClass="pselectonmenu" value="#{payrollMB.payrollDataBean.month}" id="month">
+				<f:selectItem itemLabel="Select Month" noSelectionOption="true" ></f:selectItem>
+				<f:selectItems value="#{payrollMB.payrollDataBean.months}"></f:selectItems>
+						<p:ajax update="@form" process="@this" immediate="true"></p:ajax>
+				</p:selectOneMenu><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:message for="month" style="color:red;font-size:10px"></h:message>
+				<h:outputLabel value="Year" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:selectOneMenu styleClass="pselectonmenu" value="#{payrollMB.payrollDataBean.year}" id="year">
+				<f:selectItem itemLabel="Select Year" noSelectionOption="true" ></f:selectItem>
+				<f:selectItems value="#{payrollMB.payrollDataBean.years}"></f:selectItems>
+						<p:ajax update="@form" process="@this" immediate="true"></p:ajax>
+				</p:selectOneMenu><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:message for="year" style="color:red;font-size:10px"></h:message>
+				<h:outputLabel value="Employee " styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:selectOneMenu styleClass="pselectonmenu" value="#{payrollMB.payrollDataBean.employee}" id="employee">
+				<f:selectItem itemLabel="Select Employee" noSelectionOption="true" ></f:selectItem>
+				<f:selectItems value="#{payrollMB.payrollDataBean.employees}"></f:selectItems>
+						<p:ajax update="@form" process="@this" immediate="true"></p:ajax>
+				</p:selectOneMenu><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:message for="employee" style="color:red;font-size:10px"></h:message>
+				</p:panelGrid></center><br/>
+			<table width="100%" align="center"><tr>
+			<td>
+			<center>			
+			<p:commandButton value="Generate" icon="fa fa-check" update=":center_content:dialogpanel,center_content:dialogpanel1" process="@this" action="#{payrollMB.generatePayroll}"></p:commandButton>
+			<p:commandButton value="Close" update=":center_content" process="@this" onclick="PF('empPayreg').hide()"></p:commandButton>
+		</center>	<br/>
+			</td></tr></table>
+			
+			</h:form>
+			</p:outputPanel>
+			</p:dialog>
+			
+			<p:dialog widgetVar="empPayreg1" header="Employee Payroll " width="60%" height="100%" position="center" modal="true"
+			resizable="false" appendTo="@(body)">
+	<p:outputPanel id="dialogpanel1">
+	<h:form >
+	<center><h:inputHidden id="errmsgs"></h:inputHidden>
+			<h:message for="errmsgs" style="color:red;font-size:10px"></h:message>
+			<br/></center>
+		<center>
+			<p:panelGrid columns="6" style="height:100px" styleClass="ui-panelgrid-blank" >
+			<h:outputLabel value="Month" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.month}" styleClass="labelTxt" readonly="true"></p:inputText>
+			<h:outputLabel value="Year" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.year}" styleClass="labelTxt"  readonly="true"></p:inputText>
+			<h:outputLabel value="Employee" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.employee}" styleClass="labelTxt"  readonly="true"></p:inputText>
+			<h:outputLabel value="Branch" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.branch}" styleClass="labelTxt"  readonly="true"></p:inputText>
+			<h:outputLabel value="Salary" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputNumber value="#{payrollMB.payrollDataBean.salary}" id="salary" styleClass="labelTxt" >
+			<p:ajax update="@form" process="@this" ></p:ajax>
+			</p:inputNumber>
+			<h:outputLabel value="Over Time" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputNumber value="#{payrollMB.payrollDataBean.overTime}" id="overtime" styleClass="labelTxt" readonly="true">
+			<p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+			</p:inputNumber>
+			<h:outputLabel ></h:outputLabel><h:outputLabel></h:outputLabel>
+			<h:message for="salary" style="color:red;font-size:10px"></h:message>
+			<h:outputLabel></h:outputLabel><h:outputLabel ></h:outputLabel>
+			<h:message for="overtime" style="color:red;font-size:10px"></h:message>
+			<h:outputLabel value="loan Amount" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.loanAmount}" id="loan" styleClass="labelTxt" readonly="true">
+			<p:ajax update="@form" process="@this"></p:ajax>
+			</p:inputText>
+			<h:outputLabel value="Attendance Bonus" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputNumber value="#{payrollMB.payrollDataBean.attendanceBonus}" id="attenbonus" styleClass="labelTxt" readonly="true">
+			<p:ajax update="@form" process="@this"></p:ajax>
+			</p:inputNumber>
+			<h:outputLabel ></h:outputLabel><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+			<h:outputLabel></h:outputLabel><h:outputLabel ></h:outputLabel>
+			<h:message for="attenbonus" style="color:red;font-size:10px"></h:message>
+			</p:panelGrid></center>
+			<br/>
+			<table width="100%" align="center"><tr>
+			<td>
+			<center>			
+			<p:commandButton value="Save" icon="fa fa-save" update="@form" process="@this" action="#{payrollMB.savePayroll}"></p:commandButton>
+			<p:commandButton value="Close" update="@form" process="@this" action="#{payrollMB.payrollClose}"></p:commandButton>
+		</center>	<br/>
+			</td></tr></table>
+			</h:form>
+			</p:outputPanel>
+			</p:dialog>
+<p:dialog header="Employee Payroll View" widgetVar="viewDialog"
+				height="100%" width="60%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+			<p:outputPanel >
+			<h:form >
+			<p:panelGrid columns="6" style="height:100px" styleClass="ui-panelgrid-blank" >
+			<h:outputLabel value="Month" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.month}" styleClass="labelTxt" readonly="true"></p:inputText>
+			<h:outputLabel value="Year" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.year}" styleClass="labelTxt"  readonly="true"></p:inputText>
+			<h:outputLabel value="Employee" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.employee}" styleClass="labelTxt"  readonly="true"></p:inputText>
+			<h:outputLabel value="Branch" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.branch}" styleClass="labelTxt"  readonly="true"></p:inputText>
+			<h:outputLabel value="Salary" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.salary}" styleClass="labelTxt" readonly="true">
+			<f:converter converterId="com.nrg.lemon.util.UrlConverter"/>
+			</p:inputText>
+			<h:outputLabel value="Over Time" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.overTime}" styleClass="labelTxt" readonly="true">
+			<f:converter converterId="com.nrg.lemon.util.UrlConverter"/>
+			</p:inputText>
+			<h:outputLabel ></h:outputLabel><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+			<h:outputLabel></h:outputLabel><h:outputLabel ></h:outputLabel><h:outputLabel></h:outputLabel>
+			<h:outputLabel value="loan Amount" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.loanAmount}" styleClass="labelTxt" readonly="true" >
+			<f:converter converterId="com.nrg.lemon.util.UrlConverter"/>
+			</p:inputText>
+			<h:outputLabel value="Attendance Bonus" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.attendanceBonus}" styleClass="labelTxt" readonly="true">
+			<f:converter converterId="com.nrg.lemon.util.UrlConverter"/>
+			</p:inputText>
+			<h:outputLabel ></h:outputLabel><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+			<h:outputLabel></h:outputLabel><h:outputLabel ></h:outputLabel>
+			<h:outputLabel></h:outputLabel>
+			<h:outputLabel value="Monthly Salary" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.monthSalary}" styleClass="labelTxt" readonly="true">
+			<f:converter converterId="com.nrg.lemon.util.UrlConverter"/>
+			</p:inputText>
+			</p:panelGrid>
+			<table align="center">
+			<tr><td colspan="3" align="center" style="height: 46px;">
+				<p:commandButton value="close" update="@form" immediate="true" oncomplete="PF('viewDialog').hide()"></p:commandButton></td>
+				</tr>
+			</table>
+				</h:form>
+				</p:outputPanel>
+			</p:dialog>
+			<p:dialog header="Employee Payroll Edit" widgetVar="editDialog"
+				height="100%" width="60%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+			<p:outputPanel >
+			<h:form >
+			<p:panelGrid columns="6" style="height:100px" styleClass="ui-panelgrid-blank" >
+			<h:outputLabel value="Month" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.month}" styleClass="labelTxt" readonly="true"></p:inputText>
+			<h:outputLabel value="Year" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.year}" styleClass="labelTxt"  readonly="true"></p:inputText>
+			<h:outputLabel value="Employee" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.employee}" styleClass="labelTxt"  readonly="true"></p:inputText>
+			<h:outputLabel value="Branch" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputText value="#{payrollMB.payrollDataBean.branch}" styleClass="labelTxt"  readonly="true"></p:inputText>
+			<h:outputLabel value="Salary" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputNumber value="#{payrollMB.payrollDataBean.salary}" id="salary1" styleClass="labelTxt" >
+			<p:ajax update="@form" process="@this" ></p:ajax>
+			</p:inputNumber>
+			<h:outputLabel value="Over Time" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputNumber value="#{payrollMB.payrollDataBean.overTime}" id="overtime1" styleClass="labelTxt" readonly="true">
+			<p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+			</p:inputNumber>
+			<h:outputLabel ></h:outputLabel><h:outputLabel></h:outputLabel>
+			<h:message for="salary1" style="color:red;font-size:10px"></h:message>
+			<h:outputLabel></h:outputLabel><h:outputLabel ></h:outputLabel>
+			<h:message for="overtime1" style="color:red;font-size:10px"></h:message>
+			<h:outputLabel value="loan Amount" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputNumber value="#{payrollMB.payrollDataBean.loanAmount}" id="loan1" styleClass="labelTxt" readonly="true">
+			<p:ajax update="@form" process="@this"></p:ajax>
+			</p:inputNumber>
+			<h:outputLabel value="Attendance Bonus" styleClass="labelTxt"></h:outputLabel>
+			<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+			<p:inputNumber value="#{payrollMB.payrollDataBean.attendanceBonus}" id="attenbonus1" styleClass="labelTxt" readonly="true">
+			<p:ajax update="@form" process="@this"></p:ajax>
+			</p:inputNumber>
+			<h:outputLabel ></h:outputLabel><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+			<h:outputLabel></h:outputLabel><h:outputLabel ></h:outputLabel>
+			<h:message for="attenbonus1" style="color:red;font-size:10px"></h:message>
+			</p:panelGrid>
+			<table align="center">
+			<tr><td colspan="3" align="center" style="height: 46px;">
+			<p:commandButton value="Update" update="@form" process="@this" immediate="true" action="#{payrollMB.payrollUpdate}"></p:commandButton>
+				<p:commandButton value="close" update="@form" immediate="true" oncomplete="PF('editDialog').hide()"></p:commandButton></td>
+				</tr>
+			</table>
+				</h:form>
+				</p:outputPanel>
+			</p:dialog>
+<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag">
+				<p align="center" style="font-size: 16px">SUCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{payrollMB.employeeSalaryPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="edit" header="CONFORMATION BOX" position="center"
+			modal="true" resizable="false" appendTo="@(body)" width="30%"
+			height="100px">
+			<h:form>
+				<p align="center" style="font-size: 16px">EDITED SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('edit').hide()" action="#{payrollMB.employeeSalaryPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="delete" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag1">
+				<p align="center" style="font-size: 16px">DELETED SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('delete').hide()" action="#{payrollMB.employeeSalaryPage}"  update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

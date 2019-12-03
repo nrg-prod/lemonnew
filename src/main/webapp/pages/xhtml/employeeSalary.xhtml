@@ -1,0 +1,457 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:panel header="Register Employee form" style="min-height:100%" id="salarypanel">
+	<div class="ui-g">
+				<div class="ui-g-12 ui-md-4">
+						<p:commandButton value="add employee" oncomplete="PF('employeereg').show()" actionListener="#{employeeMB.reset}" update="center_content:dialogpanel" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:commandButton>
+				</div>
+				<div class="ui-g-12 ui-md-4">
+				</div>
+				<div class="ui-g-12 ui-md-4">
+				<h:panelGrid columns="3" cellpadding="2" cellspacing="3">
+					<h:outputLabel value="branch" styleClass="labelTxt"></h:outputLabel>
+					<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+					<p:selectOneMenu id="bran"  value="#{employeeMB.employeeDataBean.branchName}">
+       					<f:selectItem itemLabel="please select one" noSelectionOption="true"></f:selectItem>
+       					<f:selectItem itemLabel="all" itemValue="ALL"></f:selectItem>
+       					<f:selectItems value="#{employeeMB.branchlist}" />
+       					<p:ajax event="valueChange" update=":center_content" process="@this" listener="#{employeeMB.employeeSearch}" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax>
+      				</p:selectOneMenu>
+      				<h:outputLabel /><h:outputLabel />
+					<h:message for="bran" style="color:red;font-size:10px"></h:message>
+					</h:panelGrid>
+				</div>
+			</div>
+	<p:dataTable rows="5" paginator="true" paginatorPosition="bottom" value="#{employeeMB.employeeList}"
+					pageLinks="5" id="employeedata" paginatorAlwaysVisible="false"
+					widgetVar="employeeinfo"  var="employee"  editable="true">
+					<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<p:inputText id="globalFilter" onkeyup="PF('employeeinfo').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+    					</f:facet>
+					<p:column headerText="branch" filterBy="#{employee.employeeBranch}" sortBy="#{employee.employeeBranch}" filterStyle="display:none">
+						<h:outputText value="#{employee.employeeBranch}"></h:outputText>
+					</p:column>
+					<p:column headerText="entry date" filterBy="#{employee.entryDate}" sortBy="#{employee.entryDate}"  filterStyle="display:none">
+								<h:outputText value="#{employee.entryDate}" ><f:convertDateTime pattern="dd MMM yyyy"></f:convertDateTime>
+								</h:outputText>	
+					</p:column>
+					<p:column headerText="name" filterBy="#{employee.employeeName}" sortBy="#{employee.employeeName}" filterStyle="display:none">
+								<h:outputText value="#{employee.employeeName}"></h:outputText>
+					</p:column>
+					<p:column headerText="daily" filterBy="#{employee.daily}" sortBy="#{employee.daily}" filterStyle="display:none">
+								<h:outputText value="#{employee.daily}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+					</p:column>
+					<p:column headerText="last update" filterBy="#{employee.updatedDate}" sortBy="#{employee.updatedDate}" filterStyle="display:none">
+								<h:outputText value="#{employee.updatedDate}"><f:convertDateTime pattern="dd MMM yyyy"></f:convertDateTime>
+								</h:outputText>
+					</p:column>
+					<p:column headerText="view" width="60">
+						<p:commandButton icon="fa fa-search" title="VIEW" action="#{employeeMB.employeeView}" oncomplete="PF('employeeview').show()"
+						update="center_content:employeeoutpanel" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()">
+					<f:setPropertyActionListener target="#{employeeMB.employeeDataBean.phoneNo1}"
+												value="#{employee.phoneNo1}" />	</p:commandButton>
+					</p:column> 
+					<p:column headerText="edit" width="60">
+						<p:commandButton icon="fa fa-pencil" title="EDIT" oncomplete="PF('employeeEdit').show()" action="#{employeeMB.employeeView}"
+						update="center_content:editdialogpanel" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()">
+						<f:setPropertyActionListener target="#{employeeMB.employeeDataBean.phoneNo1}"
+												value="#{employee.phoneNo1}" />	
+						</p:commandButton>
+					</p:column> 
+					<p:column headerText="delete" width="60" >
+						<center>
+							<p:commandButton icon="fa fa-remove" title="DELETE" action="#{employeeMB.employeeDelete(employee)}">
+								<p:confirm header="delete branch" message="ARE YOU SURE?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+							<p:confirmDialog global="true" width="15%">
+								<center>
+									<p:commandButton value="YES" type="button"
+										styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+									<p:commandButton value="NO" type="button"
+										styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+								</center>
+							</p:confirmDialog>
+						</center>
+					</p:column>
+				</p:dataTable>	
+	</p:panel>
+	<p:dialog widgetVar="employeereg" header="add employee" width="60%" height="550px" position="center" modal="true"
+			resizable="false" appendTo="@(body)">
+	<p:outputPanel id="dialogpanel">
+	<h:form id="employeeform">
+	<div class="ui-g">
+    <div class="ui-g-6">
+    <p:panelGrid columns="3" styleClass="ui-panelgrid-blank" >
+		<h:outputLabel value="branch" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:selectOneMenu id="branch" value="#{employeeMB.employeeDataBean.employeeBranch}" filter="true" filterMatchMode="contains">
+		<f:selectItem itemLabel="Please select one" noSelectionValue="true" ></f:selectItem>
+		<f:selectItems value="#{employeeMB.branchlist}"></f:selectItems>
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:selectOneMenu>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="branch" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="entry date" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:calendar id="edate"  value="#{employeeMB.employeeDataBean.entryDate}" pattern="dd-MM-yyyy">
+    	<p:ajax  update="@all" process="@this" event="dateSelect"></p:ajax></p:calendar>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="edate" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="name" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="name" value="#{employeeMB.employeeDataBean.employeeName}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="name" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="daily" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputNumber id="daily" value="#{employeeMB.employeeDataBean.daily}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputNumber>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="daily" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="commission" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputNumber id="comm" value="#{employeeMB.employeeDataBean.commission}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputNumber>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="comm" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="date of birth" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:calendar id="dob" maxdate="#{currentDate}" pattern="dd-MM-yyyy" value="#{employeeMB.employeeDataBean.dateofBirth}">
+    	<p:ajax  update="@all" process="@this" event="dateSelect"></p:ajax></p:calendar>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="dob" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="address" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputTextarea id="address" value="#{employeeMB.employeeDataBean.address}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputTextarea>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="address" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp #1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="no1" value="#{employeeMB.employeeDataBean.phoneNo1}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="no1" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp #2" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="no2" value="#{employeeMB.employeeDataBean.phoneNo2}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="no2" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="blood type" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="blood" value="#{employeeMB.employeeDataBean.bloodType}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="blood" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="alergy" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="alergy" value="#{employeeMB.employeeDataBean.alergy}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="overtime" style="font-size:10px;color:red"></h:message>
+    	</p:panelGrid>
+   	 </div>
+     <div class="ui-g-6">
+     <p:toolbar>
+      <f:facet name="left">
+     <h:outputLabel value="emergency contact person"></h:outputLabel>
+     </f:facet>
+     </p:toolbar>
+     <br></br>
+    	<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+    	<h:outputLabel value="name #1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="name1" value="#{employeeMB.employeeDataBean.contactName1}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="name1" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="no3" value="#{employeeMB.employeeDataBean.emergencyContactno1}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="no3" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp2" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="no4" value="#{employeeMB.employeeDataBean.emergencyContactno2}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="no4" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="address" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputTextarea id="address1" value="#{employeeMB.employeeDataBean.emergencyAddress1}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputTextarea>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="address1" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="name #2" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="name2" value="#{employeeMB.employeeDataBean.contactName2}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="name2" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="no5" value="#{employeeMB.employeeDataBean.emergencyContactno3}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="no5" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp2" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="no6" value="#{employeeMB.employeeDataBean.emergencyContactno4}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="no6" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="address" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputTextarea id="address2" value="#{employeeMB.employeeDataBean.emergencyAddress2}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputTextarea>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="address2" style="font-size:10px;color:red"></h:message>
+      	</p:panelGrid>
+      	</div>
+      	</div>
+      	<center>
+        <p:commandButton value="save" icon="fa fa-check" action="#{employeeMB.saveEmployee}" update=":center_content:dialogpanel" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:commandButton>
+        <p:commandButton value="clear" icon="fa fa-times" actionListener="#{employeeMB.reset}" update=":center_content:dialogpanel" process="@this">
+        </p:commandButton>
+        </center>
+    </h:form>
+	</p:outputPanel>
+		</p:dialog>
+		
+		<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag">
+				<p align="center" style="font-size: 16px">SUCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{employeeMB.salaryPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="edit" header="CONFORMATION BOX" position="center"
+			modal="true" resizable="false" appendTo="@(body)" width="30%"
+			height="100px">
+			<h:form>
+				<p align="center" style="font-size: 16px">EDITED SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('edit').hide()" action="#{employeeMB.salaryPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="delete" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag1">
+				<p align="center" style="font-size: 16px">DELETE SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('delete').hide()" action="#{employeeMB.salaryPage}"  update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog header="employee view" appendTo="@(body)" widgetVar="employeeview" modal="true" 
+			 height="300px" width="50%" resizable="false" >
+			<p:outputPanel id="employeeoutpanel">
+			<h:form id="empview">
+			<center>
+			<p:panelGrid columns="4" style="width:600px;height:270px">
+			<h:outputLabel value="branch name" style="font-size:12px;"></h:outputLabel>
+			<h:outputText value="#{employeeMB.employeeDataBean.employeeBranch}" ></h:outputText>
+			<h:outputLabel value="entry date" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.entryDate}" ></h:outputLabel>
+			<h:outputLabel value="employee name" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.employeeName}" ></h:outputLabel>
+			<h:outputLabel value="daily" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.daily}" ><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputLabel>
+			<h:outputLabel value="commission" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.commission}" ><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputLabel>
+			<h:outputLabel value="date of birth" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.dateofBirth}" ></h:outputLabel>
+			<h:outputLabel value="no.hp#1" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.phoneNo1}" ></h:outputLabel>
+			<h:outputLabel value="no.hp#2" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.phoneNo2}" ></h:outputLabel>
+			<h:outputLabel value="blood type" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.bloodType}" ></h:outputLabel>
+			<h:outputLabel value="alergy" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.alergy}" ></h:outputLabel>
+			<h:outputLabel value="name#1" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.contactName1}" ></h:outputLabel>
+			<h:outputLabel value="no.hp1" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.emergencyContactno1}" ></h:outputLabel>
+			<h:outputLabel value="no.hp2" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.emergencyContactno2}" ></h:outputLabel>
+			<h:outputLabel value="address" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.emergencyAddress1}" ></h:outputLabel>
+			<h:outputLabel value="name#2" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.contactName2}" ></h:outputLabel>
+			<h:outputLabel value="no.hp1" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.emergencyContactno3}" ></h:outputLabel>
+			<h:outputLabel value="no.hp1" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.emergencyContactno4}" ></h:outputLabel>
+			<h:outputLabel value="address" style="font-size:12px;"></h:outputLabel>
+			<h:outputLabel value="#{employeeMB.employeeDataBean.emergencyAddress2}" ></h:outputLabel>
+			</p:panelGrid>
+		</center>
+		</h:form>
+		</p:outputPanel>
+		</p:dialog>	
+		
+	<p:dialog widgetVar="employeeEdit" header="add employee" width="60%" height="550px" position="center" modal="true"
+			resizable="false" appendTo="@(body)">
+	<p:outputPanel id="editdialogpanel">
+	<h:form id="empform">
+	<div class="ui-g">
+    <div class="ui-g-6">
+    <p:panelGrid columns="3" styleClass="ui-panelgrid-blank" >
+		<h:outputLabel value="branch" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:selectOneMenu id="Ebranch" value="#{employeeMB.employeeDataBean.employeeBranch}" filter="true" filterMatchMode="contains">
+		<f:selectItem itemLabel="Please select one" noSelectionValue="true" ></f:selectItem>
+		<f:selectItems value="#{employeeMB.branchlist}"></f:selectItems>
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:selectOneMenu>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Ebranch" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="entry date" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:calendar id="Eedate"  value="#{employeeMB.employeeDataBean.entryDate}" pattern="dd-MM-yyyy">
+    	<p:ajax  update="@all" process="@this" event="dateSelect"></p:ajax></p:calendar>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eedate" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="name" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Ename" value="#{employeeMB.employeeDataBean.employeeName}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Ename" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="daily" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputNumber id="Edaily" value="#{employeeMB.employeeDataBean.daily}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputNumber>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Edaily" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="commission" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputNumber id="Ecomm" value="#{employeeMB.employeeDataBean.commission}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputNumber>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Ecomm" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="date of birth" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:calendar id="Edob" maxdate="#{currentDate}" pattern="dd-MM-yyyy" value="#{employeeMB.employeeDataBean.dateofBirth}">
+    	<p:ajax  update="@all" process="@this" event="dateSelect"></p:ajax></p:calendar>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Edob" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="address" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputTextarea id="Eaddress" value="#{employeeMB.employeeDataBean.address}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputTextarea>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eaddress" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp #1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Eno1" value="#{employeeMB.employeeDataBean.phoneNo1}" readonly="true">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eno1" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp #2" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Eno2" value="#{employeeMB.employeeDataBean.phoneNo2}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eno2" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="blood type" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Eblood" value="#{employeeMB.employeeDataBean.bloodType}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eblood" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="alergy" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Ealergy" value="#{employeeMB.employeeDataBean.alergy}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Ealergy" style="font-size:10px;color:red"></h:message>
+    	</p:panelGrid>
+   	 </div>
+     <div class="ui-g-6">
+     <p:toolbar>
+      <f:facet name="left">
+     <h:outputLabel value="emergency contact person"></h:outputLabel>
+     </f:facet>
+     </p:toolbar>
+     <br></br>
+    	<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+    	<h:outputLabel value="name #1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Ename1" value="#{employeeMB.employeeDataBean.contactName1}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Ename1" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Eno3" value="#{employeeMB.employeeDataBean.emergencyContactno1}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eno3" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp2" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Eno4" value="#{employeeMB.employeeDataBean.emergencyContactno2}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eno4" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="address" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputTextarea id="Eaddress1" value="#{employeeMB.employeeDataBean.emergencyAddress1}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputTextarea>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eaddress1" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="name #2" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Ename2" value="#{employeeMB.employeeDataBean.contactName2}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Ename2" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp1" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Eno5" value="#{employeeMB.employeeDataBean.emergencyContactno3}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eno5" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="no.hp2" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputText id="Eno6" value="#{employeeMB.employeeDataBean.emergencyContactno4}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eno6" style="font-size:10px;color:red"></h:message>
+    	<h:outputLabel value="address" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		<p:inputTextarea id="Eaddress2" value="#{employeeMB.employeeDataBean.emergencyAddress2}">
+    	<p:ajax  update="@all" process="@this"></p:ajax></p:inputTextarea>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="Eaddress2" style="font-size:10px;color:red"></h:message>
+      	</p:panelGrid>
+      	</div>
+      	</div>
+      	<center>
+        <p:commandButton value="save" icon="fa fa-check" action="#{employeeMB.employeeUpdate}" update=":center_content:editdialogpanel" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:commandButton>
+        <p:commandButton value="clear" icon="fa fa-times" actionListener="#{employeeMB.reset}" update=":center_content:editdialogpanel" process="@this">
+        </p:commandButton>
+        </center>
+    </h:form>
+	</p:outputPanel>
+		</p:dialog>
+	</ui:define>
+	</ui:composition>

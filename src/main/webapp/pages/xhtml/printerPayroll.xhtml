@@ -1,0 +1,416 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+	
+		<p:panel style="min-height:100%" header="Printer" rendered="#{payrollMB.payrollDataBean.flag}" id="printerpanel">
+		<br></br>
+		<center><h:panelGrid columns="3" cellpadding="3" cellspacing="4">
+		<h:outputLabel value="printer" styleClass="labelTxt"></h:outputLabel><h:outputLabel value=":"></h:outputLabel>
+		 <p:selectOneMenu value="#{payrollMB.productionDataBean.printerr}">
+   			 <f:selectItem itemLabel="please select one" noSelectionOption="true"></f:selectItem>
+   			 <f:selectItem itemValue="ALL" itemLabel="all"></f:selectItem>
+   			 <f:selectItems value="#{payrollMB.printerList}"></f:selectItems>
+  			 <p:ajax event="valueChange" listener="#{payrollMB.printerChange}" update="center_content" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax>
+    	</p:selectOneMenu></h:panelGrid></center>
+			<br></br>
+			<p:selectBooleanCheckbox value="#{payrollMB.payrollDataBean.selectCheckbox}">
+			<p:ajax update="@form" process="@this" event="valueChange" listener="#{payrollMB.checkboxPrinter}" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax>
+			</p:selectBooleanCheckbox>&nbsp;&nbsp;<h:outputLabel value="select all" styleClass="labelTxt"></h:outputLabel>
+			<br></br><br></br>
+			<p:dataTable 
+				widgetVar="printerTable" var="fabric" rendered="#{payrollMB.payrollDataBean.flag}"
+				value="#{payrollMB.productionDataBean.orderQuantitylist}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5" id="printer"
+				rows="5" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria" >
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('printerTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column  style="width:12px;text-align:center;" headerText="#">
+				<h:panelGroup rendered="#{fabric.invoiceStatus!='PAID'}">
+				<p:selectBooleanCheckbox value="#{fabric.checkBox}" id="check"><p:ajax update="@form" process="@this" ></p:ajax> </p:selectBooleanCheckbox></h:panelGroup>
+				</p:column>
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.orderDate}" filterStyle="display:none"  filterBy="#{fabric.orderDate}">
+					<h:outputText value="#{fabric.orderDate}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.invoiceNo}" filterBy="#{fabric.invoiceNo}">
+					<h:outputText value="#{fabric.invoiceNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="printer" filterStyle="display:none" sortBy="#{fabric.printer}" filterBy="#{fabric.printer}">
+					<h:outputText value="#{fabric.printer}"></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity" filterStyle="display:none" sortBy="#{fabric.totalQuantity}" filterBy="#{fabric.totalQuantity}">
+					<h:outputText value="#{fabric.totalQuantity}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.value}" filterBy="#{fabric.value}">
+					<h:outputText value="#{fabric.value}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{fabric.invoiceStatus}" filterStyle="display:none" filterBy="#{fabric.invoiceStatus}">
+					<h:outputText value="#{fabric.invoiceStatus}"></h:outputText>
+				</p:column>
+				<f:facet name="footer">
+				<p:outputPanel style="text-align:left">
+            <p:commandButton process="printer" update=":center_content"  value="payment"  action="#{payrollMB.paymentsave}" onstart="PF('blockprinter').show()" onsuccess="PF('blockprinter').hide()"/>
+            </p:outputPanel>
+        </f:facet>
+	</p:dataTable>
+	
+	<p:dialog header="payment confirmation" widgetVar="printerpaymentconfirmation"
+				width="60%" modal="true" resizable="false" id="printerpayment"
+				position="center" appendTo="@(body)">
+				 <p:outputPanel id="printerpaypanelid">
+				<h:form id="printerpay">
+		<p:dataTable 
+				 var="fabric" 
+				value="#{payrollMB.cutterconfirmationList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5" id="printerrr"
+				rows="10" paginatorPosition="bottom"  >
+					
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.orderDate}" filterStyle="display:none"  filterBy="#{fabric.orderDate}">
+					<h:outputText value="#{fabric.orderDate}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.invoiceNo}" filterBy="#{fabric.invoiceNo}">
+					<h:outputText value="#{fabric.invoiceNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="printer" filterStyle="display:none" sortBy="#{fabric.printer}" filterBy="#{fabric.printer}">
+					<h:outputText value="#{fabric.printer}"></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity" filterStyle="display:none" sortBy="#{fabric.totalQuantity}" filterBy="#{fabric.totalQuantity}">
+					<h:outputText value="#{fabric.totalQuantity}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.value}" filterBy="#{fabric.value}">
+					<h:outputText value="#{fabric.value}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{fabric.invoiceStatus}" filterStyle="display:none" filterBy="#{fabric.invoiceStatus}">
+					<h:outputText value="#{fabric.invoiceStatus}"></h:outputText>
+				</p:column>
+			</p:dataTable></h:form></p:outputPanel>
+			<br/>
+			<center>
+            <p:commandButton  update="center_content"  value="OK" oncomplete="PF('printerpaymentconfirmation').hide()" action="#{payrollMB.printerPage}" process="@this"/>
+           	<p:commandButton  update=":center_content"  value="PRINT" >
+           	      <p:printer target="printerpaypanelid"></p:printer></p:commandButton>
+           	</center>
+		</p:dialog>
+		</p:panel>
+		
+		
+		
+		<p:panel style="min-height:100%" header="Cmt" rendered="#{payrollMB.payrollDataBean.aflag}" id="cmtpanel">
+		<br></br>
+		 <center>
+		    <h:panelGrid columns="3" cellpadding="2" cellspacing="3">
+		    <h:outputText value="cmt" styleClass="labelTxt"></h:outputText>
+		    <h:outputText value=":" styleClass="labelTxt"></h:outputText>
+		    <p:selectOneMenu value="#{payrollMB.productionDataBean.cmt}">
+		    <f:selectItem itemLabel="please select one" noSelectionOption="true"></f:selectItem>
+		    <f:selectItem itemLabel="ALL" itemValue="ALL"></f:selectItem>
+		    <f:selectItems value="#{payrollMB.cmtList}"></f:selectItems>
+		    <p:ajax event="valueChange" listener="#{payrollMB.cmtSearch}" update="center_content" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax>
+		    </p:selectOneMenu>
+		    </h:panelGrid></center>
+   		 <br/>		
+			<p:dataTable 
+				widgetVar="cmtTable" var="fabric" rendered="#{payrollMB.payrollDataBean.aflag}"
+				value="#{payrollMB.productionDataBean.orderQuantitylist}" id="cmt"
+				paginator="true" rows="5" resizableColumns="true" pageLinks="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+					emptyMessage="No information found with given criteria">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('cmtTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column  style="width:12px;text-align:center;" headerText="#">
+				<h:panelGroup rendered="#{fabric.invoiceStatus!='paid'}">
+				<p:selectBooleanCheckbox value="#{fabric.checkBox}" id="check"><p:ajax update="@form" process="@this"></p:ajax> </p:selectBooleanCheckbox>
+				</h:panelGroup>
+				</p:column>
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.orderDate}" filterStyle="display:none"  filterBy="#{fabric.orderDate}">
+					<h:outputText value="#{fabric.orderDate}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="cmt" filterStyle="display:none" sortBy="#{fabric.cmt}" filterBy="#{fabric.cmt}">
+					<h:outputText value="#{fabric.cmt}"></h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.invoiceNo}" filterBy="#{fabric.invoiceNo}">
+					<h:outputText value="#{fabric.invoiceNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity" filterStyle="display:none" sortBy="#{fabric.totalQuantity}" filterBy="#{fabric.totalQuantity}">
+					<h:outputText value="#{fabric.totalQuantity}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.value}" filterBy="#{fabric.value}">
+					<h:outputText value="#{fabric.value}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{fabric.invoiceStatus}" filterStyle="display:none" filterBy="#{fabric.invoiceStatus}">
+					<h:outputText value="#{fabric.invoiceStatus}"></h:outputText>
+				</p:column>
+				<f:facet name="footer">
+				<p:outputPanel style="text-align:left">
+            <p:commandButton process="cmt" update=":center_content:cmtpaypanelid"  value="payment"  action="#{payrollMB.paymentsave}" onstart="PF('blockcmt').show();" onsuccess="PF('blockcmt').hide();"/>
+            </p:outputPanel>
+        </f:facet>
+			</p:dataTable>
+			
+			<p:dialog header="payment confirmation" widgetVar="cmtpaymentconfirmation"
+				width="60%" modal="true" resizable="false" id="cmtpayment"
+				position="center" appendTo="@(body)">
+				<p:outputPanel id="cmtpaypanelid">
+				<h:form id="cmtpay">		
+				<p:dataTable 
+				widgetVar="cmtTabless" var="fabric" 
+				value="#{payrollMB.cutterconfirmationList}" id="cmtpayy"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="10" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria">
+				
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.orderDate}" filterStyle="display:none"  filterBy="#{fabric.orderDate}">
+					<h:outputText value="#{fabric.orderDate}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="cmt" filterStyle="display:none" sortBy="#{fabric.cmt}" filterBy="#{fabric.cmt}">
+					<h:outputText value="#{fabric.cmt}"></h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.invoiceNo}" filterBy="#{fabric.invoiceNo}">
+					<h:outputText value="#{fabric.invoiceNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity" filterStyle="display:none" sortBy="#{fabric.totalQuantity}" filterBy="#{fabric.totalQuantity}">
+					<h:outputText value="#{fabric.totalQuantity}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.value}" filterBy="#{fabric.value}">
+					<h:outputText value="#{fabric.value}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{fabric.invoiceStatus}" filterStyle="display:none" filterBy="#{fabric.invoiceStatus}">
+					<h:outputText value="#{fabric.invoiceStatus}"></h:outputText>
+				</p:column>
+			</p:dataTable></h:form></p:outputPanel>
+			<br/>
+			<center>
+            <p:commandButton  update="center_content"  value="OK" oncomplete="PF('cmtpaymentconfirmation').hide()" action="#{payrollMB.cmtPage}" process="@this"/>
+           	<p:commandButton  update=":center_content"  value="PRINT" >
+           	      <p:printer target="cmtpay"></p:printer></p:commandButton>
+           	</center>
+		</p:dialog>
+		</p:panel>
+		
+		
+		
+		
+		<p:panel style="min-height:100%" header="cutter" rendered="#{payrollMB.payrollDataBean.bflag}" id="cutterpanel">
+		<br></br>		
+		<center><h:panelGrid columns="3" cellpadding="3" cellspacing="4">
+		<h:outputLabel value="cutter" styleClass="labelTxt"></h:outputLabel><h:outputLabel value=":"></h:outputLabel>
+		 <p:selectOneMenu value="#{payrollMB.productionDataBean.cutter}">
+   			 <f:selectItem itemLabel="please select one" noSelectionOption="true"></f:selectItem>
+   			  <f:selectItem itemValue="ALL" itemLabel="all"></f:selectItem>
+   			 <f:selectItems value="#{payrollMB.cutterlist}"></f:selectItems>
+  			 <p:ajax event="valueChange" listener="#{payrollMB.cutterChange}" update="center_content" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax>
+    	</p:selectOneMenu></h:panelGrid></center>
+    	<br></br><br></br>
+    	<p:selectBooleanCheckbox value="#{payrollMB.payrollDataBean.selectCheckbox}">
+	<p:ajax update="@form" process="@this" event="valueChange" listener="#{payrollMB.checkboxCutter}" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax>
+	</p:selectBooleanCheckbox>&nbsp;&nbsp;<h:outputLabel value="select all" styleClass="labelTxt"></h:outputLabel>
+	<br></br><br></br>
+			<p:dataTable 
+				widgetVar="cutterTable" var="fabric" rendered="#{payrollMB.payrollDataBean.bflag}"
+				value="#{payrollMB.productionDataBean.orderQuantitylist}" id="cutter"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria" >
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right" >
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('cutterTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column  style="width:12px;text-align:center;" headerText="#">
+				<h:panelGroup rendered="#{fabric.invoiceStatus!='PAID'}">
+				<p:selectBooleanCheckbox value="#{fabric.checkBox}" id="check"><p:ajax update="@form" process="@this"></p:ajax> </p:selectBooleanCheckbox>
+				</h:panelGroup>
+				</p:column>
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.orderDate}" filterStyle="display:none"  filterBy="#{fabric.orderDate}">
+					<h:outputText value="#{fabric.orderDate}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.invoiceNo}" filterBy="#{fabric.invoiceNo}">
+					<h:outputText value="#{fabric.invoiceNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Cutter" filterStyle="display:none" sortBy="#{fabric.cutter}" filterBy="#{fabric.cutter}">
+					<h:outputText value="#{fabric.cutter}"></h:outputText>
+				</p:column>
+				<p:column headerText="Model" filterStyle="display:none" sortBy="#{fabric.modelName}" filterBy="#{fabric.modelName}">
+					<h:outputText value="#{fabric.modelName}"></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity" filterStyle="display:none" sortBy="#{fabric.totalQuantity}" filterBy="#{fabric.totalQuantity}">
+					<h:outputText value="#{fabric.totalQuantity}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.value}" filterBy="#{fabric.value}">
+					<h:outputText value="#{fabric.value}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="saving" filterStyle="display:none" sortBy="#{fabric.saving}" filterBy="#{fabric.saving}">
+					<h:outputText value="#{fabric.saving}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter> </h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{fabric.invoiceStatus}" filterStyle="display:none" filterBy="#{fabric.invoiceStatus}">
+					<h:outputText value="#{fabric.invoiceStatus}"></h:outputText>
+				</p:column>
+				<f:facet name="footer">
+				<p:outputPanel style="text-align:left">
+            <p:commandButton process="cutter" update=":center_content"  value="payment" action="#{payrollMB.paymentsave}" onstart="PF('blockcutter').show()" onsuccess="PF('blockcutter').hide()"/>
+            </p:outputPanel>
+        </f:facet>
+			</p:dataTable>
+		</p:panel>
+		<p:dialog header="Confirmation Box" appendTo="@(body)" closable="false" widgetVar="printersuccess" modal="true"
+			width="25%" height="40%" resizable="false" dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText value="Successfully Paid"></h:outputText>
+					<br></br><br></br>
+					<p:commandButton immediate="true"
+						process="@this" value="OK" update="center_content"
+						oncomplete="PF('printersuccess').hide()" action="#{payrollMB.printerPage}"></p:commandButton>
+				</center>
+
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Confirmation Box" appendTo="@(body)" closable="false" widgetVar="cmtsuccess" modal="true"
+			width="25%" height="40%" resizable="false" dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText value="Successfully Paid"></h:outputText>
+					<br></br><br></br>
+					<p:commandButton immediate="true"
+						process="@this" value="OK" update="center_content"
+						oncomplete="PF('cmtsuccess').hide()" action="#{payrollMB.cmtPage}"></p:commandButton>
+				</center>
+
+			</h:form>
+		</p:dialog>
+		<p:dialog header="Confirmation Box" appendTo="@(body)" closable="false" widgetVar="cuttersuccess1" modal="true"
+			width="60%" height="50%" resizable="false" dynamic="true">
+			<h:form>
+				<p:dataTable 
+				widgetVar="cutterTabless" var="fabric"
+				value="#{payrollMB.cutterconfirmationList}" id="cutterconfirm"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria" >
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.orderDate}" filterStyle="display:none"  filterBy="#{fabric.orderDate}">
+					<h:outputText value="#{fabric.orderDate}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.invoiceNo}" filterBy="#{fabric.invoiceNo}">
+					<h:outputText value="#{fabric.invoiceNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Cutter" filterStyle="display:none" sortBy="#{fabric.cutter}" filterBy="#{fabric.cutter}">
+					<h:outputText value="#{fabric.cutter}"></h:outputText>
+				</p:column>
+				<p:column headerText="Model" filterStyle="display:none" sortBy="#{fabric.modelName}" filterBy="#{fabric.modelName}">
+					<h:outputText value="#{fabric.modelName}"></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity" filterStyle="display:none" sortBy="#{fabric.totalQuantity}" filterBy="#{fabric.totalQuantity}">
+					<h:outputText value="#{fabric.totalQuantity}"></h:outputText>
+				</p:column>
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.value}" filterBy="#{fabric.value}">
+					<h:outputText value="#{fabric.value}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="saving" filterStyle="display:none" sortBy="#{fabric.saving}" filterBy="#{fabric.saving}">
+					<h:outputText value="#{fabric.saving}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{fabric.invoiceStatus}" filterStyle="display:none" filterBy="#{fabric.invoiceStatus}">
+					<h:outputText value="paid"></h:outputText>
+				</p:column>
+				
+           	</p:dataTable>
+			<br/>
+			<center>
+            <p:commandButton  update="center_content"  value="OK" oncomplete="PF('cuttersuccess1').hide()" action="#{payrollMB.cutterPage}" process="@this"/>
+           	<p:commandButton  update=":center_content"  value="PRINT" >
+           	      <p:printer target="cutterconfirm"></p:printer></p:commandButton>
+           	</center></h:form>
+		</p:dialog>
+		
+		<p:dialog header="Confirmation Box" appendTo="@(body)" closable="false" widgetVar="cuttersuccess" modal="true"
+			width="25%" height="40%" resizable="false" dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText value="Successfully Paid"></h:outputText>
+					<br></br><br></br>
+					<p:commandButton immediate="true"
+						process="@this" value="OK" update="center_content"
+						oncomplete="PF('cuttersuccess').hide()" action="#{payrollMB.cutterPage}"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:blockUI widgetVar="blockcmt" block="cmtpanel" >
+		<h:panelGrid id="blockUIContent" columns="2"
+				style="table-layout:auto;">
+				<p:graphicImage value="../../images/spinners.gif" style="width:60px"/>
+				<h:outputText value="Please wait, data is being processed..."
+					style="white-space: nowrap;font-size:14px" />
+			</h:panelGrid>
+		</p:blockUI>
+		<p:blockUI widgetVar="blockcutter" block="cutterpanel" >
+		<h:panelGrid id="blockContent" columns="2"
+				style="table-layout:auto;">
+				<p:graphicImage value="../../images/spinners.gif" style="width:60px"/>
+				<h:outputText value="Please wait, data is being processed..."
+					style="white-space: nowrap;font-size:14px" />
+			</h:panelGrid>
+		</p:blockUI>
+		<p:blockUI widgetVar="blockprinter" block="printerpanel" >
+		<h:panelGrid id="block" columns="2"
+				style="table-layout:auto;">
+				<p:graphicImage value="../../images/spinners.gif" style="width:60px"/>
+				<h:outputText value="Please wait, data is being processed..."
+					style="white-space: nowrap;font-size:14px" />
+			</h:panelGrid>
+		</p:blockUI>
+	</ui:define>
+</ui:composition>

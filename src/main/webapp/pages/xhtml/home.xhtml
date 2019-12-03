@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<h:head>
+		<title>Dubai Police</title>
+		<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+		<link type="text/css" rel="stylesheet" href="../../css/layout.css"></link>
+		<link rel="SHORTCUT ICON" href="../../images/logo.png"></link>
+		<script type="text/javascript" src="../../js/validation.js" />
+		<script type="text/javascript">
+		$(document).ready(function() {
+	try{
+		 var panelMenu = PrimeFaces.widgets.sidePanelMenu;
+		    panelMenu.collapseRootSubmenu(panelMenu.headers);
+		    panelMenu.expandedNodes = [];   
+		    panelMenu.headers.removeClass('ui-state-hover');
+		    panelMenu.saveState();
+    }catch (e) {
+	
+	}
+	});
+		</script>
+		<style type="text/css">
+		.pe-layout-pane-header {
+    padding: 4px 1em;
+    border-width: 0 0 1px;
+    font-family: sans-serif;
+}
+		</style>
+	</h:head>
+	<h:body>
+		<pe:layout fullPage="true">
+			<pe:layoutPane position="north" closable="false" resizable="false"
+				size="10%">
+				<h:form>
+					<div class="ui-g">
+						<div class="ui-g-6">
+							<p:commandLink action="reminder.xhtml?faces-redirect=true">
+								<p:graphicImage value="/images/logo.png" width="45%"
+									height="80%"></p:graphicImage>
+							</p:commandLink>
+						</div>
+						<div class="ui-g-2" style="text-align: right">
+						<p:commandButton icon="fa fa-user"  ajax="false" value="   USER management" style="text-align: left"
+								action="#{loginMB.usermanagement}"></p:commandButton>
+						</div>
+						<div class="ui-g-4" style="text-align: right">
+							<h:outputText
+								value="welcome  #{loginMB.loginDataBean.userName}  "
+								styleClass="outText" style="font-size:14px;color:black"></h:outputText>
+
+							<p:commandButton icon="fa fa-sign-out" value="LOGOUT"
+								action="#{loginMB.logout}" ajax="false"></p:commandButton>
+						</div>
+					</div>
+				</h:form>
+			</pe:layoutPane>
+			<pe:layoutPane position="center" size="60%" resizable="false"
+				id="centerIDContent" closable="false">
+				<h:form id="center_content">
+					<ui:insert name="content"></ui:insert>
+				</h:form>
+			</pe:layoutPane>
+			<pe:layoutPane position="west" closable="true" resizable="false"
+				size="20%">
+				<f:facet name="header">  
+             	MENU
+               </f:facet>
+				<h:form id="menu">
+					<ui:include src="../../pages/xhtml/menu.xhtml" />
+				</h:form>
+			</pe:layoutPane>
+			<pe:layoutPane position="south" closable="false" resizable="false"
+				size="5%">
+				<center>
+					<h:outputLabel
+						value="Copyright © 2016 PT. Neotural Era Graha. All Rights Reserved.">
+					</h:outputLabel>
+				</center>
+			</pe:layoutPane>
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+    		<p:graphicImage value="../../images/loader.gif" style="width:80px"/>
+			</p:dialog>
+		</pe:layout>
+	</h:body>
+</ui:composition>

@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:growl id="msg"></p:growl>
+		<p:panel header="WAREHOUSE" style="min-height:100%"  id="warepanel" >
+			<p:commandButton value="add Warehouse" action="#{stockMB.warehouseReg}"  oncomplete="PF('warehousereg').show()" update=":center_content:dialogpanel"></p:commandButton>
+			<br></br>
+			<center><h:inputHidden id="errmsgs"></h:inputHidden>
+			<h:message for="errmsgs" style="color:red;font-size:10px"></h:message></center>
+			<br/>
+			<p:dataTable rows="5" paginator="true" paginatorPosition="bottom" value="#{stockMB.stockDataBean.warelists}"
+					pageLinks="5" id="branchdata" paginatorAlwaysVisible="false"
+					widgetVar="branchinfo"  var="ware"  editable="true">
+					<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<p:inputText id="globalFilter" onkeyup="PF('branchinfo').filter()" 
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+    					</f:facet>
+    				<p:ajax event="rowEdit" listener="#{stockMB.warehouseEdit}" update=":center_content:msg" />
+					<p:ajax event="rowEditCancel" />
+					<p:column headerText="Name" filterBy="#{ware.warehouseName}" sortBy="#{ware.warehouseName}" filterStyle="display:none">
+						<h:outputText value="#{ware.warehouse_id}" style="display:none;"></h:outputText>
+						<p:cellEditor><f:facet name="output">
+								<h:outputText value="#{ware.warehouseName}"></h:outputText>
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{ware.warehouseName}" />
+							</f:facet></p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Location" filterBy="#{ware.location}" sortBy="#{ware.location}" filterStyle="display:none">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{ware.location}"></h:outputText>
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{ware.location}" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+				<p:column headerText="Person Incharge" filterBy="#{ware.personIncharge}" sortBy="#{ware.personIncharge}"  filterStyle="display:none">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{ware.personIncharge}"></h:outputText>
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{ware.personIncharge}" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column headerText="edit" width="60" exportable="false">
+						<p:rowEditor  />
+					</p:column> 
+					<p:column headerText="delete" width="60" exportable="false" >
+						<center>
+							<p:commandButton icon="fa fa-remove" title="DELETE" action="#{stockMB.deleteWarehouse}">
+							<f:setPropertyActionListener value="#{ware.warehouse_id}" target="#{stockMB.stockDataBean.warehouse_id}"></f:setPropertyActionListener>
+								<p:confirm header="delete warehouse" message="ARE YOU SURE?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+							<p:confirmDialog global="true" width="15%">
+								<center>
+									<p:commandButton value="YES" type="button"
+										styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+									<p:commandButton value="NO" type="button"
+										styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+								</center>
+							</p:confirmDialog>
+						</center>
+					</p:column>
+				</p:dataTable>
+		</p:panel>
+
+		<!-- dialogbox -->
+	<p:dialog widgetVar="warehousereg" header="Add Warehouse " width="40%" height="50%" position="center" modal="true"
+			resizable="false" appendTo="@(body)">
+	<p:outputPanel id="dialogpanel">
+	<h:form id="wareform">
+	<center><h:inputHidden id="errmsg"></h:inputHidden>
+			<h:message for="errmsg" style="color:red;font-size:10px"></h:message></center>
+			<br/>
+		<p:dataTable paginator="true" rows="7" paginatorAlwaysVisible="false" pageLinks="5"
+				widgetVar="waretable" var="ware"
+				 id="waredatatable" value="#{stockMB.warelists}">
+				<p:column headerText="no" width="12%">
+					<h:outputText value="#{ware.serialNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="NAme" width="33%">
+					<p:inputText value="#{ware.warehouseName}" style="width:80px">
+						<f:attribute value="#{ware.serialNo}" name="serial"></f:attribute>
+      				 	<p:ajax event="valueChange" update="@form" process="@this"></p:ajax>
+					</p:inputText>
+				</p:column>
+				<p:column headerText="Location">
+					<p:inputText value="#{ware.location}" style="width:80px">
+						<f:attribute value="#{ware.serialNo}" name="serial"></f:attribute>
+      				 	<p:ajax event="valueChange" update="@form" process="@this"></p:ajax>
+					</p:inputText>
+				</p:column>
+				<p:column headerText="Person Incharge">
+					<p:inputText value="#{ware.personIncharge}" style="width:80px">
+						<f:attribute value="#{ware.serialNo}" name="serial"></f:attribute>
+      				 	<p:ajax event="valueChange" update="@form" process="@this"></p:ajax>
+					</p:inputText>
+				</p:column>
+				
+			</p:dataTable><br/>
+			<table width="100%"><tr><td width="45%"><p:commandButton icon="fa fa-plus" action="#{stockMB.addButton}" update="@form" process="@this" immediate="true"></p:commandButton>
+			</td>
+			<td>
+			<p:commandButton value="save" icon="fa fa-check" update="@form" process="@this" action="#{stockMB.warehouseSave}"></p:commandButton></td></tr></table>
+			</h:form>
+			</p:outputPanel>
+			</p:dialog>
+
+<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag">
+				<p align="center" style="font-size: 16px">SUCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{stockMB.warehousePage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="edit" header="CONFORMATION BOX" position="center"
+			modal="true" resizable="false" appendTo="@(body)" width="30%"
+			height="100px">
+			<h:form>
+				<p align="center" style="font-size: 16px">EDITED SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('edit').hide()" action="#{stockMB.warehousePage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="delete" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag1">
+				<p align="center" style="font-size: 16px">DELETE SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('delete').hide()" action="#{stockMB.warehousePage}"  update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

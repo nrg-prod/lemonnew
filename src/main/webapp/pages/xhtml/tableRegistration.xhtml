@@ -1,0 +1,345 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+	<p:panel style="min-height:100%" header="table" id="tablepanel">
+	 <br></br>
+	 <div class="ui-g">
+	 <div class="ui-g-3" align="center">
+	 <p:commandButton value="ADD TABLE"  oncomplete="PF('tableReg').show();" action="#{productionMB.addtable}" update="center_content:table" process="@this" >
+		</p:commandButton>
+	  </div>
+	 <div class="ui-g-6"> </div>
+	 <div class="ui-g-3" align="center">
+	 <p:commandButton value="History"  oncomplete="PF('tableHis').show();" action="#{productionMB.tableHistory}" update="center_content:viewhistory" process="@this" >
+		</p:commandButton>
+		 </div>
+	 </div>
+		<br/>
+		<center><h:message for="tblmsg" style="color:red;font-size:10px"></h:message></center><br/>
+		<p:dataTable 
+				widgetVar="tableview" var="tbl" 
+				value="#{productionMB.tableviewlist}" id="viewtable"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="10" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('tableview').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{tbl.serialNo}" sortBy="#{tbl.serialNo}">
+					<h:outputText value="#{tbl.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="table name" sortBy="#{tbl.tableName}" filterStyle="display:none"  filterBy="#{tbl.tableName}">
+					<h:outputText value="#{tbl.tableName}"></h:outputText>
+					<h:outputText value="#{tbl.tableid}" style="display:none;"></h:outputText>
+				</p:column>
+				<p:column headerText="table no" filterStyle="display:none" sortBy="#{tbl.tableNo}" filterBy="#{tbl.tableNo}">
+					<h:outputText value="#{tbl.tableNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="row and column" filterStyle="display:none" sortBy="#{tbl.rowcolumn}" filterBy="#{tbl.rowcolumn}">
+					<h:outputText value="#{tbl.rowcolumn}"></h:outputText>
+				</p:column>
+				<p:column headerText="Filled" filterStyle="display:none" sortBy="#{tbl.filled}" filterBy="#{tbl.filled}">
+					<h:outputText value="#{tbl.filled}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="empty" filterStyle="display:none" sortBy="#{tbl.emptycell}" filterBy="#{tbl.emptycell}">
+					<h:outputText value="#{tbl.emptycell}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column  style="width:5%;text-align:center;" headerText="#"><h:panelGroup>
+				<p:selectBooleanCheckbox value="#{tbl.checkBox}" id="check"><p:ajax update="@form" process="@this"></p:ajax> </p:selectBooleanCheckbox>
+				</h:panelGroup>
+				</p:column>
+				<f:facet name="footer">
+					<p:commandButton  value="add history" action="#{productionMB.addhistory}" update="center_content:viewtable"></p:commandButton>
+				</f:facet>
+			</p:dataTable>
+		<p:dialog header="TABLE REGISTRATION" id="tablereg" widgetVar="tableReg" width="900" height="500" appendTo="@(body)" modal="true" draggable="true"  position="center">
+		<p:outputPanel id="table">
+		<h:form>
+		<center>
+		<h:panelGrid columns="6" cellpadding="2" cellspacing="3">
+		<h:outputLabel value="table name" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="lableTxt"></h:outputLabel>
+		<h:panelGroup>
+		<p:inputText id="name" value="#{productionMB.productionDataBean.tableName}">
+		<p:ajax update="name" process="@this"></p:ajax></p:inputText><br/>
+		<h:message for="name" style="color:red;font-size:10px"></h:message></h:panelGroup>
+		
+		<h:outputLabel value="table no" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="lableTxt"></h:outputLabel>
+		<h:panelGroup>
+		<p:inputText id="no"  value="#{productionMB.productionDataBean.tableNo}">
+		<p:ajax update="no" process="@this"></p:ajax></p:inputText><br/>
+		<h:message for="no" style="color:red;font-size:10px"></h:message></h:panelGroup>
+		
+		
+		
+		<h:outputLabel value="table row" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="lableTxt"></h:outputLabel>
+		<h:panelGroup>
+		<p:inputText id="row" value="#{productionMB.productionDataBean.tableRow}">
+		<p:ajax update="row" process="@this"></p:ajax></p:inputText><br/>
+		<h:message for="row" style="color:red;font-size:10px"></h:message></h:panelGroup>
+		
+		<h:outputLabel value="table column" styleClass="labelTxt"></h:outputLabel>
+		<h:outputLabel value=":" styleClass="lableTxt"></h:outputLabel>
+		<h:panelGroup>
+		<p:inputText id="column" value="#{productionMB.productionDataBean.tableColumn}">
+		<p:ajax update="column" process="@this"></p:ajax></p:inputText><br/>
+		<h:message for="column" style="color:red;font-size:10px"></h:message></h:panelGroup>
+		</h:panelGrid>
+		</center>
+		
+		<br/>
+		<center><p:commandButton value="Submit" action="#{productionMB.gettable}" update="center_content:table" process="@this"></p:commandButton> </center>
+		<br></br><br></br>
+		
+		<p:dataTable value="#{productionMB.tablevaluelist}" var="tbl" rendered="#{productionMB.tableflag}" widgetVar="tblvar"  scrollable="true" style="overflow-x:scroll;overflow-y:scroll;width:2000px">
+		<p:column headerText="#" width="5%">
+		<h:outputText value="#{tbl.serialNo}"></h:outputText>
+		</p:column>
+		<p:column headerText="A" width="200px" rendered="#{productionMB.aflag}" >
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" >
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="amodel" value="#{tbl.amodelName}" style="width:80px;">
+        	<p:ajax update="amodel" process="@this"></p:ajax>
+        	</p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="aseri" value="#{tbl.aseri}" style="width:80px;">
+        	<p:ajax update="aseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="acutter" value="#{tbl.acutter}" style="width:80px;">
+        	<p:ajax update="acutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="adate" value="#{tbl.atanggal}"  pattern="dd-MM-yyyy" styleClass="tabledatepicker" style="width:80px !imporatant">
+        	<p:ajax update="adate" process="@this" event="dateSelect"></p:ajax>
+   		    </p:calendar>
+	        </p:panelGrid>
+		</p:column>
+		<p:column headerText="B" width="200px" rendered="#{productionMB.bflag}">
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" >
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="bmodel" value="#{tbl.bmodelName}" style="width:80px;">
+        	<p:ajax update="bmodel" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="bseri" value="#{tbl.bseri}" style="width:80px;">
+        	<p:ajax update="bseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="bcutter" value="#{tbl.bcutter}" style="width:80px;">
+        	<p:ajax update="bcutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="bdate" value="#{tbl.btanggal}"  pattern="dd-MM-yyyy" styleClass="tabledatepicker" style="width:80px !imporatant">
+        	<p:ajax update="bdate" process="@this" event="dateSelect"></p:ajax>
+   		    </p:calendar>
+	        </p:panelGrid>
+		</p:column>
+		<p:column headerText="C" width="200px" rendered="#{productionMB.cflag}">
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" >
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="cmodel" value="#{tbl.cmodelName}" style="width:80px;">
+        	<p:ajax update="cmodel" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="cseri" value="#{tbl.cseri}" style="width:80px;">
+        	<p:ajax update="cseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="ccutter" value="#{tbl.ccutter}" style="width:80px;">
+        	<p:ajax update="ccutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="cdate" value="#{tbl.ctanggal}"  pattern="dd-MM-yyyy" style="width:80px !imporatant">
+   		    <p:ajax update="cdate" process="@this" event="dateSelect"></p:ajax></p:calendar>
+	        </p:panelGrid>
+		</p:column>
+		<p:column headerText="D" width="200px" rendered="#{productionMB.dflag}">
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="dmodel" value="#{tbl.dmodelName}" style="width:80px;">
+        	<p:ajax update="dmodel" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="dseri" value="#{tbl.dseri}" style="width:80px;">
+        	<p:ajax update="dseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="dcutter" value="#{tbl.dcutter}" style="width:80px;">
+        	<p:ajax update="dcutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="ddate" value="#{tbl.dtanggal}"  pattern="dd-MM-yyyy" style="width:80px !imporatant">
+   		    <p:ajax update="ddate" process="@this" event="dateSelect"></p:ajax></p:calendar>
+	        </p:panelGrid>
+		</p:column>
+		<p:column headerText="E" width="200px" rendered="#{productionMB.eflag}">
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" >
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="emodel" value="#{tbl.emodelName}" style="width:80px;">
+        	<p:ajax update="emodel" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="eseri" value="#{tbl.eseri}" style="width:80px;">
+        	<p:ajax update="eseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="ecutter" value="#{tbl.ecutter}" style="width:80px;">
+        	<p:ajax update="ecutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="edate" value="#{tbl.etanggal}"  pattern="dd-MM-yyyy" style="width:80px !imporatant">
+   		    <p:ajax update="edate" process="@this" event="dateSelect"></p:ajax></p:calendar>
+	        </p:panelGrid>
+		</p:column>
+		<p:column headerText="F" width="200px" rendered="#{productionMB.fflag}">
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" >
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="fmodel" value="#{tbl.fmodelName}" style="width:80px;">
+        	<p:ajax update="fmodel" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="fseri" value="#{tbl.fseri}" style="width:80px;">
+        	<p:ajax update="fseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="fcutter" value="#{tbl.fcutter}" style="width:80px;">
+        	<p:ajax update="fcutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="fdate" value="#{tbl.ftanggal}"  pattern="dd-MM-yyyy" style="width:80px !imporatant">
+   		    <p:ajax update="fdate" process="@this" event="dateSelect"></p:ajax></p:calendar>
+	        </p:panelGrid>
+		</p:column>
+		<p:column headerText="G" width="200px" rendered="#{productionMB.gflag}">
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" >
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="gmodel" value="#{tbl.gmodelName}" style="width:80px;">
+        	<p:ajax update="gmodel" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="gseri" value="#{tbl.gseri}" style="width:80px;">
+        	<p:ajax update="gseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="gcutter" value="#{tbl.gcutter}" style="width:80px;">
+        	<p:ajax update="gcutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="gdate" value="#{tbl.gtanggal}"  pattern="dd-MM-yyyy" style="width:80px !imporatant">
+   		    <p:ajax update="gdate" process="@this" event="dateSelect"></p:ajax></p:calendar>
+	        </p:panelGrid>
+		</p:column>
+		<p:column headerText="H" width="200px" rendered="#{productionMB.hflag}">
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" >
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="hmodel" value="#{tbl.hmodelName}" style="width:80px;">
+        	<p:ajax update="hmodel" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="hseri" value="#{tbl.hseri}" style="width:80px;">
+        	<p:ajax update="hseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="hcutter" value="#{tbl.hcutter}" style="width:80px;">
+        	<p:ajax update="hcutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="hdate" value="#{tbl.htanggal}"  pattern="dd-MM-yyyy" style="width:80px !imporatant">
+   		    <p:ajax update="hdate" process="@this" event="dateSelect"></p:ajax></p:calendar>
+	        </p:panelGrid>
+		</p:column>
+		<p:column headerText="I" width="200px" rendered="#{productionMB.iflag}">
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" >
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="imodel" value="#{tbl.imodelName}" style="width:80px;">
+        	<p:ajax update="imodel" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="iseri" value="#{tbl.iseri}" style="width:80px;">
+        	<p:ajax update="iseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="icutter" value="#{tbl.icutter}" style="width:80px;">
+        	<p:ajax update="icutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="idate" value="#{tbl.itanggal}"  pattern="dd-MM-yyyy" style="width:80px !imporatant">
+   		    <p:ajax update="idate" process="@this" event="dateSelect"></p:ajax></p:calendar>
+	        </p:panelGrid>
+	        
+		</p:column>
+		<p:column headerText="J" width="200px" rendered="#{productionMB.jflag}">
+		 <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" >
+	        <h:outputLabel value="Model" />
+        	<p:inputText id="jmodel" value="#{tbl.jmodelName}" style="width:80px;">
+        	<p:ajax update="jmodel" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Seri @x DZ" />
+        	<p:inputText id="jseri" value="#{tbl.jseri}" style="width:80px;">
+        	<p:ajax update="jseri" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Cutter" />
+        	<p:inputText id="jcutter" value="#{tbl.jcutter}" style="width:80px;">
+        	<p:ajax update="jcutter" process="@this"></p:ajax></p:inputText>
+        	<h:outputLabel value="Tanggal" />
+        	<p:calendar id="jdate" value="#{tbl.jtanggal}"  pattern="dd-MM-yyyy" style="width:80px !imporatant">
+   		   <p:ajax update="jdate" process="@this" event="dateSelect"></p:ajax></p:calendar>
+	        </p:panelGrid>
+		</p:column>
+   		 
+		</p:dataTable><br/><br/>
+		<center><p:commandButton value="save" rendered="#{productionMB.tableflag}" action="#{productionMB.tablesave}" process="@this"></p:commandButton></center>
+		</h:form></p:outputPanel>
+		</p:dialog>
+		
+		<p:dialog header="Confirmation Box" appendTo="@(body)" closable="false" widgetVar="tablesuccess" modal="true"
+			width="25%" height="40%" resizable="false" dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText value="Successfully saved"></h:outputText>
+					<br></br><br></br>
+					<p:commandButton immediate="true"
+						process="@this" value="OK" update="center_content"
+						oncomplete="PF('tablesuccess').hide()" action="#{productionMB.tableRegPage}"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog header="Confirmation Box" appendTo="@(body)" closable="false" widgetVar="tablesuccess1" modal="true"
+			width="25%" height="40%" resizable="false" dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText value="Successfully added to history"></h:outputText>
+					<br></br><br></br>
+					<p:commandButton immediate="true"
+						process="@this" value="OK" update="center_content"
+						oncomplete="PF('tablesuccess1').hide()" action="#{productionMB.tableRegPage}"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="TABLE HISTORY" id="history" widgetVar="tableHis" width="900" height="300" appendTo="@(body)" modal="true" draggable="true"  position="center">
+		<p:dataTable 
+				widgetVar="tableHistory" var="tbl" 
+				value="#{productionMB.tablehistorylist}" id="viewhistory"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="10" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria">
+				
+				
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{tbl.serialNo}" sortBy="#{tbl.serialNo}">
+					<h:outputText value="#{tbl.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="table name" sortBy="#{tbl.tableName}" filterStyle="display:none"  filterBy="#{tbl.tableName}">
+					<h:outputText value="#{tbl.tableName}"></h:outputText>
+					<h:outputText value="#{tbl.tableid}" style="display:none;"></h:outputText>
+				</p:column>
+				<p:column headerText="table no" filterStyle="display:none" sortBy="#{tbl.tableNo}" filterBy="#{tbl.tableNo}">
+					<h:outputText value="#{tbl.tableNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="row and column" filterStyle="display:none" sortBy="#{tbl.rowcolumn}" filterBy="#{tbl.rowcolumn}">
+					<h:outputText value="#{tbl.rowcolumn}"></h:outputText>
+				</p:column>
+				<p:column headerText="Filled" filterStyle="display:none" sortBy="#{tbl.filled}" filterBy="#{tbl.filled}">
+					<h:outputText value="#{tbl.filled}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="empty" filterStyle="display:none" sortBy="#{tbl.emptycell}" filterBy="#{tbl.emptycell}">
+					<h:outputText value="#{tbl.emptycell}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				
+			</p:dataTable>
+		</p:dialog>
+		
+		<br></br><br></br>
+	</p:panel>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="LIST ITEM" >
+		<br></br>
+				<br></br>
+			<table width="60%" align="center">
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="Model" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<p:selectOneMenu value="#{stockMB.stockDataBean.modelNo}" id="model" style="width:174px;" 
+					 styleClass="pselectonmenu">
+				<f:selectItem itemLabel="Select Model" noSelectionOption="true"></f:selectItem>
+				<f:selectItems value="#{stockMB.stockDataBean.cmtProducts}"></f:selectItems>
+				<p:ajax update=":center_content:model" process="@this" immediate="true"></p:ajax>
+				</p:selectOneMenu><br/>
+				<h:message for="model" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=""></h:outputLabel></td>
+				<td width="35%">
+				<p:commandButton value="Search" action="#{stockMB.stockView}" update=":center_content" process="@this"></p:commandButton>
+				</td>
+				</tr>
+				</table>
+				<br/>
+			<p:dataTable 
+				widgetVar="stockTable" var="stk"
+				 id="stockdatatable" value="#{stockMB.warelists}" rendered="#{stockMB.stockDataBean.flag}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('stockTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column width="12%" headerText="no" filterBy="#{stk.serialNo}" filterStyle="display:none" sortBy="#{stk.serialNo}">
+					<h:outputText value="#{stk.serialNo}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="Warehouse" width="40%" filterBy="#{stk.warehouseName}" sortBy="#{stk.warehouseName}" filterStyle="display:none">
+					<h:outputText value="#{stk.warehouseName}"></h:outputText>
+				</p:column>
+				<p:column headerText="Model" width="30%" filterBy="#{stk.modelNo}" sortBy="#{stk.modelNo}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.modelNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Seri" width="30%" filterBy="#{stk.seri}" sortBy="#{stk.seri}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.seri}"></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity" width="30%" filterBy="#{stk.quantity}" sortBy="#{stk.quantity}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.quantity}"></h:outputText>
+				</p:column>
+				<p:column headerText="Price" width="30%" filterBy="#{stk.sellingPrice}" sortBy="#{stk.sellingPrice}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.sellingPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="net amount" width="30%" filterBy="#{stk.totalPrice}" sortBy="#{stk.totalPrice}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.totalPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+			</p:dataTable>
+			<br></br>
+			
+		</p:panel>
+	</ui:define>
+</ui:composition>

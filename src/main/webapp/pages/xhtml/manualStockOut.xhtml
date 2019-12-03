@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="Manual Stockout" id="chemistrypanel">
+		<br></br>
+				<table align="left">
+					<tr>
+						<td style="height: 35px;"><p:commandButton  action="#{stockMB.manualStockOut}" oncomplete="PF('stockDialog').show();"
+							value="Manual StockOUT Form"  update=":center_content:stockpanelid"
+								process="@this"></p:commandButton></td><td width="10%"></td>
+								
+					</tr>
+					
+				</table><br/><br/><br/><br/>
+			
+			<p:dataTable 
+				widgetVar="stockTable" var="stk"
+				 id="stockdatatable" value="#{stockMB.stockDataBean.warelists}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="10" paginatorPosition="bottom" >
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('stockTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column width="12%" headerText="no" filterBy="#{stk.serialNo}" filterStyle="display:none" sortBy="#{stk.serialNo}">
+					<h:inputHidden value="#{stk.mnaualStockID}"></h:inputHidden>
+					<h:outputText value="#{stk.serialNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="date" width="20%" filterBy="#{stk.date}" sortBy="#{stk.date}" filterStyle="display:none">
+					<h:outputText value="#{stk.date}">
+					<f:convertDateTime pattern="dd-MMM-YYYY"></f:convertDateTime></h:outputText>
+				</p:column>
+				<p:column headerText="Warehouse" width="33%" filterBy="#{stk.warehouseName}" sortBy="#{stk.warehouseName}" filterStyle="display:none">
+					<h:outputText value="#{stk.warehouseName}"></h:outputText>
+				</p:column>
+				<p:column headerText="Total Price" width="40%" filterBy="#{stk.totalPrice}" sortBy="#{stk.totalPrice}" filterStyle="display:none"> 
+					<h:outputText value="#{stk.totalPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				
+					<p:column headerText="view" width="40" exportable="false">
+						<p:commandButton icon="fa fa-search" oncomplete="PF('viewDialog').show()" action="#{stockMB.manualStockView}" update=":center_content" process="@this">
+						<f:setPropertyActionListener value="#{stk.mnaualStockID}" target="#{stockMB.stockDataBean.mnaualStockID}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="edit" width="60" exportable="false">
+						<p:commandButton  rendered="#{stk.flag}" icon="fa fa-pencil" oncomplete="PF('editDialog').show()" action="#{stockMB.manualStockView}" update=":center_content" process="@this">
+						<f:setPropertyActionListener value="#{stk.mnaualStockID}" target="#{stockMB.stockDataBean.mnaualStockID}"></f:setPropertyActionListener>
+						</p:commandButton>
+						<h:outputText value="Not Editable" rendered="#{stk.flag1}"></h:outputText>
+					</p:column>
+					<p:column headerText="delete" width="60" exportable="false">
+						 <p:commandButton icon="fa fa-trash" onclick="PF('deleteConfirmDlg').show()" rendered="#{stk.flag}">
+					   		<f:setPropertyActionListener value="#{stk.mnaualStockID}" target="#{stockMB.stockDataBean.mnaualStockID}"></f:setPropertyActionListener>
+					   		<f:setPropertyActionListener value="#{stk.warehouseName}" target="#{stockMB.stockDataBean.warehouseName}"></f:setPropertyActionListener>
+					   </p:commandButton>
+					   <h:outputText value="Not Deletable" rendered="#{stk.flag1}"></h:outputText>
+				</p:column>
+			</p:dataTable>
+			<br></br>
+			<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="25%" height="100px">
+				<h:form id="supp">
+					<p align="center" style="font-size: 14px">SUCCESSFULLY SAVED</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('confirm').hide()"
+							update=":center_content" process="@this" action="#{stockMB.manualStockOutPage}"></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+			<p:dialog header="Manual StockOut form" widgetVar="stockDialog"
+				height="100%" width="80%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+				<p:outputPanel id="stockpanelid">
+				<h:form id="pcform">
+				<center>
+				<p:panelGrid columns="3" style="height:100px" styleClass="ui-panelgrid-blank">
+				<h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:inputText id="date" value="#{stockMB.stockDataBean.date}" readonly="true">	
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+						<p:ajax update="@form" process="@this" immediate="true"></p:ajax>
+				</p:inputText><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel>
+				<h:outputLabel value=" from Warehouse" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:selectOneMenu styleClass="pselectonmenu" style="width:174px;" value="#{stockMB.stockDataBean.warehouseName}" 
+					id="warehouse" valueChangeListener="#{stockMB.categorySelect}">
+      				 <f:selectItem itemLabel="select Warehouse" noSelectionOption="true"></f:selectItem>
+      				  <f:selectItem itemLabel="Main Warehouse" itemValue="Main Warehouse"></f:selectItem>
+      				 <p:ajax update=":center_content:stockpanelid" process="@this" immediate="true" ></p:ajax>
+     			</p:selectOneMenu><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel><h:message for="warehouse" style="color:red;font-size:10px"></h:message>
+				<h:outputLabel value=" to Warehouse" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:selectOneMenu styleClass="pselectonmenu" style="width:174px;" value="#{stockMB.stockDataBean.newWarehouse}" 
+					id="newwarehouse" >
+      				 <f:selectItem itemLabel="select Warehouse" noSelectionOption="true"></f:selectItem>
+      				 <f:selectItems value="#{stockMB.stockDataBean.warehouseList}"></f:selectItems>
+      				 <p:ajax update="@form" process="@this" immediate="true" ></p:ajax>
+     			</p:selectOneMenu><h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel><h:message for="newwarehouse" style="color:red;font-size:10px"></h:message>
+				</p:panelGrid></center>
+				<br/>
+				<center>
+				<h:inputHidden id="errmsgs"></h:inputHidden>
+				<h:message for="errmsgs" style="color:red;font-size:10px"></h:message>
+				</center><br/>
+				<p:dataTable  paginator="true" rows="7" paginatorAlwaysVisible="false" pageLinks="5"
+				widgetVar="stockTable" var="stk"  value="#{stockMB.warelists}">
+				<p:column headerText="no" width="6%">
+					<h:outputText value="#{stk.serialNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="model " width="30%">
+					<p:selectOneMenu styleClass="pselectonmenu" value="#{stk.modelNo}" valueChangeListener="#{stockMB.modelselect}">
+      				 	<f:selectItem itemLabel="select Model" noSelectionOption="true"></f:selectItem>
+      				 	<f:selectItems value="#{stockMB.stockDataBean.cmtProducts}"></f:selectItems>
+      				 	<f:attribute value="#{stk.serialNo}" name="serial"></f:attribute>
+      				 	<p:ajax event="valueChange" update="@form" process="@this"></p:ajax>
+     				</p:selectOneMenu>
+				</p:column>
+				<p:column headerText="seri " width="30%">
+					<p:selectOneMenu styleClass="pselectonmenu" rendered="#{stk.sflag}" value="#{stk.seri}" valueChangeListener="#{stockMB.seriselect}">
+      				 	<f:selectItem itemLabel="select Seri" noSelectionOption="true"></f:selectItem>
+      				 	<f:selectItems value="#{stockMB.stockDataBean.seris}"></f:selectItems>
+      				 	<f:attribute value="#{stk.serialNo}" name="serial"></f:attribute>
+      				 		<f:attribute value="#{stk.modelNo}" name="model"></f:attribute>
+      				 	<p:ajax event="valueChange" update="@form" process="@this"></p:ajax>
+     				</p:selectOneMenu>
+     				<h:outputText value="#{stk.seri}" rendered="#{stk.sflag1}"></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity" width="14%">
+					<p:inputText value="#{stk.quantity}" style="width:80px" valueChangeListener="#{stockMB.quantityChange}">
+						<f:attribute value="#{stk.serialNo}" name="serial"></f:attribute>
+						<f:attribute value="#{stk.modelNo}" name="model"></f:attribute>
+						<f:attribute value="#{stk.seri}" name="seri"></f:attribute>
+      				 	<p:ajax event="valueChange" update="@form" process="@this"></p:ajax>
+					</p:inputText>
+				</p:column>
+				<p:column headerText="price" width="14%">
+					<h:outputText value="#{stk.sellingPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="Net Amount" width="14%">
+					<h:outputText value="#{stk.totalPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+					
+				</p:column>
+				 
+			</p:dataTable>
+			<br></br>
+   <div align="right" >
+   <h:outputText value="Total Price :" styleClass="labelTxt" style="font-size:14px;" ></h:outputText> 
+   <h:outputText value="#{stockMB.stockDataBean.totalPrice}" styleClass="labelTxt" style="font-size:14px;">
+    <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+   </h:outputText>
+   </div>
+			<table width="100%"><tr><td width="45%"><p:commandButton icon="fa fa-plus"
+				 action="#{stockMB.addmanualStk}" update="@form" process="@this" immediate="true"></p:commandButton>
+			</td>
+			<td>
+			<p:commandButton value="save" icon="fa fa-database" update="@form" process="@this" action="#{stockMB.manualStockSave}"></p:commandButton></td></tr></table>
+			</h:form>
+			</p:outputPanel>
+			</p:dialog>
+			
+			<p:dialog header="manual Stockout view" widgetVar="viewDialog"
+				height="100%" width="50%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+				<p:outputPanel >
+				<h:form>
+				<table width="40%" align="center" >
+				<tr>
+				<td width="40%" height="35px">
+				<h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<h:outputLabel styleClass="labelTxt" id="date1" value="#{stockMB.stockDataBean.date}" readonly="true">	
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+				</h:outputLabel>
+				</td>
+				</tr>
+				<tr>
+				<td width="40%" height="35px">
+				<h:outputLabel value="from Warehouse" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="0%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="40%">
+				<h:outputLabel styleClass="labelTxt" id="fromname" value="#{stockMB.stockDataBean.warehouseName}" readonly="true">	
+				</h:outputLabel>
+				</td>
+				</tr>
+				<tr>
+				<td width="40%" height="35px">
+				<h:outputLabel value="to Warehouse" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="0%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="40%">
+				<h:outputLabel styleClass="labelTxt" id="toname" value="#{stockMB.stockDataBean.newWarehouse}" readonly="true">	
+				</h:outputLabel>
+				</td>
+				</tr>
+				
+				</table>
+				
+				<br/>
+				<p:dataTable 
+				widgetVar="viewstkTable" var="stk"
+				 value="#{stockMB.stockDataBean.stklists}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<p:column headerText="no" width="10%">
+					<h:outputText value="#{stk.serialNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Model">
+					<h:outputText value="#{stk.modelNo}" >
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Seri">
+					<h:outputText value="#{stk.seri}"></h:outputText>
+				</p:column>
+				<p:column headerText="Quantity">
+					<h:outputText value="#{stk.quantity}" >
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Price">
+					<h:outputText value="#{stk.sellingPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				 <p:column width="18%" headerText="Net Amount">
+					<h:outputText value="#{stk.totalPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+			</p:dataTable><br/>
+			<div align="right" >
+   <h:outputText value="Total Price :" styleClass="labelTxt" style="font-size:14px;"></h:outputText> 
+   <h:outputText value="#{stockMB.stockDataBean.totalPrice}" styleClass="labelTxt" style="font-size:14px;">
+    <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+   </h:outputText>
+   </div>
+			<center>		
+			<p:commandButton value="close" update="@form" process="@this" oncomplete="PF('viewDialog').hide()"></p:commandButton></center>
+			</h:form>
+			</p:outputPanel>
+			</p:dialog>
+			
+			<p:dialog header="Manual StockOut edit" widgetVar="editDialog" id="stkedit"
+				height="100%" width="60%" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+				<p:outputPanel>
+				<h:form >
+				<table width="50%" align="center">
+				<tr>
+				<td width="40%" height="35px">
+				<h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="40%">
+				<h:outputLabel styleClass="labelTxt" id="date1" value="#{stockMB.stockDataBean.date}">	
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+				</h:outputLabel>
+				</td>
+				</tr>
+				<tr>
+				<td width="40%" height="35px">
+				<h:outputLabel value="from Warehouse" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="40%">
+				<h:outputLabel styleClass="labelTxt" id="sname" value="#{stockMB.stockDataBean.warehouseName}" readonly="true">	
+				</h:outputLabel>
+				</td>
+				</tr>
+				<tr>
+				<td width="40%" height="35px">
+				<h:outputLabel value="to Warehouse" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="40%">
+				<h:outputLabel styleClass="labelTxt" id="toname" value="#{stockMB.stockDataBean.newWarehouse}" readonly="true">	
+				</h:outputLabel>
+				</td>
+				</tr>
+				</table>
+				<center>
+				<h:message for="errmsgs" style="color:red;font-size:10px"></h:message>
+				</center>
+				<br/>
+				<p:dataTable  id="stktable"
+				widgetVar="viewstks" var="stk" value="#{stockMB.stockDataBean.stklists}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" editable="true">
+				<p:column headerText="no" width="10%">
+					<h:outputText value="#{stk.serialNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Model">
+					<h:outputText value="#{stk.modelNo}" >
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Seri">
+					<h:outputText value="#{stk.seri}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="Quantity" >
+					<p:inputText value="#{stk.quantity}" style="width:80px" rendered="#{stk.sflag}" valueChangeListener="#{stockMB.quantityChangeEdit}">
+						<f:attribute value="#{stk.serialNo}" name="serial"></f:attribute>
+						<f:attribute value="#{stk.modelNo}" name="model"></f:attribute>
+						<f:attribute value="#{stk.seri}" name="seri"></f:attribute>
+      				 	<p:ajax event="valueChange" update="@form" process="@this"></p:ajax>
+					</p:inputText>
+					<h:outputText value="#{stk.quantity}" rendered="#{stk.sflag1}"></h:outputText>
+					<h:outputText value="#{stk.quantity1}" style="display:none;"></h:outputText>
+				</p:column>
+				<p:column headerText="price">
+					<h:outputText value="#{stk.sellingPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="Net Amount">
+					<h:outputText value="#{stk.totalPrice}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+					
+				</p:column>
+				<p:column headerText="Edit">
+					<p:commandButton icon="fa fa-pencil" action="#{stockMB.manualStockEdit}" update="@form" process="@this">
+					<f:setPropertyActionListener value="#{stk.serialNo}" target="#{stockMB.stockDataBean.serialNo}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{stk.modelNo}" target="#{stockMB.stockDataBean.modelNo}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{stk.seri}" target="#{stockMB.stockDataBean.seri}"></f:setPropertyActionListener>
+					<f:setPropertyActionListener value="#{stk.quantity1}" target="#{stockMB.stockDataBean.quantity1}"></f:setPropertyActionListener>
+					</p:commandButton>
+				</p:column>
+			</p:dataTable><br/>
+			<div align="right" >
+   <h:outputText value="Total Price :" styleClass="labelTxt" style="font-size:14px;"></h:outputText> 
+   <h:outputText value="#{stockMB.stockDataBean.totalPrice}" styleClass="labelTxt" style="font-size:14px;">
+    <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+   </h:outputText>
+   </div>
+			<center>
+			<p:commandButton value="update" update="@form" process="@this" action="#{stockMB.manualStkupdate}"></p:commandButton>
+			<p:commandButton value="cancel" update="@form" process="@this" oncomplete="PF('editDialog').hide()"></p:commandButton></center>
+			</h:form>
+			</p:outputPanel>
+			</p:dialog>
+			<p:dialog widgetVar="confirm1" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="25%" height="100px">
+				<h:form id="supp1">
+					<p align="center" style="font-size: 14px">SUCCESSFULLY UPDATED</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('confirm1').hide()"
+							update="center_content" process="@this" action="#{stockMB.manualStockOutPage}"></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+			<p:confirmDialog id="deleteConfirmDialog" closable="false"
+			message="Are You Sure you want to Delete the information"
+			header="Delete Vendor" global="true"
+			widgetVar="deleteConfirmDlg">
+			<center>
+				<p:commandButton id="confirmDelete" value="Yes"
+					oncomplete="PF('deleteConfirmDlg').hide();PF('itemDeleteDialog').show();"
+					immediate="true" process="@this" action="#{stockMB.manualStockDelete}" />
+				<p:commandButton id="declineDelete" value="No"
+					onclick="PF('deleteConfirmDlg').hide()" type="button" />
+			</center>
+		</p:confirmDialog>
+		<p:dialog header="Confirmation Box" appendTo="@(body)"
+			closable="false" widgetVar="itemDeleteDialog" modal="true"
+			width="25%" height="40%" resizable="false"
+			dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText
+						value="Deleted Successfully"></h:outputText>
+					<br></br>	<br></br>
+					<p:commandButton immediate="true"
+						action="#{stockMB.manualStockOutPage}" process="@this" value="OK" update="center_content"
+						oncomplete="PF('itemDeleteDialog').hide()"></p:commandButton>
+				</center>
+
+			</h:form>
+		</p:dialog>
+		</p:panel>
+	</ui:define>
+</ui:composition>

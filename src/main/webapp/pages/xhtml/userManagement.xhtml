@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:panel header="User Management" style="min-height:100%">
+	<div class="home wrap-content on">
+			<div class="ui-grid ui-grid-responsive">
+			<br />
+			<br />
+				<div class="ui-grid-row" >
+				<div class="ui-grid-col-1">
+						
+					</div>
+					<div class="ui-grid-col-4" >
+						<div class="ui-grid-row" >
+							<div class="ui-grid-col-6" >
+									<p:outputLabel for="currentusername">Current Username</p:outputLabel>
+							</div>
+							<div class="ui-grid-col-1" >:</div>
+							<div class="ui-grid-col-5" >
+									<p:outputLabel id="currentusername" value="#{loginMB.loginDataBean.userName}"></p:outputLabel>
+							</div>
+						</div>
+						<br />
+						<br />
+						<div class="ui-grid-row" >
+							<div class="ui-grid-col-6" >
+									<p:outputLabel for="newusername" >Enter New Username</p:outputLabel>
+							</div>
+							<div class="ui-grid-col-1" >:</div>
+							<div class="ui-grid-col-5" >
+									<p:inputText id="newusername" value="#{loginMB.loginDataBean.newusername}"></p:inputText>
+									<h:message for="newusername" style="color: red;font-size: 10px;"></h:message>
+							</div>
+						</div>
+						<br />
+						<br />
+						<div class="ui-grid-row" >
+							<div class="ui-grid-col-6" >
+								<p:outputLabel for="cnewusername">Confirm New Username</p:outputLabel>
+							</div>
+							<div class="ui-grid-col-1" >:</div>
+							<div class="ui-grid-col-5" >
+								<p:inputText id="cnewusername" value="#{loginMB.loginDataBean.cfusername}"></p:inputText>
+								<h:message for="cnewusername" style="color: red;font-size: 10px;"></h:message>
+							</div>
+						</div>
+					</div>
+					<div class="ui-grid-col-2">
+						
+					</div>
+					<div class="ui-grid-col-4">
+						<div class="ui-grid-row" >
+							<div class="ui-grid-col-6" >
+									<p:outputLabel for="currentpassword">Current Password</p:outputLabel>
+							</div>
+							<div class="ui-grid-col-1" >:</div>
+							<div class="ui-grid-col-5" >
+									<p:inputText id="currentpassword" value="#{loginMB.loginDataBean.password}"></p:inputText>
+									<h:message for="currentpassword" style="color: red;font-size: 10px;"></h:message>
+							</div>
+						</div>
+						<br />
+						<br />
+						<div class="ui-grid-row" >
+							<div class="ui-grid-col-6" >
+									<p:outputLabel for="newpassword" >Enter New password</p:outputLabel>
+							</div>
+							<div class="ui-grid-col-1" >:</div>
+							<div class="ui-grid-col-5" >
+									<p:inputText id="newpassword" value="#{loginMB.loginDataBean.newpassword}"></p:inputText>
+									<h:message for="newpassword" style="color: red;font-size: 10px;"></h:message>
+							</div>
+						</div>
+						<br />
+						<br />
+						<div class="ui-grid-row" >
+							<div class="ui-grid-col-6" >
+								<p:outputLabel for="cnewpassword">Confirm New password</p:outputLabel>
+							</div>
+							<div class="ui-grid-col-1" >:</div>
+							<div class="ui-grid-col-5" >
+								<p:inputText id="cnewpassword" value="#{loginMB.loginDataBean.cfpassword}"></p:inputText>
+								<h:message for="cnewpassword" style="color: red;font-size: 10px;"></h:message>
+							</div>
+						</div>
+						<br />
+						<br />
+					</div>
+					<div class="ui-grid-col-1">
+						
+					</div>
+				</div>
+				<center>
+				<p:commandButton   value="Change UserName" update=":center_content"
+								action="#{loginMB.userchange}"></p:commandButton>
+			<p:commandButton value="Change Password" update="center_content"
+								action="#{loginMB.passchange}"></p:commandButton>
+			</center>
+			</div>
+		</div>
+		<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="25%" height="100px">
+				<h:form id="itemupdate">
+					<p align="center" style="font-size: 14px">SUCCESSFULLY CHANGED</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('confirm').hide()"
+							update="center_content" process="@this" action="#{loginMB.usermanagement}"></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+	</p:panel>
+	</ui:define>
+	</ui:composition>

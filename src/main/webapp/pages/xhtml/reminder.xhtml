@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:panel header="Dashboard" style="min-height:100%">
+	 <div class="layout-main">
+                <div class="layout-main-content">
+        <div class="ui-g dashboard">            
+            
+            <div class="ui-g-12 ui-md-6 ui-lg-3">
+             <p:commandLink actionListener="#{productionMB.holdingReminder}" oncomplete="PF('holdings').show();" 
+                    	update=":center_content:holdId" process="@this" immediate="true" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()">
+                <div class="ui-g card overview-box overview-box-1">
+                    <span class="overview-box-name">holding</span>
+                    <img id="j_idt69" src="../../images/chart1.svg" alt="" />
+                </div></p:commandLink>
+            </div>
+            
+            <div class="ui-g-12 ui-md-6 ui-lg-3">
+            <p:commandLink actionListener="#{stockMB.modelsReminder}" oncomplete="PF('models').show();" 
+                    	update=":center_content:modelId" process="@this" immediate="true" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()">
+                <div class="ui-g card overview-box overview-box-2">
+                   <span class="overview-box-name">stock</span>
+                   <img id="j_idt71" src="../../images/chart2.svg" alt="" />
+                </div></p:commandLink>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-3">
+             <p:commandLink actionListener="#{stockMB.warehouseReminder}" oncomplete="PF('warehouse').show();" 
+                    	update=":center_content:wareId" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()">
+                <div class="ui-g card overview-box overview-box-3">
+                    <span class="overview-box-name">warehouse</span>
+                    <img id="j_idt73" src="../../images/chart3.svg" alt="" />
+                </div></p:commandLink>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-3">
+            <p:commandLink action="#{stockMB.bestSeller}" update=":center_content:sellerpanel" process="@this" oncomplete="PF('seller').show()"
+            onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()">
+                <div class="ui-g card overview-box overview-box-4">
+                    <span class="overview-box-name">best seller</span>
+                    <img id="j_idt75" src="../../images/chart4.svg" alt="" />
+                </div></p:commandLink>
+            </div>
+            
+            </div></div></div>
+  		<div class="ui-g">
+    		<div class="ui-g-12 ui-md-6 ">
+    		<div class="ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all"><span class="ui-panel-title">Calendar</span>
+   	 		<center>
+			<h:panelGrid columnClasses="value">
+			<p:clock pattern="hh:mm:ss"></p:clock>
+			</h:panelGrid>
+			</center>
+			<br></br>
+			<center>
+			<h:panelGrid columnClasses="value">
+			<p:calendar mode="inline" mindate="#{currentDate}" maxdate="#{currentDate}"></p:calendar>
+			</h:panelGrid>
+			</center>
+	 		</div>
+    		</div>
+    		<div class="ui-g-12 ui-md-6 ">
+    		<!-- <div class="ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all"><span class="ui-panel-title"></span>
+   	 		<center>
+			<p:panel style="width:200px;height:107px;"  header="treasury balance">
+			<br></br>
+			<h:outputText value="54546" style="font-size:14px"></h:outputText>
+			<br></br><br></br>
+			<p:commandButton value="view details" style="width:150px"></p:commandButton>
+			</p:panel>
+			<br></br>
+			<p:panel style="width:200px;height:107px;" header="debt balance">
+			<br></br>
+			<h:outputText value="765443" style="font-size:14px"></h:outputText>
+			<br></br><br></br>
+			<p:commandButton value="view details" style="width:150px"></p:commandButton>
+			</p:panel>
+			<br></br>
+			</center>
+	 		</div> -->
+    		</div>
+    	</div>
+	</p:panel>
+	<p:dialog widgetVar="holdings" header="Holdings" width="50%" height="50%"
+            	modal="true" appendTo="@(body)">
+            <p:outputPanel id="holdId">
+            <h:form >
+            <p:dataTable value="#{productionMB.productionDataBean.orderQuantitylist}" var="hold" rows="10" paginator="true" paginatorPosition="bottom" pageLinks="5" id="cutterdata" 
+	   			paginatorAlwaysVisible="false" widgetVar="holdingdata">
+		  		
+	   			<p:column width="12%" headerText="No">
+	   			<h:outputText value="#{hold.serialNo}"></h:outputText>
+	   			</p:column>
+		    	<p:column width="16%" headerText="date">
+		    	<h:outputText value="#{hold.orderDate}">
+		    	<f:convertDateTime pattern="ddMMMyyyy"></f:convertDateTime>
+		    	</h:outputText>
+		    	</p:column>
+		    	<p:column width="20%" headerText="Invoice" >
+	   			<h:outputText value="#{hold.invoiceNo}"></h:outputText>
+	   			</p:column>
+		    	<p:column width="20%" headerText="Category" >
+	   			<h:outputText value="#{hold.categoryName}"></h:outputText>
+	   			</p:column>
+	   			<p:column width="14%" headerText="Name">
+	   			<h:outputText value="#{hold.divisionVendor}"></h:outputText>
+	   			</p:column>
+   				<p:column width="18%" headerText="model">
+	   			<h:outputText value="#{hold.modelName}"></h:outputText>
+	   			</p:column>
+	   			<p:column width="20%" headerText="Amount">
+	   			<h:outputText value="#{hold.value}">
+	   			<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+	   			</h:outputText>
+	   			</p:column>
+	    	</p:dataTable>	
+	    	<br/>
+	    	<center>
+	    	<p:commandButton value="Close" update=":center_content" process="@this" oncomplete="PF('holdings').hide()"></p:commandButton>
+	    	</center>		
+			 </h:form>
+			 </p:outputPanel>
+             </p:dialog>
+             
+              <p:dialog widgetVar="models" header="remaining Stock" width="50%" height="50%"
+            	modal="true" appendTo="@(body)">
+            <p:outputPanel id="modelId">
+            <h:form >
+            <p:dataTable value="#{stockMB.stockDataBean.warelists}" var="mode" rows="10" paginator="true" paginatorPosition="bottom" pageLinks="5" id="cutterdata" 
+	   			paginatorAlwaysVisible="false" widgetVar="modeldata">
+		  		
+	   			<p:column width="12%" headerText="No">
+	   			<h:outputText value="#{mode.serialNo}"></h:outputText>
+	   			</p:column>		    
+   				<p:column width="18%" headerText="model" >
+	   			<h:outputText value="#{mode.model}"></h:outputText>
+	   			</p:column>
+	   			<p:column width="18%" headerText="Quantity" >
+	   			<h:outputText value="#{mode.quantity}"></h:outputText>
+	   			</p:column>
+	   			<p:column width="20%" headerText="Value" >
+	   			<h:outputText value="#{mode.totalPrice}">
+	   			<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+	   			</h:outputText>
+	   			</p:column>
+	    	</p:dataTable>	
+	    	<br/>
+	    	<center>
+	    	<p:commandButton value="Close" update=":center_content" process="@this" oncomplete="PF('models').hide()"></p:commandButton>
+	    	</center>		
+			 </h:form>
+			 </p:outputPanel>
+             </p:dialog>
+             
+              <p:dialog widgetVar="warehouse" header="Warehouse Activity in 7 days" width="50%" height="50%"
+            	modal="true" appendTo="@(body)">
+            <p:outputPanel id="wareId">
+            <h:form >
+            <p:dataTable value="#{stockMB.stockDataBean.warelists}" var="mode" rows="10" paginator="true" paginatorPosition="bottom" pageLinks="5" id="cutterdata" 
+	   			paginatorAlwaysVisible="false" widgetVar="modeldata">
+		  		
+	   			<p:column width="12%" headerText="No">
+	   			<h:outputText value="#{mode.serialNo}"></h:outputText>
+	   			</p:column>		    
+	   			<p:column width="16%" headerText="date" >
+		    	<h:outputText value="#{mode.date}">
+		    	<f:convertDateTime pattern="ddMMMyyyy"></f:convertDateTime>
+		    	</h:outputText>
+		    	<f:facet name="footer">
+		    	<h:outputText value="Total"></h:outputText>
+	   			</f:facet>
+		    	</p:column>
+	   			<p:column width="18%" headerText="in" >
+	   			<h:outputText value="#{mode.quantity}"></h:outputText>
+	   			<f:facet name="footer">
+		    	<h:outputText value="#{stockMB.stockDataBean.quantity}"></h:outputText>
+	   			</f:facet>
+	   			</p:column>
+	   			<p:column width="20%" headerText="Value in" >
+	   			<h:outputText value="#{mode.totalPrice}">
+	   			<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+	   			</h:outputText>
+	   			<f:facet name="footer">
+		    	<h:outputText value="#{stockMB.stockDataBean.totalPrice}">
+		    	<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+	   			</f:facet>
+	   			</p:column>
+	   			<p:column width="18%" headerText="Out" >
+	   			<h:outputText value="#{mode.quantity1}"></h:outputText>
+	   			<f:facet name="footer">
+		    	<h:outputText value="#{stockMB.stockDataBean.quantity1}"></h:outputText>
+	   			</f:facet>
+	   			</p:column>
+	   			<p:column width="20%" headerText="Value Out" >
+	   			<h:outputText value="#{mode.netprice}">
+	   			<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+	   			</h:outputText>
+	   			<f:facet name="footer">
+		    	<h:outputText value="#{stockMB.stockDataBean.netprice}">
+		    	<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+	   			</f:facet>
+	   			</p:column>
+	   			
+	    	</p:dataTable>	
+	    	<br/>
+	    	<center>
+	    	<p:commandButton value="Close" update=":center_content" process="@this" oncomplete="PF('warehouse').hide()"></p:commandButton>
+	    	</center>		
+			 </h:form>
+			 </p:outputPanel>
+             </p:dialog>
+             
+              <p:dialog widgetVar="seller" header="Best seller in 60 days" width="50%" height="50%"
+            	modal="true" appendTo="@(body)">
+            <p:outputPanel id="sellerpanel">
+            <h:form >
+            <p:dataTable value="#{stockMB.stockDataBean.warelists}" var="mode" rows="10" paginator="true" paginatorPosition="bottom" pageLinks="5" id="cutterdata" 
+	   			paginatorAlwaysVisible="false" widgetVar="modeldata">
+		  		
+	   			<p:column width="12%" headerText="No">
+	   			<h:outputText value="#{mode.serialNo}"></h:outputText>
+	   			</p:column>		    
+   				<p:column width="18%" headerText="model" >
+	   			<h:outputText value="#{mode.model}"></h:outputText>
+	   			</p:column>
+	   			<p:column width="18%" headerText="Quantity" >
+	   			<h:outputText value="#{mode.quantity}"></h:outputText>
+	   			</p:column>
+	   			<p:column width="20%" headerText="Value" >
+	   			<h:outputText value="#{mode.totalPrice}">
+	   			<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+	   			</h:outputText>
+	   			</p:column>
+	    	</p:dataTable>	
+	    	<br/>
+	    	<center>
+	    	<p:commandButton value="Close" update=":center_content" process="@this" oncomplete="PF('seller').hide()"></p:commandButton>
+	    	</center>		
+			 </h:form>
+			 </p:outputPanel>
+             </p:dialog>
+	</ui:define>
+	</ui:composition>

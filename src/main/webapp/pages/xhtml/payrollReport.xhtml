@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="PAYROll">
+		<br></br><center>
+				<p:selectOneMenu styleClass="pselectonmenu" value="#{payrollMB.payrollDataBean.type}" valueChangeListener="#{payrollMB.typeSelect}">
+      				 <f:selectItem itemLabel="select Type" noSelectionOption="true" itemValue="select"></f:selectItem>
+      				 <f:selectItem itemLabel="Employee Salary" itemValue="Salary"></f:selectItem>
+      				 <f:selectItem itemLabel="Penalty" itemValue="Penalty"></f:selectItem>
+      				 <p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+     			</p:selectOneMenu></center>
+     			<br/>	
+			<p:dataTable 
+				widgetVar="salaryTable" var="sal" rendered="#{payrollMB.payrollDataBean.flag}"
+				value="#{payrollMB.payrollDataBean.payrollList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria"
+					>
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('salaryTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{sal.serialNo}" sortBy="#{sal.serialNo}">
+					<h:outputText value="#{sal.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="Employee" sortBy="#{sal.employee}" filterStyle="display:none"  filterBy="#{sal.employee}">
+					<h:outputText value="#{sal.employee}">
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Branch" filterStyle="display:none" sortBy="#{sal.branch}" filterBy="#{sal.branch}">
+					<h:outputText value="#{sal.branch}"></h:outputText>
+				</p:column>
+				<p:column headerText="Month" filterStyle="display:none" sortBy="#{sal.month}" filterBy="#{sal.month}">
+					<h:outputText value="#{sal.month}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="Year" filterStyle="display:none" sortBy="#{sal.year}" filterBy="#{sal.year}">
+					<h:outputText value="#{sal.year}"></h:outputText>
+				</p:column>
+				<p:column headerText="Salary" width="16%" filterStyle="display:none" sortBy="#{sal.monthSalary}" filterBy="#{sal.monthSalary}">
+					<h:outputText value="#{sal.monthSalary}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+			</p:dataTable>
+			<p:dataTable 
+				widgetVar="peltyTable" var="pelty" rendered="#{payrollMB.payrollDataBean.aflag}"
+				value="#{payrollMB.payrollDataBean.payrollList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria"
+					>
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('peltyTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+
+				<p:column headerText="No" width="8%" filterBy="#{pelty.serialNo}" sortBy="#{pelty.serialNo}" filterStyle="display:none">
+						<h:outputText value="#{pelty.penaltID}" style="display:none;"></h:outputText>
+						<h:outputText value="#{pelty.serialNo}"></h:outputText>
+							
+					</p:column>
+					
+					<p:column width="12%" headerText="Date" filterBy="#{pelty.date}" sortBy="#{pelty.date}" filterStyle="display:none">
+						<h:outputText value="#{pelty.date}"></h:outputText>
+					</p:column>
+				<p:column width="12%"  headerText="Type" filterBy="#{pelty.type}" sortBy="#{pelty.type}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.type}"></h:outputText>
+				
+					</p:column>
+					<p:column width="12%"  headerText="Staff" filterBy="#{pelty.staffName}" sortBy="#{pelty.staffName}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.staffName}"></h:outputText>
+				
+					</p:column>
+					<p:column width="12%"  headerText="Amount" filterBy="#{pelty.amount}" sortBy="#{pelty.amount}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.amount}" >
+				<f:converter converterId="com.nrg.lemon.util.UrlConverter"/>
+				</h:outputText>
+					</p:column>
+					<p:column width="20%"  headerText="Reason" filterBy="#{pelty.reason}" sortBy="#{pelty.reason}"  filterStyle="display:none">
+				<h:outputText value="#{pelty.reason}" ></h:outputText>
+					</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+</ui:composition>

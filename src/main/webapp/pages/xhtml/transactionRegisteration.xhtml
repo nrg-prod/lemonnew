@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<p:panel header="transaction" 
+			style="min-height:100%;" id="transactionpanel">
+			<br></br>
+			<p:commandButton value="category Registration" action="#{financeMB.categoryReg}"
+			update=":center_content:catepanel" process="@this" oncomplete="PF('categoryDialog').show()"></p:commandButton>&nbsp;&nbsp;
+			<p:commandButton value="transaction Registration" action="#{financeMB.transactionReg}" oncomplete="PF('transactionDialog').show()" 
+			update=":center_content:panelA" process="@this"></p:commandButton>
+			<center>
+			<p:dialog widgetVar="categoryDialog" header="category registration"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="28%" height="100%"> 
+				<p:outputPanel id="catepanel">
+				<h:form id="cform">
+				<p:panelGrid styleClass="ui-panelgrid-blank" columns="3" style="width:100%;height:70px;">
+				<h:outputLabel value="category" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:inputText id="categoryname" value="#{financeMB.financeDataBean.transactionCategory}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText>
+				<h:outputLabel></h:outputLabel><h:outputLabel></h:outputLabel><h:message for="categoryname" style="font-size:10px;color:red"></h:message>
+				<h:outputLabel value="description" styleClass="labelTxt"></h:outputLabel>
+				<h:outputLabel value=":" style="font-size:14px;font-weight:bold"></h:outputLabel>
+				<p:inputText value="#{financeMB.financeDataBean.transactionDescription}"><p:ajax update="@form" process="@this"></p:ajax></p:inputText>
+				</p:panelGrid><br></br>
+					<center>
+					<p:commandButton value="save" icon="fa fa-database" update="@form" process="@this" action="#{financeMB.saveCategory}"></p:commandButton>
+					<p:commandButton value="reset" icon="fa fa-refresh">
+					<p:ajax update="center_content:catepanel" resetValues="true"></p:ajax>
+					</p:commandButton>
+					</center>
+				</h:form>
+				</p:outputPanel><br/>
+			</p:dialog>
+			
+			<br/>
+			<p:dataTable rows="5" paginator="true" paginatorPosition="bottom" var="trans" value="#{financeMB.domainList}"
+			pageLinks="5" id="transactiondata" paginatorAlwaysVisible="false" widgetVar="data">
+			<f:facet name="header">
+			<p:outputPanel style="text-align:right">
+						<p:inputText id="globalFilter" onkeyup="PF('data').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+			</f:facet>
+			<p:column headerText="transaction number" sortBy="#{trans.transactionNumber}" filterBy="#{trans.transactionNumber}" filterStyle="display:none">
+			<h:outputText value="#{trans.transactionNumber}"></h:outputText>
+			<h:inputHidden value="#{trans.debtId}"></h:inputHidden>
+			</p:column>
+			<p:column headerText="date" width="80" filterBy="#{trans.date}" sortBy="#{trans.date}" filterStyle="display:none"> 
+			<h:outputText value="#{trans.date}" >
+			<f:convertDateTime pattern="dd-MM-yyyy"></f:convertDateTime>
+			</h:outputText>
+			</p:column>
+			<p:column headerText="payment mode" sortBy="#{trans.paymentmode}" filterBy="#{trans.paymentmode}" filterStyle="display:none">
+			<h:outputText value="#{trans.paymentmode}"></h:outputText>
+			</p:column>
+			<p:column headerText="transaction type" sortBy="#{trans.paymenttype}" filterBy="#{trans.paymenttype}" filterStyle="display:none">
+			<h:outputText value="#{trans.paymenttype}"></h:outputText>
+			</p:column>
+			<p:column headerText="name" sortBy="#{trans.name}" filterBy="#{trans.name}" filterStyle="display:none">
+			<h:outputText value="#{trans.name}"></h:outputText>
+			</p:column>
+			<p:column headerText="amount" sortBy="#{trans.amount}" filterBy="#{trans.amount}" filterStyle="display:none">
+			<h:outputText value="#{trans.amount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+			</p:column>
+			<p:column headerText="category" sortBy="#{trans.transactionCategory}" filterBy="#{trans.transactionCategory}" filterStyle="display:none">
+			<h:outputText value="#{trans.transactionCategory}"></h:outputText>
+			</p:column>
+			<p:column headerText="action">
+			<p:commandButton icon="fa fa-search" oncomplete="PF('view').show();" 
+			process="@this" update="center_content:dialogPanel" action="#{financeMB.view}">
+			<f:setPropertyActionListener value="#{trans.debtId}" target="#{financeMB.financeDataBean.debtId}"></f:setPropertyActionListener>
+			</p:commandButton>
+			<p:commandButton icon="fa fa-pencil" oncomplete="PF('edit').show();" process="@this" 
+			update=":center_content:epanel" action="#{financeMB.edit}">
+			<f:setPropertyActionListener value="#{trans.debtId}" target="#{financeMB.financeDataBean.debtId}"></f:setPropertyActionListener></p:commandButton>
+			<p:commandButton icon="fa fa-trash" onclick="PF('deleteConfirmDlg').show()">
+			<f:setPropertyActionListener value="#{trans.debtId}" target="#{financeMB.financeDataBean.debtId}"></f:setPropertyActionListener>
+			</p:commandButton>
+			</p:column>
+			</p:dataTable>
+			
+			<p:dialog widgetVar="transactionDialog" header="transaction registration"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="60%" height="100%"> 
+				<p:outputPanel id="panelA">
+				<h:form id="tform">
+				<table style="width:100%">
+				<tr><td><h:outputLabel value="payment mode" styleClass="labelTxt"></h:outputLabel>
+				</td><td><p:selectOneMenu styleClass="pselectonmenu" id="mode"  value="#{financeMB.financeDataBean.paymentmode}">
+						<f:selectItem itemLabel="select" noSelectionOption="true"></f:selectItem>
+						 <f:selectItem itemLabel="cash" itemValue="cash"></f:selectItem>
+    					 <f:selectItem itemLabel="card" itemValue="card"/>
+   						 <f:selectItem itemLabel="cheque" itemValue="cheque"/>
+   						 <f:selectItem itemLabel="transfer" itemValue="transfer"/>
+   						 <p:ajax update="center_content:panelA" process="@this" event="valueChange"></p:ajax>
+						</p:selectOneMenu></td>
+				<td><h:outputLabel value="tanngal" styleClass="labelTxt">
+						</h:outputLabel></td>
+						<td><p:calendar pattern="dd-MM-yyyy" id="date"
+						maxdate="#{currentDate}" value="#{financeMB.financeDataBean.date}">
+						<p:ajax event="dateSelect" update="@all" process="@this"></p:ajax>
+						</p:calendar></td></tr>
+				<tr><td></td><td><h:message for="mode" style="font-size: 10px; color: red;"></h:message></td><td></td>
+				<td><h:message for="date" style="font-size: 10px; color: red;"></h:message></td></tr>
+				<tr><td><h:outputLabel value="transaction type" styleClass="labelTxt">
+						</h:outputLabel></td>
+				<td><p:selectOneMenu styleClass="pselectonmenu" id="type"  value="#{financeMB.financeDataBean.paymenttype}">
+						<f:selectItem itemLabel="select" noSelectionOption="true"></f:selectItem>
+						<f:selectItem itemLabel="income" itemValue="income"></f:selectItem>
+						<f:selectItem itemLabel="expense" itemValue="expense"></f:selectItem>
+						<p:ajax update="@all" process="@this"></p:ajax>
+						</p:selectOneMenu>
+						</td><td><h:outputLabel value="name" styleClass="labelTxt">
+						</h:outputLabel>
+						</td><td><p:inputText id="name" value="#{financeMB.financeDataBean.name}">
+						<p:ajax update="@all" process="@this"></p:ajax>
+						</p:inputText>
+						</td></tr>
+				<tr><td></td><td><h:message for="type" style="font-size: 10px; color: red;"></h:message></td><td></td><td>
+				<h:message for="name" style="font-size: 10px; color: red;"></h:message></td></tr>
+				<tr><td><h:outputLabel value="amount" styleClass="labelTxt">
+						</h:outputLabel></td><td><p:inputNumber id="amount"  value="#{financeMB.financeDataBean.amount}"><p:ajax update="@all" process="@this"></p:ajax></p:inputNumber></td>
+						<td><h:outputLabel value="note" styleClass="labelTxt">
+						</h:outputLabel></td><td><p:inputText id="note"  value="#{financeMB.financeDataBean.note}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+				<tr><td></td><td><h:message for="amount" style="font-size: 10px; color: red;"></h:message></td><td></td><td>
+				<h:message for="note" style="font-size: 10px; color: red;"></h:message></td></tr>
+				<tr><td><h:outputLabel value="category" styleClass="labelTxt">
+						</h:outputLabel></td><td><p:selectOneMenu styleClass="pselectonmenu" id="ctype"  value="#{financeMB.financeDataBean.transactionCategory}" valueChangeListener="#{financeMB.tcategoryValueChange}">
+						<f:selectItem itemLabel="select category" noSelectionOption="true"></f:selectItem>
+						<f:selectItems value="#{financeMB.nameList}"></f:selectItems>
+						<p:ajax event="valueChange" update="@form" process="@this"></p:ajax>
+						</p:selectOneMenu></td><td><h:outputLabel value="quantity" styleClass="labelTxt" rendered="#{financeMB.wastequanFlag}">
+						</h:outputLabel></td><td><p:inputText id="quan" value="#{financeMB.financeDataBean.wasteQuantity}" rendered="#{financeMB.wastequanFlag}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+				<tr><td></td><td><h:message for="ctype" style="font-size: 10px; color: red;"></h:message></td><td></td><td>
+				<h:message for="quan" style="font-size: 10px; color: red;" rendered="#{financeMB.wastequanFlag}"></h:message></td></tr>
+				<tr><td><h:outputLabel value="bank name" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='card'}">
+						</h:outputLabel></td><td><p:inputText  id="bank" value="#{financeMB.financeDataBean.bankname}" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td>
+						<td><h:outputLabel value="card number" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='card'}">
+						</h:outputLabel></td><td><p:inputText id="card"  value="#{financeMB.financeDataBean.cardno}" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+				<tr><td></td><td><h:message for="bank" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"></h:message></td><td></td><td>
+				<h:message for="card" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"></h:message></td></tr>
+				<tr><td><h:outputLabel value="bank name" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}">
+						</h:outputLabel>
+				</td><td><p:inputText  id="bankna" value="#{financeMB.financeDataBean.bankname}" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td>
+				<td><h:outputLabel value="cheque number" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}">
+						</h:outputLabel></td><td><p:inputText id="chequeno"  value="#{financeMB.financeDataBean.chequeno}" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+					<tr><td></td><td><h:message for="bankna" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:message></td>
+					<td></td><td><h:message for="chequeno" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:message></td></tr>
+						<tr><td><h:outputLabel value="cheque date" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}">
+						</h:outputLabel></td><td>
+						<p:calendar id="chequedate" pattern="dd-MM-yyyy" maxdate="#{currentDate}" value="#{financeMB.financeDataBean.chequedate}" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}">
+						<p:ajax event="dateSelect" update="@all" process="@this"></p:ajax>
+						</p:calendar></td><td></td><td></td></tr>
+							<tr><td></td><td><h:message for="chequedate" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:message></td><td></td><td></td></tr>
+								<tr><td><h:outputLabel value="bank name" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}">
+						</h:outputLabel></td><td><p:inputText id="bankname" value="#{financeMB.financeDataBean.bankname}" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText>
+						</td><td><h:outputLabel value="account number" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}">
+						</h:outputLabel></td><td><p:inputText id="accno" value="#{financeMB.financeDataBean.accountno}" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+									<tr><td></td><td><h:message for="bankname" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"></h:message></td><td></td><td><h:message for="accno" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"></h:message></td></tr>
+				
+				</table><br/><center>
+				<p:commandButton value="save" icon="fa fa-database" update="@form" process="@this" action="#{financeMB.transactionsave}"></p:commandButton>
+					<p:commandButton value="reset" icon="fa fa-refresh">
+					<p:ajax update="center_content:panelA" resetValues="true"></p:ajax>
+					</p:commandButton></center>
+				</h:form>
+				</p:outputPanel>
+				</p:dialog>
+			
+			</center>
+			<p:dialog header="TRANSACTION VIEW" appendTo="@(body)"
+			widgetVar="view" modal="true"   height="100%" width="40%" resizable="false" >
+			<center>
+			<p:outputPanel id="dialogPanel">
+				<p:panelGrid columns="4" style="height:140px" styleClass="ui-panelgrid-blank">
+				<h:outputText value="transaction number "></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.transactionNumber}"></h:outputText>
+						<h:outputText value="Date "></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.date}">
+							<f:convertDateTime pattern="dd-MM-yyyy"></f:convertDateTime>
+						</h:outputText>
+						<h:outputText value="payment mode"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.paymentmode}"></h:outputText>
+						<h:outputText value="transaction type"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.paymenttype}"></h:outputText>
+						<h:outputText value="amount"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.amount}">
+						<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+						</h:outputText>
+						<h:outputText value="name"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.name}"></h:outputText>
+						<h:outputText value="note"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.note}"></h:outputText>
+						
+						<h:outputText value="bank name" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.bankname}" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"></h:outputText>
+						<h:outputText value="card number" rendered="#{financeMB.financeDataBean=='card'}"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.cardno}" rendered="#{financeMB.financeDataBean=='card'}"></h:outputText>
+						
+						<h:outputText value="bank name" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.bankname}" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:outputText>
+						<h:outputText value="cheque number" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:outputText>
+						<h:outputText	value="#{financeMB.financeDataBean.chequeno}" rendered="#{financeMB.financeDataBean=='cheque'}"></h:outputText>
+						<h:outputText value="cheque date" rendered="#{kasMB.kasSalary.paymentmode=='cheque'}"></h:outputText>
+						<h:outputText	value="#{financeMB.financeDataBean.chequedate}" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}">
+						<f:convertDateTime pattern="dd-MM-yyyy"></f:convertDateTime></h:outputText>
+						<h:outputText rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:outputText>
+						<h:outputText rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:outputText>
+						
+						<h:outputText value="bank name" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"></h:outputText>
+						<h:outputText	value="#{financeMB.financeDataBean.bankname}" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"></h:outputText>
+						<h:outputText value="account number" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"></h:outputText>
+						<h:outputText	value="#{financeMB.financeDataBean.accountno}" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"></h:outputText>
+						
+						<h:outputText value="category"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.transactionCategory}"></h:outputText>
+						<h:outputText value="quantity" rendered="#{financeMB.financeDataBean.transactionCategory =='waste'}"></h:outputText>
+						<h:outputText value="#{financeMB.financeDataBean.note}" rendered="#{financeMB.financeDataBean.transactionCategory =='waste'}"></h:outputText>
+					</p:panelGrid><br/>
+					<center><p:commandButton value="OK" oncomplete="PF('view').hide()"></p:commandButton></center>
+				</p:outputPanel>
+				</center><br/>
+				</p:dialog>
+				
+				<p:dialog widgetVar="edit" header="transaction edit"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="60%" height="100%"> 
+				<p:outputPanel id="epanel">
+				<h:form id="eform">
+					<table style="width:100%">
+				<tr><td><h:outputLabel value="payment mode" styleClass="labelTxt"></h:outputLabel>
+				</td><td><h:outputLabel value="#{financeMB.financeDataBean.paymentmode}" styleClass="labelTxt">
+						</h:outputLabel></td>
+				<td><h:outputLabel value="tanngal" styleClass="labelTxt">
+						</h:outputLabel></td>
+						<td><h:outputText value="#{financeMB.financeDataBean.date}" styleClass="labelTxt"></h:outputText></td></tr>
+				<tr><td></td><td><h:message for="mode" style="font-size: 10px; color: red;"></h:message></td><td></td>
+				<td><h:message for="date" style="font-size: 10px; color: red;"></h:message></td></tr>
+				<tr><td><h:outputLabel value="transaction type" styleClass="labelTxt">
+						</h:outputLabel></td>
+				<td><p:selectOneMenu styleClass="pselectonmenu" id="etype"  value="#{financeMB.financeDataBean.paymenttype}">
+						<f:selectItem itemLabel="select" noSelectionOption="true"></f:selectItem>
+						<f:selectItem itemLabel="income" itemValue="income"></f:selectItem>
+						<f:selectItem itemLabel="expense" itemValue="expense"></f:selectItem>
+						<p:ajax update="@all" process="@this"></p:ajax>
+						</p:selectOneMenu>
+						</td><td><h:outputLabel value="ename" styleClass="labelTxt">
+						</h:outputLabel>
+						</td><td><p:inputText id="ename" value="#{financeMB.financeDataBean.name}">
+						<p:ajax update="@all" process="@this"></p:ajax>
+						</p:inputText>
+						</td></tr>
+				<tr><td></td><td><h:message for="etype" style="font-size: 10px; color: red;"></h:message></td><td></td><td>
+				<h:message for="ename" style="font-size: 10px; color: red;"></h:message></td></tr>
+				<tr><td><h:outputLabel value="amount" styleClass="labelTxt">
+						</h:outputLabel></td><td><p:inputNumber id="eamount"  value="#{financeMB.financeDataBean.amount}"><p:ajax update="@all" process="@this"></p:ajax></p:inputNumber></td>
+						<td><h:outputLabel value="note" styleClass="labelTxt">
+						</h:outputLabel></td><td><p:inputText id="enote"  value="#{financeMB.financeDataBean.note}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+				<tr><td></td><td><h:message for="eamount" style="font-size: 10px; color: red;"></h:message></td><td></td><td>
+				<h:message for="enote" style="font-size: 10px; color: red;"></h:message></td></tr>
+				<tr><td><h:outputLabel value="category" styleClass="labelTxt">
+						</h:outputLabel></td><td><p:selectOneMenu styleClass="pselectonmenu" id="ectype"  value="#{financeMB.financeDataBean.transactionCategory}" valueChangeListener="#{financeMB.tcategoryValueChange}">
+						<f:selectItem itemLabel="select category" noSelectionOption="true"></f:selectItem>
+						<f:selectItems value="#{financeMB.nameList}"></f:selectItems>
+						<p:ajax event="valueChange" update="@form" process="@this"></p:ajax>
+						</p:selectOneMenu></td><td><h:outputLabel value="quantity" styleClass="labelTxt" rendered="#{financeMB.wastequanFlag}">
+						</h:outputLabel></td><td><p:inputText id="equan" value="#{financeMB.financeDataBean.wasteQuantity}" rendered="#{financeMB.wastequanFlag}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+				<tr><td></td><td><h:message for="ectype" style="font-size: 10px; color: red;"></h:message></td><td></td><td>
+				<h:message for="equan" style="font-size: 10px; color: red;" rendered="#{financeMB.wastequanFlag}"></h:message></td></tr>
+				<tr><td><h:outputLabel value="bank name" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='card'}">
+						</h:outputLabel></td><td><p:inputText  id="ebank" value="#{financeMB.financeDataBean.bankname}" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td>
+						<td><h:outputLabel value="card number" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='card'}">
+						</h:outputLabel></td><td><p:inputText id="ecard"  value="#{financeMB.financeDataBean.cardno}" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+				<tr><td></td><td><h:message for="ebank" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"></h:message></td><td></td><td>
+				<h:message for="ecard" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='card'}"></h:message></td></tr>
+				<tr><td><h:outputLabel value="bank name" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}">
+						</h:outputLabel>
+				</td><td><p:inputText  id="ebankna" value="#{financeMB.financeDataBean.bankname}" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td>
+				<td><h:outputLabel value="cheque number" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}">
+						</h:outputLabel></td><td><p:inputText id="echequeno"  value="#{financeMB.financeDataBean.chequeno}" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+					<tr><td></td><td><h:message for="ebankna" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:message></td>
+					<td></td><td><h:message for="echequeno" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:message></td></tr>
+						<tr><td><h:outputLabel value="cheque date" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}">
+						</h:outputLabel></td><td>
+						<p:calendar id="echequedate" pattern="dd-MM-yyyy" maxdate="#{currentDate}" value="#{financeMB.financeDataBean.chequedate}" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}">
+						<p:ajax event="dateSelect" update="@all" process="@this"></p:ajax>
+						</p:calendar></td><td></td><td></td></tr>
+							<tr><td></td><td><h:message for="echequedate" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='cheque'}"></h:message></td><td></td><td></td></tr>
+								<tr><td><h:outputLabel value="bank name" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}">
+						</h:outputLabel></td><td><p:inputText id="ebankname" value="#{financeMB.financeDataBean.bankname}" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText>
+						</td><td><h:outputLabel value="account number" styleClass="labelTxt" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}">
+						</h:outputLabel></td><td><p:inputText id="eaccno" value="#{financeMB.financeDataBean.accountno}" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"><p:ajax update="@all" process="@this"></p:ajax></p:inputText></td></tr>
+									<tr><td></td><td><h:message for="ebankname" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"></h:message></td><td></td><td><h:message for="eaccno" style="font-size: 10px; color: red;" rendered="#{financeMB.financeDataBean.paymentmode=='transfer'}"></h:message></td></tr>
+				
+				</table><br/>
+					<center>
+					<p:commandButton value="update" update="@form" process="@this" action="#{financeMB.updatetransaction}"></p:commandButton>
+					<p:commandButton value="cancel" oncomplete="PF('edit').hide()"></p:commandButton>
+					</center></h:form>
+				</p:outputPanel></p:dialog>
+			<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="30%" height="100px">
+				<h:form id="rag">
+					<p align="center" style="font-size: 14px">SUCESSFULLY SAVE</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{financeMB.transactionPage}" update="center_content" process="@this"></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+			<p:dialog widgetVar="category" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="30%" height="100px">
+				<h:form id="cates">
+					<p align="center" style="font-size: 14px">SUCCESSFULLY SAVE</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('category').hide()" update="center_content" process="@this"></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+			<p:dialog widgetVar="update" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="30%" height="100px">
+				<h:form id="upt">
+					<p align="center" style="font-size: 14px">SUCCESSFULLY UPDATED</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('update').hide()" action="#{financeMB.transactionPage}" update="center_content" process="@this"></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+			<p:confirmDialog id="deleteConfirmDialog" closable="false"
+			message="Are You Sure you want to Delete the information"
+			header="Delete Supplier" global="true"
+			widgetVar="deleteConfirmDlg">
+			<center>
+				<p:commandButton id="confirmDelete" value="Yes"
+					oncomplete="PF('deleteConfirmDlg').hide();PF('delete').show();"
+					immediate="true" process="@this" action="#{financeMB.transactiondelete}" />
+				<p:commandButton id="declineDelete" value="No"
+					onclick="PF('deleteConfirmDlg').hide()" type="button" />
+			</center>
+		</p:confirmDialog>
+			<p:dialog widgetVar="delete" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="30%" height="100px">
+				<h:form id="del">
+					<p align="center" style="font-size: 14px">SUCCESSFULLY DELETED</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('delete').hide()" action="#{financeMB.transactionPage}" update="center_content" process="@this"></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+			</p:panel>
+			</ui:define>
+			</ui:composition>
+			

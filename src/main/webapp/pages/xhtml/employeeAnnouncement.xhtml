@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:growl id="msg"></p:growl>
+	<p:panel header="announcement" style="min-height:100%" id="announcementpanel">
+		<h:panelGrid columns="3" cellpadding="3" cellspacing="4">
+						<h:outputLabel value="date " for="date" styleClass="labelTxt"></h:outputLabel>
+						<h:outputLabel value=": " styleClass="labelTxt"></h:outputLabel>
+						<p:inputText id="date" value="#{employeeMB.employeeDataBean.announcementDate}" readonly="true" >	
+						<f:convertDateTime pattern="dd-MM-yyyy/hh:mm:ss"></f:convertDateTime>
+						</p:inputText>
+						<h:outputLabel /><h:outputLabel />
+						<h:message for="date" style="color:red;font-size:10px"></h:message>
+						<h:outputLabel value="post by " for="postby" styleClass="labelTxt"></h:outputLabel>
+						<h:outputLabel value=": " styleClass="labelTxt"></h:outputLabel>
+						<p:inputText id="postby" value="#{employeeMB.employeeDataBean.postBy}" readonly="true"></p:inputText>
+						<h:outputLabel /><h:outputLabel />
+						<h:message for="postby" style="color:red;font-size:10px" ></h:message>
+						<h:outputLabel value="announcement" styleClass="labelTxt"></h:outputLabel>
+						<h:outputLabel value=": " styleClass="labelTxt"></h:outputLabel>
+						<p:inputTextarea id="annoce"  value="#{employeeMB.employeeDataBean.announcement}" style="width:400px;height:100px"  />						
+						<h:outputLabel /><h:outputLabel />
+						<h:message for="annoce" style="color:red;font-size:10px"></h:message>
+						<h:outputLabel /><h:outputLabel />
+						<p:commandButton value="post" icon="fa fa-check" action="#{employeeMB.saveAnnouncement}" update="@form" onstart="PF('blockUI').show();" onsuccess="PF('blockUI').hide();"></p:commandButton>
+					</h:panelGrid>
+				<br></br>
+				
+				<p:dataTable rows="5" paginator="true" paginatorPosition="bottom" resizableColumns="true" editable="true"
+					pageLinks="5" paginatorAlwaysVisible="false" var="announce" id="announcementinfo" value="#{employeeMB.announcementList}">
+					<f:facet name="header">
+					<p:outputPanel style="text-align:left">
+					<h:outputText value="last posted " />
+					</p:outputPanel>
+					</f:facet>
+					<p:ajax event="rowEdit" listener="#{employeeMB.announcementEdit}" update=":center_content:msg" onstart="PF('blockUI').show();" onsuccess="PF('blockUI').hide();"/>
+					<p:ajax event="rowEditCancel" />
+					<p:column headerText="date" width="150"  sortBy="#{announce.announcementDate}">
+					<p:inputText value="#{announce.hiddenValue}" type="hidden"/>
+					<h:outputText value="#{announce.announcementDate}">
+					<f:convertDateTime pattern="dd MMM yyyy hh:mm:ss"/>
+					</h:outputText>
+					</p:column>
+					<p:column headerText="post by" width="170"  sortBy="#{announce.postBy}">
+					<h:outputText value="#{announce.postBy}"></h:outputText>
+					</p:column>
+					<p:column headerText="announcement">
+					<p:cellEditor>
+					<f:facet name="output">
+					<h:outputText value="#{announce.announcement}"></h:outputText></f:facet>
+					<f:facet name="input"><p:inputTextarea value="#{announce.announcement}" style="width:250px;height:100px"></p:inputTextarea>
+					</f:facet>
+					</p:cellEditor>
+					</p:column>
+					<p:column headerText="edit" width="70">
+					<p:rowEditor></p:rowEditor>
+					</p:column>
+					<p:column headerText="delete" width="70">
+					<center>
+							<p:commandButton icon="fa fa-remove" title="DELETE" action="#{employeeMB.announcementDelete(announce)}" >
+								<p:confirm header="delete branch" message="ARE YOU SURE?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+							<p:confirmDialog global="true" width="15%">
+								<center>
+									<p:commandButton value="YES" type="button"
+										styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+									<p:commandButton value="NO" type="button"
+										styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+								</center>
+							</p:confirmDialog>
+						</center>
+					</p:column>
+			</p:dataTable>	
+	</p:panel>
+	
+	<p:blockUI widgetVar="blockUI" block="announcementpanel" >
+		<h:panelGrid id="blockUIContent" columns="2"
+				style="table-layout:auto;">
+				<p:graphicImage value="../../images/spinners.gif" style="width:60px"/>
+				<h:outputText value="Please wait, data is being processed..."
+					style="white-space: nowrap;font-size:14px" />
+			</h:panelGrid>
+		</p:blockUI>
+	<p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag">
+				<p align="center" style="font-size: 16px">SUCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{employeeMB.announcementPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="edit" header="CONFORMATION BOX" position="center"
+			modal="true" resizable="false" appendTo="@(body)" width="30%"
+			height="100px">
+			<h:form>
+				<p align="center" style="font-size: 16px">EDITED SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('edit').hide()" action="#{employeeMB.announcementPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="delete" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag1">
+				<p align="center" style="font-size: 16px">DELETE SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('delete').hide()" action="#{employeeMB.announcementPage}"  update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+	</ui:composition>

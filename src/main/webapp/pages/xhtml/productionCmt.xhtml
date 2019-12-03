@@ -1,0 +1,785 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+	<p:panel header="cmt" style="min-height:100%" id="cmtpanel">
+	<div class="ui-g">
+    <div class="ui-g-4">
+    <p:commandButton value="cmt order form" action="#{productionMB.cmtOrder}" oncomplete="PF('cmtorder').show()" update=":center_content:cmtorder" process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()"></p:commandButton>
+    </div>
+    <div class="ui-g-4">
+    <center>
+    <p:commandButton value="holding" actionListener="#{productionMB.holdingCmt}" oncomplete="PF('holding').show()"  update="center_content:cmtholding"  process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()"></p:commandButton></center>
+    </div>
+    <div class="ui-g-4">
+    <center><p:commandButton value="ready for cmt"  oncomplete="PF('printerready').show()"  update=":center_content:printerreadydata" process="@this" action="#{productionMB.printerReady}"
+							 onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()"></p:commandButton></center>
+    </div>
+    
+    </div>
+    <div class="ui-g">
+    <div class="ui-g-4">
+    <p:commandButton value="cmt receive order" action="#{productionMB.cmtReceive}" oncomplete="PF('cmtReceiveForm').show();" update="center_content:cmtreceive"  process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()"></p:commandButton>
+    </div>
+     <div class="ui-g-4">
+     <center>
+    <h:panelGrid columns="3" cellpadding="2" cellspacing="3">
+    <h:outputText value="cmt" styleClass="labelTxt"></h:outputText>
+    <h:outputText value=":" styleClass="labelTxt"></h:outputText>
+    <p:selectOneMenu value="#{productionMB.productionDataBean.cmt}">
+    <f:selectItem itemLabel="please select one" noSelectionOption="true"></f:selectItem>
+    <f:selectItem itemLabel="all" itemValue="ALL"></f:selectItem>
+    <f:selectItems value="#{productionMB.cmtList}"></f:selectItems>
+    <p:ajax event="valueChange" listener="#{productionMB.cmtSearch}" update="center_content" process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()"></p:ajax>
+    </p:selectOneMenu>
+    </h:panelGrid></center>
+    </div>
+    </div>
+    <p:dataTable rows="10" paginator="true" paginatorPosition="bottom" pageLinks="5" id="cmtdata" 
+	   paginatorAlwaysVisible="false" widgetVar="cmtinfo"  var="cmt" value="#{productionMB.cmtPurchaselist}">
+	   <f:facet name="header">
+			<p:outputPanel style="text-align:right">
+				<p:inputText id="globalFilter" onkeyup="PF('cmtinfo').filter()"
+					style="width:150px" placeholder="Enter keyword" />
+			</p:outputPanel>
+    	</f:facet>
+    	<p:column headerText="date" filterBy="#{cmt.orderDate}" sortBy="#{cmt.orderDate}" filterStyle="display:none">
+    	<h:outputText value="#{cmt.orderDate}">
+    	<f:convertDateTime pattern="ddMMMyyy"></f:convertDateTime>
+    	</h:outputText>
+    	</p:column>
+    	<p:column headerText="invoice" filterBy="#{cmt.invoiceNo}" sortBy="#{cmt.invoiceNo}"  filterStyle="display:none">
+    	<h:outputText value="#{cmt.invoiceNo}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="cmt" filterBy="#{cmt.cmt}" sortBy="#{cmt.cmt}" filterStyle="display:none">
+    	<h:outputText value="#{cmt.cmt}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="model" filterBy="#{cmt.modelName}" sortBy="#{cmt.modelName}" filterStyle="display:none">
+    	<h:outputText value="#{cmt.modelName}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="total qty" filterBy="#{cmt.totalQuantity}" sortBy="#{cmt.totalQuantity}" filterStyle="display:none">
+    	<h:outputText value="#{cmt.totalQuantity}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="amount" filterBy="#{cmt.totalValue}" sortBy="#{cmt.totalValue}" filterStyle="display:none">
+    	<h:outputText value="#{cmt.totalValue}">
+    	<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+    	</p:column>
+    	<p:column headerText="status" filterBy="#{cmt.invoiceStatus}" sortBy="#{cmt.invoiceStatus}" filterStyle="display:none">
+    	<h:panelGroup rendered="#{cmt.invoiceStatus!='STOCK IN'}">
+    	<h:panelGroup rendered="#{cmt.invoiceStatus!='INVOICE'}">
+    	<h:panelGroup rendered="#{cmt.invoiceStatus!='PARTIAL STOCKIN'}">
+    	<h:outputText value="#{cmt.invoiceStatus}" rendered="#{cmt.invoiceStatus!='PAYMENT'}"></h:outputText></h:panelGroup></h:panelGroup></h:panelGroup>
+    	<p:commandLink value="#{cmt.invoiceStatus}" style="color:#2399e5" rendered="#{cmt.invoiceStatus=='INVOICE'}" oncomplete="PF('orderinvoice').show()" action="#{productionMB.cmtInvoice}" update=":center_content:invoicedata" process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()">
+    	<f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	</p:commandLink>
+    	<p:commandLink value="#{cmt.invoiceStatus}" style="color:#2399e5" rendered="#{cmt.invoiceStatus=='STOCK IN'}" oncomplete="PF('orderstockin').show()" update=":center_content:stockdata" process="@this" action="#{productionMB.cmtStock}" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()">
+    	<f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	</p:commandLink>
+    	<p:commandLink value="INVOICE" style="color:#2399e5" rendered="#{cmt.invoiceStatus=='PARTIAL STOCKIN'}" oncomplete="PF('orderinvoice').show()" action="#{productionMB.cmtInvoice}" update=":center_content:invoicedata" process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()">
+    	<f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	</p:commandLink>
+    	 <p:commandLink value="#{cmt.invoiceStatus}" style="color:#2399e5" rendered="#{cmt.invoiceStatus=='PAYMENT'}" oncomplete="PF('orderpayment').show()" action="#{productionMB.cmtPayment}"  update=":center_content:invoicepayment" process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()">
+    	 <f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	 </p:commandLink>
+    	</p:column>
+    	<p:column headerText="view" width="30">
+    	<p:commandButton icon="fa fa-search" title="VIEW" action="#{productionMB.cmtpurchaseView}" oncomplete="PF('purchaseview').show()" update=":center_content:orderdata" process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()">
+    	<f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	</p:commandButton>
+    	</p:column>
+    	<p:column headerText="edit" width="50">
+    	<h:panelGroup rendered="#{cmt.invoiceStatus!='STOCK IN'}">
+    	<h:outputText value="non-editable" rendered="#{cmt.invoiceStatus!='HOLDING'}"></h:outputText></h:panelGroup>
+    	<p:commandButton icon="fa fa-pencil" title="EDIT" action="#{productionMB.cmtpurchaseEdit}"  rendered="#{cmt.invoiceStatus=='STOCK IN'}"  oncomplete="PF('purchaseEdit').show()" update=":center_content:orderdata1" process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()">
+    	<f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	</p:commandButton>
+    	<p:commandButton icon="fa fa-pencil" title="EDIT" action="#{productionMB.cmtpurchaseEdit}"  rendered="#{cmt.invoiceStatus=='HOLDING'}"  oncomplete="PF('purchaseEdit').show()" update=":center_content:orderdata1" process="@this" onstart="PF('blockUI').show()" onsuccess="PF('blockUI').hide()">
+    	<f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	</p:commandButton>
+    	</p:column>
+    	<p:column headerText="delete" width="50">
+    	<h:panelGroup rendered="#{cmt.invoiceStatus!='STOCK IN'}">
+    	<h:panelGroup rendered="#{cmt.invoiceStatus!='PAID'}">
+    	<h:outputText value="non-editable" rendered="#{cmt.invoiceStatus!='HOLDING'}"></h:outputText></h:panelGroup></h:panelGroup>
+    	<h:panelGroup rendered="#{cmt.invoiceStatus=='STOCK IN'}">
+    	<p:commandButton title="DELETE" icon="fa fa-times" action="#{productionMB.cmtOrderdelete}" >
+    	<p:confirm header="delete cmt order" message="ARE YOU SURE?" icon="ui-icon-alert" />
+    	<f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	</p:commandButton></h:panelGroup>
+    	<h:panelGroup rendered="#{cmt.invoiceStatus=='PAID'}">
+    	<p:commandButton title="DELETE" icon="fa fa-times" action="#{productionMB.cmtOrderdelete}" >
+    	<p:confirm header="delete cmt order" message="ARE YOU SURE?" icon="ui-icon-alert" />
+    	<f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	</p:commandButton>
+    	</h:panelGroup>
+    	<h:panelGroup rendered="#{cmt.invoiceStatus=='HOLDING'}">
+    	<p:commandButton title="DELETE" icon="fa fa-times" action="#{productionMB.cmtOrderdelete}" >
+    	<p:confirm header="delete cmt order" message="ARE YOU SURE?" icon="ui-icon-alert" />
+    	<f:setPropertyActionListener target="#{productionMB.productionDataBean.invoiceNo}" value="#{cmt.invoiceNo}" />
+    	</p:commandButton>
+    	</h:panelGroup>
+    	<p:confirmDialog global="true" width="20%">
+		<center>
+			<p:commandButton value="YES" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</center>
+		</p:confirmDialog>
+    	</p:column>
+	 </p:dataTable>
+	
+	
+	 <p:dialog header="cmt order form" modal="true" appendTo="@(body)" width="60%" height="550px" widgetVar="cmtorder" position="center" id="cmtorderdialog">
+	 <p:outputPanel id="cmtorder">
+	 <h:form>
+	 <div class="ui-g">
+	 <div class="ui-g-6"> 
+	 <p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+	 <h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel>
+    	<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+    	<p:calendar value="#{productionMB.productionDataBean.orderDate}"  pattern="dd-MM-yyyy" id="date"></p:calendar>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="date" style="color:red;font-size:10px"></h:message>
+    	<h:outputLabel value="invoice" styleClass="labelTxt"></h:outputLabel>
+    	<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+    	<p:inputText value="#{productionMB.productionDataBean.invoiceNo}" readonly="true" id="invoice"></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="invoice"></h:message>
+    	<h:outputLabel value="total qty" styleClass="labelTxt"></h:outputLabel>
+    	<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+    	<p:inputText value="#{productionMB.productionDataBean.totalQuantity}" readonly="true" id="totalqty"></p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="totalqty"></h:message>
+	 </p:panelGrid>
+	 </div>
+	 <div class="ui-g-6">
+	  <p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+    	<h:outputLabel value="cmt" styleClass="labelTxt"></h:outputLabel>
+    	<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+    	<p:selectOneMenu id="cmt" value="#{productionMB.productionDataBean.cmt}">
+    	<f:selectItem itemLabel="please select cmt" noSelectionOption="true"></f:selectItem>
+   		<f:selectItems value="#{productionMB.invoiceList}"></f:selectItems>
+   		<p:ajax update="@form" process="@this"></p:ajax>
+    	</p:selectOneMenu>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="cmt" style="color:red;font-size:10px"></h:message>
+    	<h:outputLabel value="model" styleClass="labelTxt"></h:outputLabel>
+    	<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+    	<p:selectOneMenu id="model" value="#{productionMB.productionDataBean.modelName}">
+    	<f:selectItem itemLabel="please select model" noSelectionOption="true"></f:selectItem>
+   		<f:selectItems value="#{productionMB.modelList}"></f:selectItems>
+   		 <p:ajax event="valueChange" listener="#{productionMB.modelValueChange}" update=":center_content:cmtorder" process="@this" ></p:ajax>
+    	</p:selectOneMenu>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="model" style="color:red;font-size:10px"></h:message>
+    	<h:outputLabel value="amount" styleClass="labelTxt"></h:outputLabel>
+    	<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+    	<p:inputText value="#{productionMB.productionDataBean.totalValue}" readonly="true" id="value">
+    	<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+    	</p:inputText>
+    	<h:outputText></h:outputText><br></br>
+    	<h:message for="value"></h:message>
+	 </p:panelGrid>
+	 </div>
+	 </div>
+	 <center><h:message for="cmtorder" style="color:red;font-size:10px"></h:message></center>
+	 <p:dataTable var="order" value="#{productionMB.cmtorderlist}" id="orderdata">
+		<p:column headerText="no" width="20">
+    	<h:outputText value="#{order.serialNo}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="seri" width="160">
+	     <p:autoComplete value="#{order.seri}" valueChangeListener="#{productionMB.cmtSerichange}" completeMethod="#{productionMB.seriAutocomplete}" style="width:150px">
+	     <f:attribute value="#{order.serialNo}" name="serial"></f:attribute>
+	     <p:ajax event="itemSelect" update="@form" process="@this"></p:ajax>
+	     </p:autoComplete>
+	     </p:column>
+    	 
+    	<p:column headerText="motive">
+    	<p:inputText value="#{order.motive}" >
+    	<p:ajax update="@form" process="@this"></p:ajax>
+    	</p:inputText>
+    	</p:column>
+    	<p:column headerText="qty" width="130">
+    	<p:inputText value="#{order.quantity}" style="width:110px" readonly="true">
+    	<f:attribute value="#{order.seri}" name="seri"></f:attribute>
+	    <f:attribute value="#{order.serialNo}" name="serial"></f:attribute>
+	    <f:attribute value="#{order.motive}" name="motive"></f:attribute>
+    	<p:ajax   update="@form" process="@this"></p:ajax>
+    	</p:inputText>
+    	</p:column>
+    	<p:column headerText="amount" width="150">
+    	<p:inputText value="#{order.value}" style="width:130px" readonly="true">
+    	<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></p:inputText>
+    	</p:column>
+	 </p:dataTable>
+	 <br></br>
+	 <center>
+	 <p:commandButton value="save" icon="fa fa-check" action="#{productionMB.cmtorderSave}" update=":center_content:cmtorder" process="@this"
+	 		onstart="PF('block').show()" onsuccess="PF('block').hide()"></p:commandButton>
+	 </center>
+	 </h:form>
+	 </p:outputPanel>
+	 </p:dialog>
+	 
+	 <p:dialog header="cmt holding" modal="true" width="60%" height="420px" appendTo="@(body)" widgetVar="holding"> 
+	 <p:outputPanel id="cmtholding">
+	 <h:form>
+	 <div class="ui-g">
+	 <div class="ui-g-12">
+	 <center>
+	 <h:panelGrid columns="3" cellpadding="3" cellspacing="4" >
+    	<h:outputLabel value="cmt" styleClass="labelTxt"></h:outputLabel>
+    	<h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+    	<p:selectOneMenu value="#{productionMB.productionDataBean.cmt}">
+    	<f:selectItem itemLabel="please select cmt" noSelectionOption="true"></f:selectItem>
+    	<f:selectItem itemLabel="all" itemValue="ALL"></f:selectItem>
+   		<f:selectItems value="#{productionMB.cmtList}"></f:selectItems>
+   		<p:ajax event="valueChange" listener="#{productionMB.cmtHolding}" update=":center_content:cmtholding" process="@this"></p:ajax>
+    	</p:selectOneMenu>
+    </h:panelGrid></center>
+	 </div>
+	 </div>
+	 <p:dataTable rows="5" paginator="true" paginatorPosition="bottom" pageLinks="5" id="cmtholddata" 
+	   paginatorAlwaysVisible="false" widgetVar="cmtholdinfo"  var="cmthold"  value="#{productionMB.cmtHoldinglist}">
+	   <f:facet name="header">
+			<p:outputPanel style="text-align:right">
+				<p:inputText id="globalFilter" onkeyup="PF('cmtholdinfo').filter()"
+					style="width:150px" placeholder="Enter keyword" />
+			</p:outputPanel>
+    	</f:facet>
+    	<p:column headerText="order date" filterBy="#{cmthold.orderDate}"  filterStyle="display:none">
+    	<h:outputText value="#{cmthold.orderDate}" >
+    	<f:convertDateTime pattern="ddMMMyyyy"></f:convertDateTime>
+    	</h:outputText>
+    	</p:column>
+    	<p:column headerText="model" filterBy="#{cmthold.modelName}"  filterStyle="display:none">
+    	<h:outputText value="#{cmthold.modelName}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="seri" filterBy="#{cmthold.seri}"  filterStyle="display:none">
+    	<h:outputText value="#{cmthold.seri}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="motive" filterBy="#{cmthold.motive}"  filterStyle="display:none">
+    	<h:outputText value="#{cmthold.motive}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="qty" filterBy="#{cmthold.seri}"  filterStyle="display:none">
+    	<h:outputText value="#{cmthold.quantity}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="value" filterBy="#{cmthold.value}"  filterStyle="display:none">
+    	<h:outputText value="#{cmthold.value}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+    	</p:column>
+    	<!-- <p:columnGroup type="footer">
+                <p:row>
+                    <p:column footerText="total" style="text-align:center;height:22px;background:#ebedf0" styleClass="labelTxt"/>
+                    <p:column footerText="" style="text-align:right;background:#ebedf0" styleClass="labelTxt"/>
+                    <p:column footerText="" style="text-align:center;background:#ebedf0" styleClass="labelTxt"/>
+                    <p:column footerText="" style="background:#ebedf0" styleClass="labelTxt"/>
+                    <p:column footerText="#{productionMB.productionDataBean.totalQuantity}" style="text-align:center;background:#ebedf0" styleClass="labelTxt"/>
+                    <p:column footerText="#{productionMB.productionDataBean.totalValue}" style="text-align:center;background:#ebedf0" styleClass="labelTxt"/>
+                </p:row>
+            </p:columnGroup> -->
+    </p:dataTable>	
+	 </h:form>
+	 </p:outputPanel>
+	 </p:dialog>
+	 
+	<p:dialog header="cmt receive form" widgetVar="cmtReceiveForm"
+				height="550px" width="60%" modal="true" resizable="false"
+				position="center" appendTo="@(body)" id="cmtreceivedialog">
+			<p:outputPanel id="cmtreceive">
+			 <h:form>
+  <div class="ui-g">
+  <div class="ui-g-6"> 
+  <p:panelGrid columns="3" styleClass="ui-panelgrid-blank" >
+     <h:outputLabel value="date" styleClass="labelTxt"></h:outputLabel>
+     <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+     <p:calendar id="date" value="#{productionMB.productionDataBean.receivedate}" pattern="dd-MM-yyyy">
+     <p:ajax event="dateSelect"  update="@form"  process="@this"/>
+     </p:calendar>
+     <h:outputText></h:outputText><br></br>
+     <h:message for="date" style="color:red;font-size:10px"></h:message>
+     <h:outputLabel value="invoice" styleClass="labelTxt"></h:outputLabel>
+     <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+      <p:inputText value="#{productionMB.productionDataBean.invoiceNo}" id="invoice" readonly="true">
+      <p:ajax update="@form" process="@this"></p:ajax>
+      </p:inputText>
+     <h:outputText></h:outputText><br></br>
+     <h:message for="invoice"></h:message>
+      <h:outputLabel value="total qt" styleClass="labelTxt"></h:outputLabel>
+     <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+     <p:inputText value="#{productionMB.productionDataBean.totalQuantity}" readonly="true">
+     <p:ajax update="@form" process="@this"></p:ajax>
+     </p:inputText>
+      <h:outputText></h:outputText><br></br>
+     <h:message for="in" style="color:red;font-size:10px"></h:message>
+  </p:panelGrid>
+  </div>
+  <div class="ui-g-6">
+   <p:panelGrid columns="3" styleClass="ui-panelgrid-blank" >
+     <h:outputLabel value="cmt" styleClass="labelTxt"></h:outputLabel>
+     <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+     <p:selectOneMenu id="receivecmt" style="border-radius:1px;" value="#{productionMB.productionDataBean.cmt}">
+     <f:selectItem itemLabel="select cmt" noSelectionOption="true"></f:selectItem>
+     <f:selectItems value="#{productionMB.invoiceList}"></f:selectItems>
+     <p:ajax update="@form" process="@this"></p:ajax>
+     </p:selectOneMenu>
+     <h:outputText></h:outputText><br></br>
+     <h:message for="receivecmt" style="color:red;font-size:10px"></h:message>
+     <h:outputLabel value="model" styleClass="labelTxt"></h:outputLabel>
+     <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+     <p:selectOneMenu id="receivemodel" style="border-radius:1px;" value="#{productionMB.productionDataBean.modelName}">
+     <f:selectItem itemLabel="select model" noSelectionOption="true"></f:selectItem>
+     <f:selectItems value="#{productionMB.modelList}"></f:selectItems>
+     <p:ajax event="valueChange" listener="#{productionMB.cmtreceiveModelchange}" update=":center_content:cmtreceive" process="@this" ></p:ajax>
+     </p:selectOneMenu>
+     <h:outputText></h:outputText><br></br>
+     <h:message for="receivemodel" style="color:red;font-size:10px"></h:message>
+      <h:outputLabel value="amount" styleClass="labelTxt"></h:outputLabel>
+     <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+     <p:inputText value="#{productionMB.productionDataBean.totalValue}" readonly="true">
+     <p:ajax update="@form" process="@this"></p:ajax>
+     <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+     </p:inputText>
+  </p:panelGrid>
+  </div>
+  </div>
+  <center><h:message for="cmtreceive" style="color:red;font-size:10px"></h:message></center>
+  <p:dataTable var="order" value="#{productionMB.cmtReceivelist}" id="orderdata1">
+  <p:column headerText="no" width="20">
+     <h:outputText value="#{order.serialNo}"></h:outputText>
+     </p:column>
+      <p:column headerText="seri" width="160">
+      <p:autoComplete value="#{order.seri}" style="width:150px" valueChangeListener="#{productionMB.cmtreceiveSerichange}" completeMethod="#{productionMB.seriAutocomplete}">
+     <f:attribute value="#{order.serialNo}" name="serial"></f:attribute>
+     <p:ajax event="itemSelect" update="@form" process="@this"></p:ajax>
+     </p:autoComplete>
+     </p:column>
+     <p:column headerText="motive">
+     <p:inputText value="#{order.motive}" >
+     <p:ajax update="@form" process="@this"></p:ajax>
+     </p:inputText>
+     </p:column>
+     <p:column headerText="qty" width="130">
+     <p:inputText value="#{order.quantity}" style="width:110px"  >
+     <f:attribute value="#{order.seri}" name="seri"></f:attribute>
+	 <f:attribute value="#{order.serialNo}" name="serial"></f:attribute>
+	 <f:attribute value="#{order.motive}" name="motive"></f:attribute>
+     <p:ajax   update="@form" process="@this"></p:ajax>
+     </p:inputText>
+     </p:column>
+     <p:column headerText="amount" width="150">
+     <p:inputText value="#{order.value}" style="width:130px" readonly="true">
+     <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></p:inputText>
+     </p:column>
+  </p:dataTable>
+  <br></br>
+  <center>
+  <p:commandButton value="save" icon="fa fa-check" action="#{productionMB.cmtReceivesave}" update=":center_content:cmtreceive" process="@this"
+  			onstart="PF('receiveblock').show()" onsuccess="PF('receiveblock').hide()"></p:commandButton>
+  </center>
+  </h:form>
+				</p:outputPanel>
+			</p:dialog>
+	 
+	 <p:dialog widgetVar="confirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag">
+				<p align="center" style="font-size: 16px">SUCESSFULLY SAVED</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('confirm').hide()" action="#{productionMB.cmtPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="purchaseview" header="cmt order view"  position="center" modal="true" 
+		 resizable="false" appendTo="@(body)"  width="50%" height="350px">
+		 <p:outputPanel id="orderdata">
+		 <center>
+		 <p:panelGrid columns="4" style="width:600px;height:120px">
+		 <h:outputLabel value="order date" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.orderDate}" styleClass="labelTxt">
+		 <f:convertDateTime pattern="ddMMMyyyy"></f:convertDateTime>
+		 </h:outputLabel>
+		 <h:outputLabel value="invoice no" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.invoiceNo}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="cmt" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.cmt}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="model" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.modelName}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="total quantity" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.totalQuantity}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="total amount" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.totalValue}" styleClass="labelTxt">
+		 <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+		 </h:outputLabel>
+		 </p:panelGrid>
+		 <br></br>
+		 <p:dataTable var="viewdata" rows="5" paginator="true" paginatorPosition="bottom" pageLinks="5" id="cutterdata1" 
+	   paginatorAlwaysVisible="false" widgetVar="cutterinfo" value="#{productionMB.productionDataBean.orderQuantitylist}" style="width:600px">
+	   <p:column headerText="no" width="40">
+	   <h:outputText value="#{viewdata.serialNo}"></h:outputText>
+	   </p:column>
+	   <p:column headerText="seri">
+	   <h:outputText value="#{viewdata.seri}"></h:outputText>
+	   </p:column>
+	   <p:column headerText="motive">
+	    <h:outputText value="#{viewdata.motive}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="quantity">
+	    <h:outputText value="#{viewdata.quantity}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="amount">
+	    <h:outputText value="#{viewdata.value}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+	    </p:column>
+	   </p:dataTable>
+		 </center>
+		 </p:outputPanel>
+		</p:dialog>	
+		
+		<p:dialog widgetVar="purchaseEdit" header="cmt order edit"  position="center" modal="true" 
+		 resizable="false" appendTo="@(body)"  width="55%" height="400px">
+		 <p:outputPanel id="orderdata1">
+		<h:form>
+		 <center>
+		 <p:panelGrid columns="4" style="width:700px;height:120px" styleClass="ui-panelgrid-blank">
+		 <h:outputLabel value="order date" styleClass="labelTxt"></h:outputLabel>
+		 <p:inputText value="#{productionMB.productionDataBean.orderDate}"  readonly="true">
+		 <f:convertDateTime pattern="dd-MM-yyyy"></f:convertDateTime>
+		 </p:inputText>
+		 <h:outputLabel value="invoice no" styleClass="labelTxt"></h:outputLabel>
+		 <p:inputText value="#{productionMB.productionDataBean.invoiceNo}"  readonly="true"></p:inputText>
+		 <h:outputLabel value="cmt" styleClass="labelTxt"></h:outputLabel>
+		 <h:panelGroup>
+		 <p:selectOneMenu value="#{productionMB.productionDataBean.cmt}" id="ecmt">
+		 <f:selectItem itemLabel="please select cmt" noSelectionOption="true"></f:selectItem>
+   		<f:selectItems value="#{productionMB.invoiceList}"></f:selectItems>
+   		<p:ajax update="@form" process="@this"></p:ajax>
+		 </p:selectOneMenu><br></br>
+		 <h:message for="ecmt" style="color:red;font-size:10px"></h:message>
+		 </h:panelGroup>
+		 <h:outputLabel value="model" styleClass="labelTxt"></h:outputLabel>
+		 <h:panelGroup>
+		 <p:selectOneMenu value="#{productionMB.productionDataBean.modelName}" id="emodel">
+		 <f:selectItem itemLabel="please select model" noSelectionOption="true"></f:selectItem>
+   		<f:selectItems value="#{productionMB.modelList}"></f:selectItems>
+   		 <p:ajax event="valueChange" listener="#{productionMB.modelValueChange}" update=":center_content:orderdata1" process="@this" ></p:ajax>
+		 </p:selectOneMenu><br></br>
+		 <h:message for="emodel" style="color:red;font-size:10px"></h:message>
+		 </h:panelGroup>
+		 <h:outputLabel value="total quantity" styleClass="labelTxt"></h:outputLabel>
+		 <p:inputText value="#{productionMB.productionDataBean.totalQuantity}" ></p:inputText>
+		 <h:outputLabel value="total value" styleClass="labelTxt"></h:outputLabel>
+		 <p:inputText value="#{productionMB.productionDataBean.totalValue}"  readonly="true">
+		 <f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+		 </p:inputText>
+		 </p:panelGrid>
+		 <br></br>
+		<h:message for="orderdata1" style="font-size:10px;color:red"></h:message>
+		 <p:dataTable var="order" rows="5" paginator="true" paginatorPosition="bottom" pageLinks="5"  
+	  	 paginatorAlwaysVisible="false" widgetVar="cmtinfoo" value="#{productionMB.productionDataBean.orderQuantitylist}" style="width:700px">
+	   <p:column headerText="no" width="20">
+    	<h:outputText value="#{order.serialNo}"></h:outputText>
+    	</p:column>
+    	<p:column headerText="seri" width="150">
+    	<p:selectOneMenu value="#{order.seri}" style="width:110px" valueChangeListener="#{productionMB.serieditChange}">
+    	<f:selectItem itemLabel="please select one"></f:selectItem>
+    	<f:selectItems value="#{productionMB.seriList}"></f:selectItems>
+    	<f:attribute value="#{order.serialNo}" name="serial"></f:attribute>
+    	<f:attribute value="#{order.motive}" name="motive"></f:attribute>
+    	<p:ajax event="valueChange"  update=":center_content:orderdata1" process="@this"></p:ajax>
+    	</p:selectOneMenu>
+    	</p:column>
+    	<p:column headerText="motive">
+    	<p:inputText value="#{order.motive}" >
+    	<p:ajax update="@form" process="@this"></p:ajax>
+    	</p:inputText>
+    	</p:column>
+    	<p:column headerText="qty" width="130">
+    	<p:inputText value="#{order.quantity}" style="width:110px" readonly="true">
+    	<f:attribute value="#{order.seri}" name="seri"></f:attribute>
+	    <f:attribute value="#{order.serialNo}" name="serial"></f:attribute>
+	    <f:attribute value="#{order.motive}" name="motive"></f:attribute>
+    	<p:ajax  update="@form" process="@this"></p:ajax>
+    	</p:inputText>
+    	</p:column>
+    	<p:column headerText="value" width="150">
+    	<p:inputText value="#{order.value}" style="width:130px" readonly="true">
+    	<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></p:inputText>
+    	</p:column>
+	   </p:dataTable>
+	   <br></br>
+    	<p:commandButton value="update" icon="fa fa-check" action="#{productionMB.cmtorderUpdate}" update=":center_content:orderdata1" process="@this"></p:commandButton>
+		 </center>
+		 </h:form>
+		 </p:outputPanel>
+		</p:dialog>	
+		<p:dialog widgetVar="edit" header="CONFORMATION BOX" position="center"
+			modal="true" resizable="false" appendTo="@(body)" width="30%"
+			height="100px">
+			<h:form>
+				<p align="center" style="font-size: 16px">EDITED SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('edit').hide()" action="#{productionMB.cmtPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="delete" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="rag1">
+				<p align="center" style="font-size: 16px">DELETE SUCESSFULLY</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('delete').hide()" action="#{productionMB.cmtPage}"  update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="orderinvoice" header="cmt order invoice"  position="center" modal="true" 
+		 resizable="false" appendTo="@(body)"  width="50%" height="430px">
+		 <p:outputPanel id="invoicedata">
+		<h:form>
+		<center>
+		 <p:panelGrid columns="6" style="width:600px;height:120px" styleClass="ui-panelgrid-blank">
+		 <h:outputLabel value="order date" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.orderDate}" styleClass="labelTxt">
+		 <f:convertDateTime pattern="ddMMMyyyy"></f:convertDateTime></h:outputLabel>
+		 <h:outputLabel value="invoice no" styleClass="labelTxt"></h:outputLabel>
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.invoiceNo}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="cmt" styleClass="labelTxt"></h:outputLabel>
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.cmt}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="model" styleClass="labelTxt"></h:outputLabel>
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.modelName}" styleClass="labelTxt"></h:outputLabel>	
+		 <h:outputLabel value="total quantity" styleClass="labelTxt"></h:outputLabel> 
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.totalQuantity}" styleClass="labelTxt"></h:outputLabel>
+		 </p:panelGrid>
+		 <br></br>
+		 <p:dataTable var="viewdata" rows="5" paginator="true" paginatorPosition="bottom" pageLinks="5" id="cutterdata77" 
+	   paginatorAlwaysVisible="false" widgetVar="cutterinfo" value="#{productionMB.productionDataBean.orderQuantitylist}" style="width:600px">
+	   <p:column headerText="no" width="40">
+	   <h:outputText value="#{viewdata.serialNo}"></h:outputText>
+	   </p:column>
+	   <p:column headerText="seri">
+	   <h:outputText value="#{viewdata.seri}"></h:outputText>
+	   </p:column>
+	   <p:column headerText="motive">
+	    <h:outputText value="#{viewdata.motive}"></h:outputText>
+	    </p:column>
+	    <p:column headerText="quantity">
+	    <h:outputText value="#{viewdata.quantity}"></h:outputText>
+	    </p:column>
+	   </p:dataTable>
+	   <br></br>
+	   <div class="ui-g">
+	   <div class="ui-g-6"></div>
+	   <div class="ui-g-6">
+	   	<h:outputText value="total price :" styleClass="labelTxt" style="font-size:14px;"></h:outputText> 
+   		<h:outputText value="#{productionMB.productionDataBean.totalValue}" styleClass="labelTxt" style="font-size:14px;">
+  		<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter>
+   		</h:outputText>
+   	  </div>
+	   </div>
+	   </center>
+		</h:form>
+		</p:outputPanel>
+		 <br></br>
+ 			<center>
+ 		  	<p:commandButton value="print" icon="fa fa-print">
+   			<p:printer target=":center_content:invoicedata"></p:printer>
+   			</p:commandButton></center>
+		</p:dialog>
+		
+		<p:dialog widgetVar="invoiceconfirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form>
+				<p align="center" style="font-size: 16px">invoice generated successfully</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('invoiceconfirm').hide()" action="#{productionMB.cmtPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+	<p:dialog widgetVar="orderstockin" header="stock in"  position="center" modal="true" 
+		 resizable="false" appendTo="@(body)"  width="60%" height="400px">
+		 <p:outputPanel id="stockdata">
+		<h:form>
+		<center><h:message for="stockdata" style="font-size:10px;color:red"></h:message> </center>
+		<p:dataTable var="stock" widgetVar="stockin"  rows="5" paginator="true" paginatorPosition="bottom" pageLinks="5"  
+	   		paginatorAlwaysVisible="false"  value="#{productionMB.stockList}">
+	   	<p:column headerText="no" width="30">
+	   	<h:outputText value="#{stock.serialNo}" ></h:outputText>
+	   	<p:inputText type="hidden" value="#{stock.categoryId}"></p:inputText>
+	   	</p:column>
+	   	<p:column headerText="model">
+	   	<h:outputText value="#{stock.modelName}"></h:outputText>
+	   	</p:column>
+	   	<p:column headerText="seri">
+	   	<h:outputText value="#{stock.seri}"></h:outputText>
+	   	</p:column>
+	   	<p:column headerText="quantity">
+	   	<h:outputText value="#{stock.quantity}"></h:outputText>
+	   	</p:column>
+	   	<p:column headerText="balance quantity">
+	   	<h:outputText value="#{stock.stockinQuantity}"></h:outputText>
+	   	</p:column>
+	   	<p:column headerText="add quantity" width="120">
+	   	<p:inputText value="#{stock.addedQuantity}" style="width:120px" valueChangeListener="#{productionMB.stockValuechange}">
+	   	<f:attribute name="serial" value="#{stock.serialNo}"></f:attribute>
+	   	<f:attribute name="model" value="#{stock.modelName}"></f:attribute>
+	   	<f:attribute name="seri" value="#{stock.seri}"></f:attribute>
+	   	<f:attribute name="quantity" value="#{stock.quantity}"></f:attribute>
+	   	<f:attribute name="stockquantity" value="#{stock.stockinQuantity}"></f:attribute>
+	   	<f:attribute name="stockid" value="#{stock.categoryId}"></f:attribute>
+	   	<p:ajax event="valueChange"  update=":center_content:stockdata" process="@this"></p:ajax>
+	   	</p:inputText>
+	   	</p:column>
+	   	</p:dataTable>
+		 <br></br>
+		 <center>
+		 <p:commandButton value="stock in" action="#{productionMB.stocksave}" update=":center_content:stockdata" process="@this"></p:commandButton>
+		 </center>
+		 </h:form>
+		 </p:outputPanel>
+		 </p:dialog>		
+		
+		<p:dialog widgetVar="printerready" position="center" appendTo="@(body)" width="50%" height="250px" header="printer data" modal="true">
+	<p:outputPanel id="printerreadydata">
+	<h:form>
+	<p:selectBooleanCheckbox value="#{productionMB.productionDataBean.selectCheckbox}">
+	<p:ajax update="@form" process="@this" event="valueChange" listener="#{productionMB.checkboxCmt}" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:ajax>
+	</p:selectBooleanCheckbox>&nbsp;&nbsp;<h:outputLabel value="select all" styleClass="labelTxt"></h:outputLabel>
+	<br></br><br></br>
+	<p:dataTable id="datatable" paginator="true" pageLinks="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+	var="data" rows="5" value="#{productionMB.printerPurchaselist}" widgetVar="ragulan">
+	<p:column headerText="#" width="30">
+	<p:selectBooleanCheckbox value="#{data.checkBox}" >
+	<p:ajax update="@form" process="@this"></p:ajax>
+	</p:selectBooleanCheckbox>
+	</p:column>
+	<p:column headerText="model">
+	<h:outputText value="#{data.modelName}"></h:outputText>
+	</p:column>
+	<p:column headerText="seri">
+	<h:outputText value="#{data.seri}"></h:outputText>
+	</p:column>
+	<p:column headerText="motive">
+	<h:outputText value="#{data.motive}"></h:outputText>
+	</p:column>
+	<p:column headerText="quantity">
+	<h:outputText value="#{data.quantity}"></h:outputText>
+	</p:column>
+	<p:column headerText="value">
+	<h:outputText value="#{data.value}">
+	<f:converter converterId="com.nrg.lemon.util.UrlConverter"></f:converter></h:outputText>
+	</p:column>
+	</p:dataTable>
+	<br></br>
+	<center><p:commandButton value="order" action="#{productionMB.printerReadysave}" update=":center_content:printerreadydata" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:commandButton> </center>
+	</h:form>
+	</p:outputPanel>
+	</p:dialog>
+	
+	<p:dialog widgetVar="readyconfirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form id="qqq">
+				<p align="center" style="font-size: 16px">SUCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('readyconfirm').hide()"  update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="orderpayment" header="printer order payment"  position="center" modal="true" 
+		 resizable="false" appendTo="@(body)"  width="50%" height="300px">
+		 <p:outputPanel id="invoicepayment">
+		<h:form>
+		<center>
+		 <p:panelGrid columns="6" style="width:650px;height:220px" styleClass="ui-panelgrid-blank">
+		 <h:outputLabel value="order date" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.orderDate}" styleClass="labelTxt">
+		 <f:convertDateTime pattern="ddMMMyyyy"></f:convertDateTime></h:outputLabel>
+		 <h:outputLabel value="invoice no" styleClass="labelTxt"></h:outputLabel>
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.invoiceNo}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="cmt" styleClass="labelTxt"></h:outputLabel>
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.cmt}" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="model" styleClass="labelTxt"></h:outputLabel>
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.modelName}" styleClass="labelTxt"></h:outputLabel>	
+		 <h:outputLabel value="total amount" styleClass="labelTxt"></h:outputLabel> 
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.totalAmount}" styleClass="labelTxt">
+		 <f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputLabel>
+		 <h:outputLabel value="paid amount" styleClass="labelTxt"></h:outputLabel>
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.paidAmount}" styleClass="labelTxt">
+		 <f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputLabel>
+		  <h:outputLabel value="balance amount" styleClass="labelTxt"></h:outputLabel>
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		 <h:outputLabel value="#{productionMB.productionDataBean.balanceAmount}" styleClass="labelTxt">
+		 <f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputLabel>
+		 <h:outputLabel value="amount" styleClass="labelTxt"></h:outputLabel>
+		  <h:outputLabel value=":" styleClass="labelTxt"></h:outputLabel>
+		  <h:panelGroup>
+		  <p:inputNumber value="#{productionMB.productionDataBean.payingAmount}" id="payamount">
+		  <p:ajax update="@form" process="@this"></p:ajax>
+		  </p:inputNumber><br></br>
+		  <h:message for="payamount" style="color:red;font-size:10px"></h:message>
+		  </h:panelGroup>
+		 </p:panelGrid>
+		 <br></br>
+ 			<p:commandButton value="pay" icon="fa fa-check" action="#{productionMB.cmtPaymentsave}" update=":center_content:invoicepayment" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:commandButton>
+	   </center>
+		</h:form>
+		</p:outputPanel>
+		</p:dialog>
+		<p:dialog widgetVar="paymentconfirm" header="CONFORMATION BOX"
+			position="center" modal="true" resizable="false" appendTo="@(body)"
+			width="30%" height="100px">
+			<h:form>
+				<p align="center" style="font-size: 16px">payment successfully</p>
+				<center>
+					<p:commandButton value="OK" oncomplete="PF('paymentconfirm').hide()" action="#{productionMB.cmtPage}" update=":center_content" process="@this"></p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+		</p:panel>
+		<p:blockUI widgetVar="blockUI" block="cmtpanel" >
+		<h:panelGrid id="blockUIContent" columns="2"
+				style="table-layout:auto;">
+				<p:graphicImage value="../../images/spinners.gif" style="width:60px"/>
+				<h:outputText value="Please wait, data is being processed..."
+					style="white-space: nowrap;font-size:14px" />
+			</h:panelGrid>
+		</p:blockUI>
+		<p:blockUI widgetVar="block" block="cmtorderdialog" >
+		<h:panelGrid id="blockContent" columns="2"
+				style="table-layout:auto;">
+				<p:graphicImage value="../../images/spinners.gif" style="width:60px"/>
+				<h:outputText value="Please wait, data is being processed..."
+					style="white-space: nowrap;font-size:14px" />
+			</h:panelGrid>
+		</p:blockUI>
+		<p:blockUI widgetVar="receiveblock" block="cmtreceivedialog" >
+		<h:panelGrid id="Content" columns="2"
+				style="table-layout:auto;">
+				<p:graphicImage value="../../images/spinners.gif" style="width:60px"/>
+				<h:outputText value="Please wait, data is being processed..."
+					style="white-space: nowrap;font-size:14px" />
+			</h:panelGrid>
+		</p:blockUI>
+	</ui:define>
+	</ui:composition>

@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	 xmlns:p="http://primefaces.org/ui">
+ <ui:define name="content">
+	<p:panel header="Customer Registration" style="min-height:100%" id="customerpanel">
+	<p:commandButton value="add customer" action="#{customerRegistrationMB.customerRegister}" oncomplete="PF('registration').show()" update=":center_content:registerpanel" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:commandButton>
+	<br></br><br></br>
+	<p:dataTable id="dataTable" var="info" widgetVar="CustomerInfo" value="#{customerRegistrationMB.cus1}"
+			rows="10" pageLinks="5" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+			<f:facet name="header">
+				<p:outputPanel style="text-align:right">
+					<p:inputText placeholder="Search" id="globalFilter"
+						onkeyup="PF('CustomerInfo').filter()"
+						style="width:20%;height:25px;" />
+				</p:outputPanel>
+			</f:facet>
+		    <p:column headerText="Customer Name" filterBy="#{info.customername}" filterMatchMode="contains" filterStyle="display:none">
+				<h:outputText value="#{info.customername}" />
+			</p:column>
+			 <p:column headerText="Phone Number" filterBy="#{info.phonenumber}" filterMatchMode="contains" filterStyle="display:none">
+				<h:outputText value="#{info.phonenumber}" />
+			</p:column>
+			<p:column headerText="City" filterBy="#{info.city}" filterMatchMode="contains" filterStyle="display:none">
+				<h:outputText value="#{info.city}" />
+			</p:column>
+			<p:column headerText="Country" filterBy="#{info.country}" filterMatchMode="contains" filterStyle="display:none">
+				<h:outputText value="#{info.country}" />
+			</p:column>
+			<p:column headerText="gender">
+				<h:outputText value="#{info.categoryname}" />
+			</p:column>
+			<p:column headerText="View" width="40">
+			<div align="center">
+			<p:commandButton icon="fa fa-search"  oncomplete="PF('customerview').show();" action="#{customerRegistrationMB.cusView}" update="center_content:dialogPanel" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()">
+			<f:setPropertyActionListener target="#{customerRegistrationMB.customerDatabean.customername}"
+											value="#{info.customername}"></f:setPropertyActionListener>
+			 </p:commandButton>
+			</div>	
+			</p:column>
+			<p:column headerText="Modify" width="40">
+			<div align="center">
+			<p:commandButton icon="fa fa-pencil" action="#{customerRegistrationMB.cusView}" oncomplete="PF('edit').show();" update=":center_content:editpanel" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()">
+			<f:setPropertyActionListener target="#{customerRegistrationMB.customerDatabean.customername}"
+											value="#{info.customername}"></f:setPropertyActionListener>
+			 </p:commandButton>
+			 </div>	
+			</p:column>
+			<p:column headerText="Delete" width="40">
+			<div align="center">
+			<p:commandButton icon="fa fa-remove" action="#{customerRegistrationMB.cusDelete}" >
+			<f:setPropertyActionListener target="#{customerRegistrationMB.customerDatabean.customername}"
+												value="#{info.customername}" />
+			<p:confirm header="CONFORMATION" message="ARE YOU SURE?"></p:confirm>
+			 </p:commandButton>
+			 <p:confirmDialog global="true">
+							<center>
+								<p:commandButton value="YES" type="button"
+									styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+								<p:commandButton value="NO" type="button"
+									styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+							</center>
+						</p:confirmDialog>
+				</div>	
+			</p:column>
+			</p:dataTable>
+			
+			<p:dialog header="CUSTOMER VIEW" appendTo="@(body)"
+			widgetVar="customerview" modal="true" 
+			 height="260px" width="45%" resizable="false" >
+			
+			<p:outputPanel id="dialogPanel">
+				<h:form id="cusview">
+				<center>
+				<p:panelGrid columns="4" style="width:500px;height:200px" styleClass="ui-panelgrid-blank">
+				<h:outputLabel value="Customer Name" style="font-size:12px;"></h:outputLabel>
+						<h:outputLabel value="#{customerRegistrationMB.customerDatabean.customername}" ></h:outputLabel>
+						<h:outputLabel value="City" style="font-size:12px;"></h:outputLabel>
+						<h:outputLabel value="#{customerRegistrationMB.customerDatabean.city}" ></h:outputLabel>
+						<h:outputLabel value="Country" style="font-size:12px;"></h:outputLabel>
+						<h:outputLabel value="#{customerRegistrationMB.customerDatabean.country}" ></h:outputLabel>
+						<h:outputLabel value="gender" style="font-size:12px;"></h:outputLabel>
+						<h:outputLabel value="#{customerRegistrationMB.customerDatabean.categoryname}" ></h:outputLabel>
+						<h:outputLabel value="Shipping Address" style="font-size:12px;"></h:outputLabel>
+						<h:outputLabel value="#{customerRegistrationMB.customerDatabean.shippingaddress}" ></h:outputLabel>
+						<h:outputLabel value="Phone Number1" style="font-size:12px;"></h:outputLabel>
+						<h:outputLabel value="#{customerRegistrationMB.customerDatabean.phonenumber}" ></h:outputLabel>
+						<h:outputLabel value="Phone Number2" style="font-size:12px;"></h:outputLabel>
+						<h:outputLabel value="#{customerRegistrationMB.customerDatabean.phonenumber2}" ></h:outputLabel>
+						<h:outputLabel value="Note" style="font-size:12px;"></h:outputLabel>
+						<h:outputLabel value="#{customerRegistrationMB.customerDatabean.note}" ></h:outputLabel>
+						<h:outputLabel></h:outputLabel>
+						<h:outputLabel></h:outputLabel>
+				</p:panelGrid>
+				</center>
+				</h:form></p:outputPanel>
+					<div align="center">
+			<br />
+			<p:commandButton value="PRINT" icon="fa fa-print">
+				<p:printer  target="dialogPanel"></p:printer>
+			</p:commandButton>
+		</div>
+			
+		</p:dialog>
+		
+		<p:dialog widgetVar="delete" header="CONFORMATION BOX"
+				position="center" modal="true" resizable="false" appendTo="@(body)"
+				width="30%" height="100px">
+				<h:form>
+					<p align="center" style="font-size: 14px">DELETE SUCESSFULLY</p>
+					<center>
+						<p:commandButton value="OK" oncomplete="PF('delete').hide()"
+							action="#{customerRegistrationMB.customerView}"  update="center_content" process="@this" ></p:commandButton>
+					</center>
+				</h:form>
+			</p:dialog>
+		
+		<p:dialog widgetVar="registration" position="center" modal="true" resizable="false" appendTo="@(body)"
+		header="customer registration" width="30%" height="450px">
+		<p:outputPanel id="registerpanel">
+		<h:form id="cusModify"> 
+		<table >
+					<tr>
+								<td width="50%" height="45px"   ><h:outputLabel value="Customer Name "
+								for="ename" styleClass="labelTxt" /> <span style="color: red">*</span>
+								</td>
+								<td width="75%" height="45px"><p:inputText id="ename"
+										style="font-size:12px;" value="#{customerRegistrationMB.customerDatabean.customername}">
+									<p:ajax update="@form" process="@this"></p:ajax></p:inputText><br></br> 
+									<h:message for="ename" style="color: red; font-size: 10px;"></h:message>
+									</td>
+							</tr>
+							
+							<tr>
+								<td width="30%" height="45px"><h:outputLabel value="City"
+										for="city" styleClass="labelTxt" /> <span style="color: red">*</span>
+								</td>
+								<td width="75%" height="45px"><p:inputText id="city1"
+										style="font-size:12px;" value="#{customerRegistrationMB.customerDatabean.city}">
+									<p:ajax update="@form" process="@this"></p:ajax></p:inputText><br></br> 
+									<h:message for="city1" style="color: red; font-size: 10px;"></h:message></td>
+							</tr>
+							<tr>
+								<td width="30%" height="45px"><h:outputLabel value="Country"
+										for="country" styleClass="labelTxt" /> <span style="color: red">*</span>
+								</td>
+							 <td width="75%" height="45px" >
+								<p:inputText id="country"
+										style="font-size:12px;" value="#{customerRegistrationMB.customerDatabean.country}">
+									<p:ajax update="@form" process="@this"></p:ajax></p:inputText>
+								<h:message for="country" style="color: red; font-size: 10px;"></h:message>
+								</td>
+
+							</tr>
+							<tr>
+								<td width="30%" height="45px"><h:outputLabel value="GENDER"
+										for="category" styleClass="labelTxt" /> <span style="color: red">*</span>
+								</td>
+							<td width="75%" height="45px"><p:selectOneRadio id="category1"
+										style="font-size:12px;" value="#{customerRegistrationMB.customerDatabean.categoryname}">
+										<f:selectItem itemLabel="Male " itemValue="Male" />
+									<f:selectItem itemLabel="Female " itemValue="Female" />
+									<p:ajax update="@form" process="@this"></p:ajax></p:selectOneRadio>
+									<h:message for="category" style="color: red; font-size: 10px;"></h:message>
+								</td>
+							</tr>
+							<tr>
+								<td width="30%" height="45px"><h:outputLabel value="Shipping Address"
+										for="address" styleClass="labelTxt" /> <span style="color: red">*</span>
+								</td>
+							    <td width="75%" height="45px"><p:inputText id="address1"
+										style="font-size:12px;" value="#{customerRegistrationMB.customerDatabean.shippingaddress}">
+									<p:ajax update="@form" process="@this"></p:ajax></p:inputText><br></br> 
+										<h:message for="address1" style="color: red; font-size: 10px;"></h:message>
+									</td>
+							</tr>
+							
+							<tr>
+								<td width="30%" height="45px"><h:outputLabel value="Phone Number1"
+										for="phone" styleClass="labelTxt" /> <span style="color: red">*</span>
+								</td>
+							<td width="75%" height="45px"><p:inputText id="phone"
+										style="font-size:12px;" value="#{customerRegistrationMB.customerDatabean.phonenumber}">
+									<p:ajax update="@form" process="@this"></p:ajax></p:inputText><br></br> 
+									<h:message
+										for="phone" style="color:red;font-size:10px"></h:message>
+									
+									</td>
+							</tr>
+							<tr>
+								<td width="30%" height="45px"><h:outputLabel value="Phone Number2"
+										for="phone2" styleClass="labelTxt" /> 
+								</td>
+							<td width="75%" height="45px"><p:inputText id="phone2"
+										style="font-size:12px;" value="#{customerRegistrationMB.customerDatabean.phonenumber2}">
+									<p:ajax update="@form" process="@this"></p:ajax></p:inputText><br></br> 
+									<h:message
+										for="phone2" style="color:red;font-size:10px"></h:message>
+									
+									</td>
+							</tr>
+							<tr>
+								<td width="30%" height="45px"><h:outputLabel value="Note "
+										for="note" styleClass="labelTxt" />
+								</td>
+								<td width="75%" height="45px"><p:inputText id="note1"
+										style="font-size:12px;" value="#{customerRegistrationMB.customerDatabean.note}">
+									<p:ajax update="@form" process="@this"></p:ajax></p:inputText><br></br> 
+									<h:message for="note1" style="color: red; font-size: 10px;"></h:message>
+								</td>
+							</tr>
+						</table>
+						<br />
+					
+						<div align="center">
+					  <p:commandButton  icon="fa fa-check"  value="SAVE" action="#{customerRegistrationMB.register}" update=":center_content:registerpanel" process="@this" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"></p:commandButton>
+								<p:commandButton  value="RESET" id="reset"  icon="fa fa-refresh">
+								<p:ajax update=":center_content:registerpanel" resetValues="true"></p:ajax>
+								</p:commandButton>
+							<br></br>
+							
+							</div>
+						 <br/>
+		</h:form>
+		</p:outputPanel>
+		</p:dialog> 
+		<p:dialog widgetVar="edit" position="center" modal="true" resizable="false" appendTo="@(body)"
+		header="customer edit" width="30%" height="450px">
+		<p:outputPanel id="editpanel">
+		<h:form>
+		<table >
+		<tr>
+		<td width="50%" height="45px"   >
+		<h:outputLabel value="CUSTOMER NAME" styleClass="outText"><span style="color: red">*</span>
+					</h:outputLabel></td>
+					<td width="75%" height="45px"><p:inputText id="ename"
+						value="#{customerRegistrationMB.customerDatabean.customername}" readonly="true">
+						<p:ajax update="@form" process="@this"></p:ajax>
+					</p:inputText>
+					<h:outputLabel></h:outputLabel>
+					<h:message for="ename" style="color: red; font-size: 10px;"></h:message></td>
+					</tr>
+					<tr>
+					<td width="50%" height="45px"   >
+	             <h:outputLabel value="CITY" styleClass="outText"><span style="color: red">*</span>
+					</h:outputLabel></td>
+					<td width="75%" height="45px">
+					<p:inputText id="ecity" value="#{customerRegistrationMB.customerDatabean.city}" >
+					<p:ajax update="@form" process="@this"></p:ajax>
+					</p:inputText>
+					<h:outputLabel></h:outputLabel>
+					<h:message for="ecity" style="color: red; font-size: 10px;"></h:message></td>
+					</tr>
+					<tr>
+					<td width="50%" height="45px"   >
+					<h:outputLabel value="COUNTRY" styleClass="outText"><span style="color: red">*</span></h:outputLabel></td>
+					<td width="75%" height="45px">
+					<p:inputText id="ecountry" value="#{customerRegistrationMB.customerDatabean.country}" widgetVar="coun">
+					<p:ajax update="@form" process="@this"></p:ajax>				
+					</p:inputText>
+						<h:outputLabel></h:outputLabel>			
+					<h:message for="ecountry" style="font-size:10px;color:red;"></h:message></td>
+					</tr>
+					<tr>
+					<td width="50%" height="45px"   >
+					<h:outputLabel value="GENDER" styleClass="outText"><span style="color: red">*</span></h:outputLabel></td>
+					<td width="75%" height="45px">
+	               <p:selectOneRadio id="ecategory"
+										style="font-size:12px;" value="#{customerRegistrationMB.customerDatabean.categoryname}">
+										<f:selectItem itemLabel="Male " itemValue="Male" />
+									<f:selectItem itemLabel="Female " itemValue="Female" />
+									<p:ajax update="@form" process="@this"></p:ajax>
+									</p:selectOneRadio>
+									<h:outputLabel></h:outputLabel>	
+	                <h:message for="ecategory" style="font-size:10px;color:red;"></h:message></td>
+					</tr>
+					<tr>
+	                <td width="50%" height="45px"   >
+	                <h:outputLabel value="SHIPPING ADDRESS" styleClass="outText"><span style="color: red">*</span></h:outputLabel></td>
+					<td width="75%" height="45px">
+	                <p:inputText id="eaddress" value="#{customerRegistrationMB.customerDatabean.shippingaddress}">
+	                <p:ajax update="@form" process="@this"></p:ajax>
+	                </p:inputText>
+	                <h:outputLabel></h:outputLabel>	
+	                <h:message for="eaddress" style="font-size:10px;color:red;"></h:message></td>
+					</tr>
+					
+						<tr>
+						<td width="50%" height="45px"   >
+						<h:outputLabel value="PHONE NUMBER 1" styleClass="outText"><span style="color: red">*</span></h:outputLabel></td>
+						<td width="75%" height="45px">
+						<p:inputText id="ephone" value="#{customerRegistrationMB.customerDatabean.phonenumber}" >
+						<p:ajax update="@form" process="@this"></p:ajax></p:inputText>
+						<h:outputLabel></h:outputLabel>	
+						<h:message for="ephone" style="font-size:10px;color:red;"></h:message></td>
+						</tr>
+						
+						<tr>
+						<td width="50%" height="45px"   >
+						<h:outputLabel value="PHONE NUMBER 2" styleClass="outText"></h:outputLabel></td>
+						<td width="75%" height="45px">
+						<p:inputText id="ephone2" value="#{customerRegistrationMB.customerDatabean.phonenumber2}" >
+						<p:ajax update="@form" process="@this"></p:ajax></p:inputText>
+						<h:outputLabel></h:outputLabel>	
+						<h:message for="ephone2" style="font-size:10px;color:red;"></h:message></td>
+						</tr>
+						
+						  <tr>
+					      <td width="50%" height="45px"   >
+					      <h:outputLabel value="NOTE" styleClass="outText"><span style="color: red">*</span></h:outputLabel></td>
+						  <td width="75%" height="45px">
+					      <p:inputText id="enote" value="#{customerRegistrationMB.customerDatabean.note }">
+					      <p:ajax update="@form" process="@this"></p:ajax></p:inputText>
+						  <h:message for="enote" style="font-size:10px;color:red;"></h:message> </td>
+						  </tr>
+					
+						</table>
+						<br />
+					
+						<div align="center">
+					<p:commandButton  value="UPDATE"  id="editbutton" onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"
+						action="#{customerRegistrationMB.updateCustomer}" update=":center_content:editpanel" process="@this"/>
+							<br></br>
+							
+							</div>
+						 <br/>
+		</h:form>
+		</p:outputPanel>
+		</p:dialog> 
+		<p:dialog header="CONFORMATION" widgetVar="edit1"
+				height="100px" width="350px" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+				<p align="center" style="font-size: 16px">SUCESSFULLY UPDATED</p>
+				<center>
+					<p:commandButton value="OK" action="#{customerRegistrationMB.customerView}" oncomplete="PF('edit1').hide();" update="center_content" process="@this"></p:commandButton>
+				</center>
+			</p:dialog>		
+		<p:dialog header="CONFORMATION" widgetVar="customersuccess"
+				height="100px" width="350px" modal="true" resizable="false"
+				position="center" appendTo="@(body)">
+				<p align="center" style="font-size: 16px">SUCESSFULLY SAVE</p>
+				<center>
+					<p:commandButton value="OK" action="#{customerRegistrationMB.customerView}" oncomplete="PF('customersuccess').hide();" update="center_content" process="@this"></p:commandButton>
+				</center>
+			</p:dialog>		
+			</p:panel>		
+	</ui:define>
+</ui:composition>

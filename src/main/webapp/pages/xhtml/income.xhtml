@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="income" id="fabricpanel">
+		<br></br><center>
+				<p:selectOneMenu id="divisionid" styleClass="pselectonmenu" value="#{financeMB.financeDataBean.type}" 
+					valueChangeListener="#{financeMB.divisionValueChnage}">
+      				 <f:selectItem itemLabel="select division" noSelectionOption="true" itemValue="select"></f:selectItem>
+      				 <f:selectItem itemLabel="chemistry" itemValue="CHEMISTRY ITEM"></f:selectItem>
+      				 <f:selectItem itemLabel="hangtag" itemValue="HANGTAG ITEM"></f:selectItem>
+      				 <f:selectItem itemLabel="label" itemValue="LABEL ITEM"></f:selectItem>
+      				 <f:selectItem itemLabel="accessoris" itemValue="ACCESSORIS ITEM"></f:selectItem>
+      				 <f:selectItem itemLabel="plastic" itemValue="PLASTIC ITEM"></f:selectItem>
+      				 <p:ajax update="@form" process="@this" event="valueChange"></p:ajax>
+     			</p:selectOneMenu></center>
+     			<br></br>
+		<br></br>
+			
+			<p:dataTable 
+				widgetVar="purchaseTable" var="fabric" rendered="#{financeMB.financeDataBean.flag}"
+				value="#{financeMB.financeDataBean.financeList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria"
+					>
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('purchaseTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.debtDate}" filterStyle="display:none"  filterBy="#{fabric.debtDate}">
+					<h:outputText value="#{fabric.debtDate}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.invoiceNo}" filterBy="#{fabric.invoiceNo}">
+					<h:outputText value="#{fabric.invoiceNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="Vendor" filterStyle="display:none" sortBy="#{fabric.debtName}" filterBy="#{fabric.debtName}">
+					<h:outputText value="#{fabric.debtName}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.debtAmount}" filterBy="#{fabric.debtAmount}">
+					<h:outputText value="#{fabric.debtAmount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				
+				<p:column headerText="status" sortBy="#{fabric.debtStatus}" filterStyle="display:none" filterBy="#{fabric.debtStatus}">
+					<h:outputText value="#{fabric.debtStatus}"></h:outputText>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+</ui:composition>

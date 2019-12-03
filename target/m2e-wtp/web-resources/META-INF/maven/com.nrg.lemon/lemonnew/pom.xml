@@ -1,0 +1,337 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+   http://maven.apache.org/maven-v4_0_0.xsd">
+   
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>com.nrg.lemon</groupId>
+   <artifactId>lemonnew</artifactId>
+   <packaging>war</packaging>
+   <version>1.0-SNAPSHOT</version>
+   <name>lemon Maven Webapp</name>
+   <url>http://maven.apache.org</url>
+   <properties>
+		<spring.version>3.1.1.RELEASE</spring.version>
+		<mvn.version>3.0</mvn.version>
+		<antlr.version>2.7.7</antlr.version>
+		<junit.version>4.12</junit.version>
+		<jdk.version>1.7</jdk.version>		<jsf-version>2.0.2</jsf-version>
+		<tomahawk.version>1.1.10</tomahawk.version>
+		<jetty.version>8.1.8.v20121106</jetty.version>
+		<jstl.version>1.2</jstl.version>
+		<servlet.version>2.5</servlet.version>
+		<hibernate.version>4.1.4.Final</hibernate.version>
+		<hibernatevalidator.version>4.2.0.Final</hibernatevalidator.version>
+		<commonslogging.version>1.1.1</commonslogging.version>
+		<commonscollections.version>3.2.1</commonscollections.version>
+				<db2.version>9.7.2</db2.version>
+		 <org.richfaces.ui.version>4.3.7.Final</org.richfaces.ui.version>
+		  <org.richfaces.bom.version>4.3.7.Final</org.richfaces.bom.version>  
+	</properties>   
+
+   <dependencies>
+      <dependency>
+	<groupId>junit</groupId>
+	<artifactId>junit</artifactId>
+	<version>4.12</version>
+</dependency>
+     
+    <dependency>
+	<groupId>commons-lang</groupId>
+	<artifactId>commons-lang</artifactId>
+	<version>2.3</version>
+</dependency>
+
+<dependency>
+	<groupId>org.apache.commons</groupId>
+	<artifactId>commons-lang3</artifactId>
+	<version>3.0</version>
+</dependency>
+<dependency>
+	<groupId>com.itextpdf</groupId>
+	<artifactId>itext-pdfa</artifactId>
+	<version>5.5.0</version>
+</dependency>
+
+     <dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>servlet-api</artifactId>
+    <version>2.5</version>
+    <scope>compile</scope>
+</dependency>
+   
+   <dependency>
+	<groupId>javax.servlet</groupId>
+	<artifactId>jstl</artifactId>
+	<version>1.2</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.0.1</version>
+    <scope>provided</scope>
+</dependency>
+
+  
+            <dependency>
+  <groupId>org.apache.httpcomponents</groupId>
+  <artifactId>httpclient</artifactId>
+  <version>4.2.1</version>
+</dependency>
+   
+      <!-- Spring 3 dependencies  Start-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-asm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.springframework.security</groupId>
+    		<artifactId>spring-security-config</artifactId>
+    		<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>3.0.5.RELEASE</version>
+		</dependency>
+		
+	
+	<!-- 	
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-ws</artifactId>
+			<version>1.5.8</version>
+		</dependency> -->
+		
+		<!-- 	<dependency>
+        <groupId>org.springframework.ws</groupId>
+        <artifactId>spring-ws-core</artifactId>
+        <version>2.1.5.RELEASE-SNAPSHOT</version>
+      </dependency> -->
+      
+			<!--  Hibernate Configutation -->
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-validator</artifactId>
+    		<!-- 4.2.0.Final-->
+    		<version>${hibernatevalidator.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>4.1.4.Final</version>
+		</dependency>
+		
+	<dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-api</artifactId>
+	<version>1.6.6</version>
+</dependency>
+             
+		 
+	<dependency>
+	<groupId>log4j</groupId>
+	<artifactId>log4j</artifactId>
+	<version>1.2.17</version>
+</dependency>
+             
+		 <dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>${commonscollections.version}</version>
+		</dependency>
+	 <dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<version>${antlr.version}</version>
+		</dependency> 
+	
+       <dependency>
+         <groupId>com.sun.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+         <version>2.1.7</version>
+      </dependency>
+      <dependency>
+         <groupId>com.sun.faces</groupId>
+         <artifactId>jsf-impl</artifactId>
+         <version>2.1.7</version>
+      </dependency> 
+      
+       <dependency>  
+                <groupId>org.richfaces</groupId>  
+                <artifactId>richfaces-bom</artifactId>  
+                <version>${org.richfaces.bom.version}</version>  
+                <scope>import</scope>  
+                <type>pom</type>  
+            </dependency>  
+     
+   <dependency>
+    <groupId>org.apache.tomcat</groupId>
+    <artifactId>el-api</artifactId>
+    <version>6.0.32</version>
+    <type>jar</type>
+    <scope>provided</scope>
+</dependency>
+
+<dependency>
+	<groupId>org.hibernate.javax.persistence</groupId>
+	<artifactId>hibernate-jpa-2.0-api</artifactId>
+	<version>1.0.0.Final</version>
+</dependency>
+            
+
+<!-- JSR-330 -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+<dependency>
+	<groupId>org.primefaces</groupId>
+	<artifactId>primefaces</artifactId>
+	<version>6.0</version>
+</dependency>
+<dependency>
+ <groupId>org.primefaces.extensions</groupId>
+ <artifactId>primefaces-extensions</artifactId>
+ <version>2.1.0</version>
+</dependency>
+<dependency>  
+  <groupId>org.primefaces.themes</groupId>  
+  <artifactId>all-themes</artifactId>  
+  <version>1.0.10</version>  
+</dependency> 
+
+<!-- http://mvnrepository.com/artifact/net.bootsfaces/bootsfaces -->
+<dependency>
+    <groupId>net.bootsfaces</groupId>
+    <artifactId>bootsfaces</artifactId>
+    <version>0.8.6</version>
+</dependency>
+
+		
+<dependency>
+	<groupId>mysql</groupId>
+	<artifactId>mysql-connector-java</artifactId>
+	<version>5.0.4</version>
+</dependency>
+     	<dependency>
+        	<groupId>net.sf.jasperreports</groupId>
+        	<artifactId>jasperreports</artifactId>
+       	 	<version>5.0.1</version>
+       	 	<exclusions> 
+           		<exclusion> 
+             	<artifactId>jdtcore</artifactId> 
+             	<groupId>eclipse</groupId> 
+           		</exclusion> 
+        	</exclusions> 
+    	</dependency>
+    	<dependency>
+	<groupId>org.webjars</groupId>
+	<artifactId>font-awesome</artifactId>
+	<version>4.5.0</version>
+</dependency>
+    
+   <!-- Data Exporter -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+        
+   </dependencies>
+    <repositories>
+        <repository>
+            <id>prime-repo</id>
+            <name>PrimeFaces Maven Repository</name>
+            <url>http://repository.primefaces.org</url>
+        </repository>
+    </repositories>
+   <build>
+      <finalName>lemonnew</finalName>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.3.1</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>		
+</project>

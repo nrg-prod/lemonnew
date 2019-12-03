@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="../../pages/xhtml/home.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="../../css/style.css"></link>
+	<ui:define name="content">
+		<p:panel style="min-height:100%" header="Purchase Payment" id="fabricpanel">
+		<table width="60%" align="center">
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="Division" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<p:selectOneMenu id="divisionid" styleClass="pselectonmenu" value="#{payrollMB.payrollDataBean.type}" valueChangeListener="#{payrollMB.divisionValueChnage}">
+      				 <f:selectItem itemLabel="select division" noSelectionOption="true" itemValue="select"></f:selectItem>
+      				 <f:selectItem itemLabel="fabric" itemValue="FABRIC"></f:selectItem>
+      				 <f:selectItem itemLabel="chemistry" itemValue="CHEMISTRY"></f:selectItem>
+      				 <f:selectItem itemLabel="hangtag" itemValue="HANGTAG"></f:selectItem>
+      				 <f:selectItem itemLabel="label" itemValue="LABEL"></f:selectItem>
+      				 <f:selectItem itemLabel="accessoris" itemValue="ACCESSORIS"></f:selectItem>
+      				 <f:selectItem itemLabel="plastic" itemValue="PLASTIC"></f:selectItem>
+      				 <p:ajax update="@form" process="@this" immediate="true" event="valueChange"></p:ajax>
+     			</p:selectOneMenu><br/>
+     			<h:message for="divisionid" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="Supplier" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<p:selectOneMenu id="supplier" styleClass="pselectonmenu" value="#{payrollMB.payrollDataBean.supplier}">
+      				 <f:selectItem itemLabel="select supplier" noSelectionOption="true"></f:selectItem>
+      				 <f:selectItems value="#{payrollMB.payrollDataBean.supplierList}"></f:selectItems>
+      				 <p:ajax update="@form" process="@this" immediate="true"></p:ajax>
+     			</p:selectOneMenu>
+				</td>
+				</tr>
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="From date" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<p:calendar value="#{payrollMB.payrollDataBean.fromdate}" pattern="dd-MMM-yyyy" id="fdate">
+				<p:ajax event="dateSelect" update="@form" process="@this" immediate="true"></p:ajax>
+				</p:calendar><br/>
+				<h:message for="fdate" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				<tr>
+				<td width="10%" height="35px">
+				<h:outputLabel value="To Date" styleClass="labelTxt"></h:outputLabel>
+				</td>
+				<td width="5%"><h:outputLabel value=":"></h:outputLabel></td>
+				<td width="35%">
+				<p:calendar value="#{payrollMB.payrollDataBean.todate}" pattern="dd-MMM-yyyy" id="tdate">
+				<p:ajax event="dateSelect" update="@form" process="@this" immediate="true"></p:ajax>
+				</p:calendar><br/>
+				<h:message for="tdate" style="color:red;font-size:10px"></h:message>
+				</td>
+				</tr>
+				</table>
+				<br></br>
+     			<center><p:commandButton value="submit" action="#{payrollMB.getpurchasepayments}" update="@form" process="@this"></p:commandButton></center>
+		<br></br>
+		
+			<p:dataTable 
+				widgetVar="fabricTable" var="fabric" rendered="#{payrollMB.payrollDataBean.flag}"
+				 id="fabrics" value="#{payrollMB.payrollDataBean.payrollList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria">
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('fabricTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column width="5%" rendered="#{payrollMB.payrollDataBean.aflag1}">
+				<p:selectBooleanCheckbox value="#{fabric.aflag}" rendered="#{fabric.flag}"></p:selectBooleanCheckbox>
+				</p:column>
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+					<h:outputText value="#{fabric.purchaseId}" style="display:none"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.date}" filterStyle="display:none"  filterBy="#{fabric.date}">
+					<h:outputText value="#{fabric.date}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.invoiceNo}" filterBy="#{fabric.invoiceNo}">
+					<h:outputText value="#{fabric.invoiceNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="supplier" filterStyle="display:none" sortBy="#{fabric.staffName}" filterBy="#{fabric.staffName}">
+					<h:outputText value="#{fabric.staffName}"></h:outputText>
+				</p:column>
+				<p:column headerText="fabric" filterStyle="display:none" sortBy="#{fabric.name}" filterBy="#{fabric.name}">
+					<h:outputText value="#{fabric.name}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.amount}" filterBy="#{fabric.amount}">
+					<h:outputText value="#{fabric.amount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="Balance Amount" width="16%" filterStyle="display:none" sortBy="#{fabric.balAmount}" filterBy="#{fabric.balAmount}">
+					<h:outputText value="#{fabric.balAmount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{fabric.status}" filterStyle="display:none" filterBy="#{fabric.status}">
+					<h:outputText value="#{fabric.status}"></h:outputText>
+				</p:column>
+				<f:facet name="footer">
+				<p:outputPanel style="text-align:left"  rendered="#{payrollMB.payrollDataBean.aflag1}">
+            <p:commandButton update=":center_content"  value="payment"  action="#{payrollMB.purchasePayments}"/>
+            </p:outputPanel>
+        </f:facet>
+			</p:dataTable>
+			
+			<p:dataTable 
+				widgetVar="purchaseTable" var="fabric" rendered="#{payrollMB.payrollDataBean.aflag}"
+				value="#{payrollMB.payrollDataBean.payrollList}"
+				paginator="true" paginatorAlwaysVisible="false" pageLinks="5"
+				rows="5" paginatorPosition="bottom" resizableColumns="true"
+					emptyMessage="No information found with given criteria"
+					>
+				<f:facet name="header">
+					<p:outputPanel style="text-align:right">
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter" onkeyup="PF('purchaseTable').filter()"
+							style="width:150px" placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column width="5%" rendered="#{payrollMB.payrollDataBean.aflag1}">
+				<p:selectBooleanCheckbox value="#{fabric.aflag}" rendered="#{fabric.flag}"></p:selectBooleanCheckbox>
+				</p:column>
+				<p:column headerText="no" filterStyle="display:none" filterBy="#{fabric.serialNo}" sortBy="#{fabric.serialNo}">
+				<h:outputText value="#{fabric.purchaseId}" style="display:none"></h:outputText>
+					<h:outputText value="#{fabric.serialNo}"></h:outputText>
+				</p:column> 
+				<p:column headerText="date" sortBy="#{fabric.date}" filterStyle="display:none"  filterBy="#{fabric.date}">
+					<h:outputText value="#{fabric.date}">
+						<f:convertDateTime pattern="dd-MMM-yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="invoice" filterStyle="display:none" sortBy="#{fabric.invoiceNo}" filterBy="#{fabric.invoiceNo}">
+					<h:outputText value="#{fabric.invoiceNo}"></h:outputText>
+				</p:column>
+				<p:column headerText="supplier" filterStyle="display:none" sortBy="#{fabric.staffName}" filterBy="#{fabric.staffName}">
+					<h:outputText value="#{fabric.staffName}"></h:outputText>
+				</p:column>
+				
+				<p:column headerText="total" filterStyle="display:none" sortBy="#{fabric.amount}" filterBy="#{fabric.amount}">
+					<h:outputText value="#{fabric.amount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="Balance Amount" width="16%" filterStyle="display:none" sortBy="#{fabric.balAmount}" filterBy="#{fabric.balAmount}">
+					<h:outputText value="#{fabric.balAmount}"><f:converter converterId="com.nrg.lemon.util.UrlConverter"/></h:outputText>
+				</p:column>
+				<p:column headerText="status" sortBy="#{fabric.status}" filterStyle="display:none" filterBy="#{fabric.status}">
+					<h:outputText value="#{fabric.status}"></h:outputText>
+				</p:column>
+				<f:facet name="footer">
+				<p:outputPanel style="text-align:left"  rendered="#{payrollMB.payrollDataBean.aflag1}">
+            <p:commandButton update=":center_content"  value="payment"  action="#{payrollMB.purchasePayments}"/>
+            </p:outputPanel>
+        </f:facet>
+			</p:dataTable>
+			
+		
+		<p:dialog header="Confirmation Box" appendTo="@(body)" closable="false" widgetVar="paySuccess" modal="true"
+			width="25%" height="40%" resizable="false" dynamic="true">
+			<h:form>
+				<center>
+					<h:outputText value="Successfully Paid"></h:outputText>
+					<br></br><br></br>
+					<p:commandButton immediate="true"
+						process="@this" value="OK" update="center_content"
+						oncomplete="PF('paySuccess').hide()" action="#{payrollMB.purchasePage}"></p:commandButton>
+				</center>
+
+			</h:form>
+		</p:dialog>
+		</p:panel>
+	</ui:define>
+</ui:composition>

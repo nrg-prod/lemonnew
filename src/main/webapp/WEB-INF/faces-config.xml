@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+   http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+   version="2.0">
+   <application>
+<action-listener>
+org.primefaces.application.DialogActionListener
+</action-listener>
+<navigation-handler>
+org.primefaces.application.DialogNavigationHandler
+</navigation-handler>
+<view-handler>
+org.primefaces.application.DialogViewHandler
+</view-handler>
+</application>
+<managed-bean>
+<managed-bean-name>loginMB</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.managedBean.LoginMB</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<!-- Employee -->
+<managed-bean>
+<managed-bean-name>employeeMB</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.managedBean.EmployeeMB</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+<managed-property>
+<property-name>employeeDataBean</property-name>
+<value>#{EmployeeDataBean}</value>
+</managed-property>
+</managed-bean>
+<managed-bean>
+<managed-bean-name>EmployeeDataBean</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.domain.EmployeeDataBean</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+<!--Supply -->
+<managed-bean>
+<managed-bean-name>supplyMB</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.managedBean.SupplyMB</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+<managed-property>
+<property-name>supplyDataBean</property-name>
+<value>#{SupplyDataBean}</value>
+</managed-property>
+</managed-bean>
+<managed-bean>
+<managed-bean-name>SupplyDataBean</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.domain.SupplyDataBean</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+<!--Production -->
+<managed-bean>
+<managed-bean-name>productionMB</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.managedBean.ProductionMB</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+<managed-property>
+<property-name>productionDataBean</property-name>
+<value>#{ProductionDataBean}</value>
+</managed-property>
+</managed-bean>
+<managed-bean>
+<managed-bean-name>ProductionDataBean</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.domain.ProductionDataBean</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<!--Finance -->
+<managed-bean>
+<managed-bean-name>financeMB</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.managedBean.FinanceMB</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+<managed-property>
+<property-name>financeDataBean</property-name>
+<value>#{FinanceDataBean}</value>
+</managed-property>
+</managed-bean>
+<managed-bean>
+<managed-bean-name>FinanceDataBean</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.domain.FinanceDataBean</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+<!--currentDate-->
+<managed-bean>
+    <managed-bean-name>currentDate</managed-bean-name>
+    <managed-bean-class>java.util.Date</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+</managed-bean>
+<navigation-rule>
+<navigation-case>
+<from-outcome>chemistryItemPage</from-outcome>
+<to-view-id>/pages/xhtml/chemistryItemRegistration.xhtml</to-view-id>
+<redirect />
+</navigation-case>
+</navigation-rule>
+<navigation-rule>
+<navigation-case>
+<from-outcome>successHangtagItemPage</from-outcome>
+<to-view-id>/pages/xhtml/hangtagItemRegistration.xhtml</to-view-id>
+<redirect />
+</navigation-case>
+</navigation-rule>
+<navigation-rule>
+<navigation-case>
+<from-outcome>successLabelItemPage</from-outcome>
+<to-view-id>/pages/xhtml/labelItemRegistration.xhtml</to-view-id>
+<redirect />
+</navigation-case>
+</navigation-rule> 
+<navigation-rule>
+<navigation-case>
+<from-outcome>successAccessorisItemPage</from-outcome>
+<to-view-id>/pages/xhtml/accessorisItemRegistration.xhtml</to-view-id>
+<redirect />
+</navigation-case>
+</navigation-rule> 
+<navigation-rule>
+<navigation-case>
+<from-outcome>successPlasticItemPage</from-outcome>
+<to-view-id>/pages/xhtml/plasticItemRegistration.xhtml</to-view-id>
+<redirect />
+</navigation-case>
+</navigation-rule>
+<navigation-rule>
+<navigation-case>
+<from-outcome>successTableRegPage</from-outcome>
+<to-view-id>/pages/xhtml/tableRegistration.xhtml</to-view-id>
+<redirect />
+</navigation-case>
+</navigation-rule>
+<navigation-rule>
+<navigation-case>
+<from-outcome>successProdPrinterRegPage</from-outcome>
+<to-view-id>/pages/xhtml/productionPrinter.xhtml</to-view-id>
+<redirect />
+</navigation-case>
+</navigation-rule>
+
+<!-- Employee -->
+<managed-bean>
+<managed-bean-name>stockMB</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.managedBean.StockMB</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+<managed-property>
+<property-name>stockDataBean</property-name>
+<value>#{StockDataBean}</value>
+</managed-property>
+</managed-bean>
+<managed-bean>
+<managed-bean-name>StockDataBean</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.domain.StockDataBean</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+<managed-bean-name>payrollMB</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.managedBean.PayrollMB</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+<managed-bean-name>PayrollDataBean</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.domain.PayrollDataBean</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+<managed-bean-name>returnMB</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.managedBean.ReturnMB</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+<managed-bean-name>ReturnDataBean</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.domain.ReturnDataBean</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<!-- Customer -->
+<managed-bean>
+<managed-bean-name>customerRegistrationMB</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.managedBean.CustomerRegistrationMB</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+<managed-property>
+<property-name>customerDatabean</property-name>
+<value>#{CustomerDatabean}</value>
+</managed-property>
+</managed-bean>
+<managed-bean>
+<managed-bean-name>CustomerDatabean</managed-bean-name>
+<managed-bean-class>com.nrg.lemon.domain.CustomerDatabean</managed-bean-class>
+<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+</faces-config>
+ 
